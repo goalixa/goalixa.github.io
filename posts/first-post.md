@@ -1,11 +1,13 @@
 # First Post
 
-Published: 2026-02-17
+Published: 2026-02-18
 
-Welcome to the first post on the Goalixa Docsify blog.
+Welcome to the Goalixa blog.
 
-## Next Steps Checklist
+This blog will share product updates, feature announcements, and practical guides for users.
 
-- [ ] Add your real title
-- [ ] Replace this content with your article
-- [ ] Link the new post in `/_sidebar.md`
+## Coming Next
+
+- Product roadmap updates
+- New feature releases
+- Tips to get better results with Goalixa

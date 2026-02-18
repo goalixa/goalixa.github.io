@@ -1,22 +1,21 @@
 # Goalixa Blog
 
-Welcome to the Goalixa blog. This site is powered by Docsify and Markdown files.
+Welcome to the official Goalixa blog.
 
-## Quick Start
+## What You Can Read Here
 
-1. Add new content as `.md` files.
-2. Link new pages in `/_sidebar.md`.
-3. Push to `main` and GitHub Pages will publish it.
+- Product news
+- New feature announcements
+- Practical usage tips
+- Short founder updates
 
-## Mark Done Workflow
-
-Use Markdown task lists for publish tracking:
-
-- [x] Setup Docsify
-- [x] Configure `blog.goalixa.com`
-- [ ] Publish first post
-
-## Blog Sections
+## Start Here
 
 - [Posts](posts/README.md)
 - [About Me](about.md)
+
+## Current Status
+
+- [x] Blog is live on `blog.goalixa.com`
+- [x] About page is published
+- [ ] First full article is coming soon
