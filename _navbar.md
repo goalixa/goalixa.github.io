@@ -1,7 +1,4 @@
 * [Home](/)
-* [Services](/services.md)
-* [Architecture](/architecture.md)
-* [Operations](/operations.md)
 * [Posts](/posts/README.md)
 * [About Me](/about.md)
 * [GitHub](https://github.com/goalixa/goalixa.github.io)
