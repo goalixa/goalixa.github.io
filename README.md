@@ -13,6 +13,7 @@ Welcome to the official Goalixa blog.
 
 - [Posts](posts/README.md)
 - [About Me](about.md)
+- [Goalixa Architecture](goalixa-architecutre.md)
 
 ## Current Status
 
