@@ -19,4 +19,4 @@ Use Markdown task lists for publish tracking:
 ## Blog Sections
 
 - [Posts](posts/README.md)
-- [About](about.md)
+- [About Me](about.md)
