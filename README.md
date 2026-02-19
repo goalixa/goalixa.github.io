@@ -19,4 +19,4 @@ Welcome to the official Goalixa blog.
 
 - [x] Blog is live on `blog.goalixa.com`
 - [x] About page is published
-- [ ] First full article is coming soon
+- [x] First full article is published
