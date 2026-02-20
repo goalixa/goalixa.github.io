@@ -26,6 +26,15 @@
   background: #f0f0f0;
 }
 
+.markdown-section .mermaid {
+  margin: 16px 0;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #ffffff;
+  overflow-x: auto;
+}
+
 @media (max-width: 640px) {
   .profile-card {
     flex-direction: column;

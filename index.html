@@ -34,14 +34,63 @@
           paths: "auto",
           placeholder: "Search docs",
         },
-        mermaidConfig: {
-          startOnLoad: false,
-          theme: "default",
-        },
+        plugins: [
+          function (hook) {
+            hook.doneEach(function () {
+              if (!window.mermaid) return;
+
+              // Fallback converter for Mermaid code blocks across Docsify versions.
+              var blocks = [];
+
+              document
+                .querySelectorAll('pre[data-lang="mermaid"]')
+                .forEach(function (pre) {
+                  blocks.push(pre);
+                });
+
+              document
+                .querySelectorAll("pre code.lang-mermaid, pre code.language-mermaid")
+                .forEach(function (code) {
+                  var pre = code.closest("pre");
+                  if (pre && !blocks.includes(pre)) {
+                    blocks.push(pre);
+                  }
+                });
+
+              blocks.forEach(function (pre) {
+                var source = "";
+                var code = pre.querySelector("code");
+
+                if (code && code.textContent) {
+                  source = code.textContent.trim();
+                } else if (pre.textContent) {
+                  source = pre.textContent.trim();
+                }
+
+                if (!source) return;
+
+                var wrapper = document.createElement("div");
+                wrapper.className = "mermaid";
+                wrapper.textContent = source;
+                pre.replaceWith(wrapper);
+              });
+
+              if (!window.__goalixaMermaidInitialized) {
+                window.mermaid.initialize({
+                  startOnLoad: false,
+                  theme: "default",
+                  securityLevel: "loose",
+                });
+                window.__goalixaMermaidInitialized = true;
+              }
+
+              window.mermaid.run({ querySelector: ".mermaid:not([data-processed])" });
+            });
+          },
+        ],
       };
     </script>
-    <script src="//cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/docsify-mermaid@latest/dist/docsify-mermaid.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
     <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/docsify-copy-code@2"></script>
