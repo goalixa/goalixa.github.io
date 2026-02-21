@@ -8,6 +8,7 @@
       name="description"
       content="Official Goalixa blog with product updates, feature announcements, and user guides."
     />
+    <meta name="theme-color" content="#ffffff" />
     <link
       rel="stylesheet"
       href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css"
@@ -16,6 +17,130 @@
   </head>
   <body>
     <div id="app">Loading Goalixa Blog...</div>
+    <script>
+      (function () {
+        var storageKey = "goalixa-theme";
+        var themeOrder = ["auto", "light", "dark"];
+
+        function getStoredPreference() {
+          try {
+            return localStorage.getItem(storageKey) || "auto";
+          } catch (e) {
+            return "auto";
+          }
+        }
+
+        function getSystemTheme() {
+          return window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+        }
+
+        function resolveTheme(pref) {
+          return pref === "auto" ? getSystemTheme() : pref;
+        }
+
+        function updateThemeMeta(theme) {
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (!meta) return;
+          meta.setAttribute("content", theme === "dark" ? "#0f172a" : "#ffffff");
+        }
+
+        function applyTheme(pref) {
+          var theme = resolveTheme(pref);
+          document.documentElement.setAttribute("data-theme", theme);
+          document.documentElement.style.colorScheme = theme;
+          updateThemeMeta(theme);
+          window.__goalixaCurrentTheme = theme;
+        }
+
+        window.__goalixaSetTheme = function (pref) {
+          try {
+            localStorage.setItem(storageKey, pref);
+          } catch (e) {}
+          applyTheme(pref);
+          if (window.__goalixaUpdateThemeToggleLabel) {
+            window.__goalixaUpdateThemeToggleLabel();
+          }
+          if (window.__goalixaApplyMermaidTheme) {
+            window.__goalixaApplyMermaidTheme();
+          }
+        };
+
+        window.__goalixaCycleTheme = function () {
+          var currentPref = getStoredPreference();
+          var idx = themeOrder.indexOf(currentPref);
+          var nextPref = themeOrder[(idx + 1) % themeOrder.length];
+          window.__goalixaSetTheme(nextPref);
+        };
+
+        window.__goalixaUpdateThemeToggleLabel = function () {
+          var btn = document.getElementById("goalixa-theme-toggle");
+          if (!btn) return;
+          var pref = getStoredPreference();
+          var label =
+            pref === "dark" ? "Dark" : pref === "light" ? "Light" : "Auto";
+          btn.textContent = "Theme: " + label;
+          btn.title = "Theme mode " + label + " (click to change)";
+          btn.setAttribute("aria-label", "Theme mode " + label);
+        };
+
+        window.__goalixaEnsureThemeToggle = function () {
+          var btn = document.getElementById("goalixa-theme-toggle");
+          if (!btn) {
+            btn = document.createElement("button");
+            btn.type = "button";
+            btn.id = "goalixa-theme-toggle";
+            btn.addEventListener("click", window.__goalixaCycleTheme);
+          }
+
+          var nav = document.querySelector(".app-nav");
+          if (nav) {
+            var wrapper = nav.querySelector(".goalixa-theme-wrap");
+            if (!wrapper) {
+              wrapper = document.createElement("span");
+              wrapper.className = "goalixa-theme-wrap";
+              nav.appendChild(wrapper);
+            }
+            if (btn.parentElement !== wrapper) {
+              wrapper.appendChild(btn);
+            }
+            btn.classList.remove("goalixa-theme-floating");
+          } else if (btn.parentElement !== document.body) {
+            document.body.appendChild(btn);
+            btn.classList.add("goalixa-theme-floating");
+          }
+
+          window.__goalixaUpdateThemeToggleLabel();
+        };
+
+        applyTheme(getStoredPreference());
+
+        if (window.matchMedia) {
+          var media = window.matchMedia("(prefers-color-scheme: dark)");
+          var onChange = function () {
+            if (getStoredPreference() === "auto") {
+              applyTheme("auto");
+              if (window.__goalixaUpdateThemeToggleLabel) {
+                window.__goalixaUpdateThemeToggleLabel();
+              }
+            }
+          };
+          if (media.addEventListener) {
+            media.addEventListener("change", onChange);
+          } else if (media.addListener) {
+            media.addListener(onChange);
+          }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+          if (window.__goalixaEnsureThemeToggle) {
+            window.__goalixaEnsureThemeToggle();
+          }
+        });
+      })();
+    </script>
     <script>
       window.$docsify = {
         name: "Goalixa Blog",
@@ -37,6 +162,22 @@
         plugins: [
           function (hook) {
             hook.doneEach(function () {
+              if (window.__goalixaEnsureThemeToggle) {
+                window.__goalixaEnsureThemeToggle();
+              }
+
+              // Inject footer
+              var footer = document.querySelector(".docsify-footer");
+              if (!footer) {
+                var content = document.querySelector(".content");
+                if (content) {
+                  content.insertAdjacentHTML(
+                    "beforeend",
+                    '<div class="docsify-footer"><p><strong><a href="/">Home</a></strong> &nbsp;|&nbsp; <strong><a href="/posts/README.md">Posts</a></strong> &nbsp;|&nbsp; <strong><a href="/goalixa-architecture.md">Architecture</a></strong> &nbsp;|&nbsp; <strong><a href="/about.md">About Me</a></strong></p><p>© 2026 Goalixa. Built with <a href="https://docsify.js.org">Docsify</a>.</p><p><a href="https://linkedin.com/in/amirreza-rezaie-">LinkedIn</a> &nbsp;|&nbsp; <a href="https://github.com/AmirrezaRezaie">GitHub</a> &nbsp;|&nbsp; <a href="https://goalixa.com">goalixa.com</a></p></div>'
+                  );
+                }
+              }
+
               if (!window.mermaid) return;
 
               // Fallback converter for Mermaid code blocks across Docsify versions.
@@ -71,20 +212,35 @@
 
                 var wrapper = document.createElement("div");
                 wrapper.className = "mermaid";
+                wrapper.setAttribute("data-source", source);
                 wrapper.textContent = source;
                 pre.replaceWith(wrapper);
               });
 
-              if (!window.__goalixaMermaidInitialized) {
+              window.__goalixaApplyMermaidTheme = function () {
+                if (!window.mermaid) return;
+
+                var themeName =
+                  window.__goalixaCurrentTheme === "dark" ? "dark" : "default";
+
+                document.querySelectorAll(".mermaid").forEach(function (el) {
+                  var source = el.getAttribute("data-source");
+                  if (source) {
+                    el.textContent = source;
+                    el.removeAttribute("data-processed");
+                  }
+                });
+
                 window.mermaid.initialize({
                   startOnLoad: false,
-                  theme: "default",
+                  theme: themeName,
                   securityLevel: "loose",
                 });
-                window.__goalixaMermaidInitialized = true;
-              }
 
-              window.mermaid.run({ querySelector: ".mermaid:not([data-processed])" });
+                window.mermaid.run({ querySelector: ".mermaid:not([data-processed])" });
+              };
+
+              window.__goalixaApplyMermaidTheme();
             });
           },
         ],

@@ -1,8 +1,14 @@
 * [Home](/README.md)
-* [Goalixa Architecture](/goalixa-architecutre.md)
+* [Goalixa Architecture](/goalixa-architecture.md)
 * Blog
   * [Posts](/posts/README.md)
+  * GitOps
+    * [GitOps Overview](/posts/gitops/README.md)
+    * [ArgoCD Setup: First Step](/posts/gitops/argocd-first-step.md)
+    * [ArgoCD App and Sync Strategy](/posts/gitops/argocd-applications-sync-strategy.md)
   * [Monitoring Stack Setup](/posts/monitoring-stack-prometheus-grafana-alertmanager.md)
+  * [Why Goalixa Is AI-Developed](/posts/why-goalixa-is-ai-developed.md)
+  * [Future Plan: EDA with NATS](/posts/event-driven-architecture-nats.md)
   * [Migrate Monolithic to Microservice](/posts/migrate-monolithic-to-microservice.md)
   * [BFF in Goalixa](/posts/bff-goalixa.md)
   * [API Gateway and One PWA](/posts/api-gateway-pwa-microservices.md)

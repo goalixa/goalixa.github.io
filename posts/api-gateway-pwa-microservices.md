@@ -1,7 +1,6 @@
 # From Fragmented UIs to One PWA: Why API Gateway Is Step One for Real Microservices
 
-Published: 2026-02-19  
-Section: Architecture & Platform
+> **Published:** 2026-02-19 | **Section:** Architecture & Platform
 
 Many teams think "microservices" only means splitting backend services. In practice, if UIs are also fragmented (for example, separate auth UI, separate app UI, separate timer UI), product complexity increases and delivery slows down.
 

@@ -1,7 +1,6 @@
 # Migrate Monolithic to Microservice
 
-Published: 2026-02-20  
-Section: Architecture & Platform
+> **Published:** 2026-02-20 | **Section:** Architecture & Platform
 
 I want to migrate Goalixa to a real microservice architecture.
 

@@ -1,7 +1,6 @@
 # BFF in Goalixa: How PWA and Services Stay Clean and Scalable
 
-Published: 2026-02-20  
-Section: Architecture & Platform
+> **Published:** 2026-02-20 | **Section:** Architecture & Platform
 
 Goalixa uses a BFF (Backend For Frontend) to keep frontend flows simple while backend services stay focused on their own domain logic.
 
