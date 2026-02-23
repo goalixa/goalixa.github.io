@@ -13,4 +13,5 @@
   * [Migrate Monolithic to Microservice](/posts/migrate-monolithic-to-microservice.md)
   * [BFF in Goalixa](/posts/bff-goalixa.md)
   * [API Gateway and One PWA](/posts/api-gateway-pwa-microservices.md)
+  * [Removing UI from Legacy Auth](/posts/removing-ui-from-legacy-auth-redirection.md)
 * [About Me](/about.md)

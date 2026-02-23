@@ -20,3 +20,4 @@ Use this folder for all blog posts.
 - [Migrate Monolithic to Microservice](/posts/migrate-monolithic-to-microservice.md)
 - [BFF in Goalixa: How PWA and Services Stay Clean and Scalable](/posts/bff-goalixa.md)
 - [From Fragmented UIs to One PWA: Why API Gateway Is Step One for Real Microservices](/posts/api-gateway-pwa-microservices.md)
+- [Removing UI from Legacy Services: Rebuilding Auth Redirect and Token Flow](/posts/removing-ui-from-legacy-auth-redirection.md)
