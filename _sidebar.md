@@ -7,6 +7,7 @@
     * [ArgoCD Setup: First Step](/posts/gitops/argocd-first-step.md)
     * [ArgoCD App and Sync Strategy](/posts/gitops/argocd-applications-sync-strategy.md)
   * [Monitoring Stack Setup](/posts/monitoring-stack-prometheus-grafana-alertmanager.md)
+  * [Migrate to PWA Success fully](/posts/migrate-to-pwa-success-fully.md)
   * [Why Goalixa Is AI-Developed](/posts/why-goalixa-is-ai-developed.md)
   * [Future Plan: EDA with NATS](/posts/event-driven-architecture-nats.md)
   * [Migrate Monolithic to Microservice](/posts/migrate-monolithic-to-microservice.md)

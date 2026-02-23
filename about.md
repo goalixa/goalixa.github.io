@@ -1,5 +1,8 @@
 # About Me
 
+> **Author:** Amirreza Rezaie
+
+
 <div class="profile-card">
   <img
     src="/assets/amirreza_rezaie.jpg"

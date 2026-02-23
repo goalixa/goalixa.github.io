@@ -1,6 +1,6 @@
 # ArgoCD Applications and Sync Strategy in Goalixa
 
-> **Published:** 2026-02-20 | **Section:** GitOps
+> **Published:** 2026-02-20 | **Section:** GitOps | **Author:** Amirreza Rezaie
 
 After bootstrapping ArgoCD, the next step is to make deployment behavior predictable and safe.
 

@@ -1,6 +1,6 @@
 # Why Most Goalixa Code Is AI-Developed
 
-> **Published:** 2026-02-20 | **Section:** Engineering Mindset
+> **Published:** 2026-02-20 | **Section:** Engineering Mindset | **Author:** Amirreza Rezaie
 
 One of my core beliefs is that in today’s world, we do not always need to type every line of code ourselves when AI can help generate, reason about, and implement faster.
 

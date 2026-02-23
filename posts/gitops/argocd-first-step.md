@@ -1,6 +1,6 @@
 # ArgoCD Setup: First Step in Goalixa GitOps Journey
 
-> **Published:** 2026-02-20 | **Section:** GitOps
+> **Published:** 2026-02-20 | **Section:** GitOps | **Author:** Amirreza Rezaie
 
 I want to implement GitOps in Goalixa, and ArgoCD is my next major step.
 

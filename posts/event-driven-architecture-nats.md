@@ -1,6 +1,6 @@
 # Future Plan: Event-Driven Architecture with NATS
 
-> **Published:** 2026-02-20 | **Section:** Architecture & Platform
+> **Published:** 2026-02-20 | **Section:** Architecture & Platform | **Author:** Amirreza Rezaie
 
 I am thinking about the future architecture of Goalixa.
 

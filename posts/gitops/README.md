@@ -1,5 +1,8 @@
 # GitOps
 
+> **Author:** Amirreza Rezaie
+
+
 Posts in this section are focused on GitOps adoption in Goalixa.
 
 ## Available Posts

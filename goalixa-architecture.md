@@ -1,5 +1,8 @@
 # Goalixa Architecture
 
+> **Author:** Amirreza Rezaie
+
+
 This page explains the Goalixa system at a high level for users and readers.
 
 ## System Overview

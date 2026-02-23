@@ -1,6 +1,6 @@
 # Monitoring Stack Setup: Prometheus, Grafana, and Alertmanager
 
-> **Published:** 2026-02-20 | **Section:** Reliability & Operations
+> **Published:** 2026-02-20 | **Section:** Reliability & Operations | **Author:** Amirreza Rezaie
 
 I set up a monitoring stack to observe Goalixa at three levels:
 

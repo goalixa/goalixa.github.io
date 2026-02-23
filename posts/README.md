@@ -1,5 +1,8 @@
 # Posts
 
+> **Author:** Amirreza Rezaie
+
+
 Use this folder for all blog posts.
 
 ## GitOps
@@ -10,6 +13,7 @@ Use this folder for all blog posts.
 
 ## Available Posts
 
+- [Migrate to PWA Success fully](/posts/migrate-to-pwa-success-fully.md)
 - [Why Most Goalixa Code Is AI-Developed](/posts/why-goalixa-is-ai-developed.md)
 - [Future Plan: Event-Driven Architecture with NATS](/posts/event-driven-architecture-nats.md)
 - [Monitoring Stack Setup: Prometheus, Grafana, and Alertmanager](/posts/monitoring-stack-prometheus-grafana-alertmanager.md)
