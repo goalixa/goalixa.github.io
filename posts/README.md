@@ -29,6 +29,11 @@ Use this folder for all blog posts.
 - [Incident Report: PWA Path Change Caused High Latency](/posts/incident-reports/pwa-path-latency-incident.md)
 - [Monitoring Stack Setup: Prometheus, Grafana, and Alertmanager](/posts/monitoring-stack-prometheus-grafana-alertmanager.md)
 
+## Software Engineering
+
+- [Software Engineering Section](/posts/software-engineering/README.md)
+- [Latency Taught Me Better Software Engineering](/posts/software-engineering/latency-taught-me-better-software-engineering.md)
+
 ## GitOps
 
 - [GitOps Section](/posts/gitops/README.md)

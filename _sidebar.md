@@ -17,6 +17,9 @@
     * [SRE Overview](/posts/sre/README.md)
     * [PWA Path Change: High Latency](/posts/incident-reports/pwa-path-latency-incident.md)
     * [Monitoring Stack Setup](/posts/monitoring-stack-prometheus-grafana-alertmanager.md)
+  * Software Engineering
+    * [Software Engineering Overview](/posts/software-engineering/README.md)
+    * [Latency Taught Me Better Software Engineering](/posts/software-engineering/latency-taught-me-better-software-engineering.md)
   * GitOps
     * [GitOps Overview](/posts/gitops/README.md)
     * [ArgoCD Setup: First Step](/posts/gitops/argocd-first-step.md)
