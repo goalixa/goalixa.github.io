@@ -20,6 +20,9 @@
   * Software Engineering
     * [Software Engineering Overview](/posts/software-engineering/README.md)
     * [Latency Taught Me Better Software Engineering](/posts/software-engineering/latency-taught-me-better-software-engineering.md)
+  * Goalixa Story
+    * [Goalixa Story Overview](/posts/goalixa-story/README.md)
+    * [Survive in War Time](/posts/goalixa-story/survive-in-war-time.md)
   * GitOps
     * [GitOps Overview](/posts/gitops/README.md)
     * [ArgoCD Setup: First Step](/posts/gitops/argocd-first-step.md)

@@ -34,6 +34,11 @@ Use this folder for all blog posts.
 - [Software Engineering Section](/posts/software-engineering/README.md)
 - [Latency Taught Me Better Software Engineering](/posts/software-engineering/latency-taught-me-better-software-engineering.md)
 
+## Goalixa Story
+
+- [Goalixa Story Section](/posts/goalixa-story/README.md)
+- [Survive in War Time](/posts/goalixa-story/survive-in-war-time.md)
+
 ## GitOps
 
 - [GitOps Section](/posts/gitops/README.md)
