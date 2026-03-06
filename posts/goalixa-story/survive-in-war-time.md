@@ -8,6 +8,12 @@ Internet access is heavily restricted. Most people have no stable connection, an
 
 After many days, I was finally able to get temporary internet access again.
 
+## Internet Cut Evidence (NetBlocks)
+
+<img src="../../assets/screenshots/1fe4d6430c436255.png" alt="NetBlocks internet disruption chart for Iran" width="720" style="max-width: 100%; height: auto;" />
+
+_Source: NetBlocks screenshot showing internet disruption conditions._
+
 ## How This Affects Goalixa
 
 Goalixa servers are outside Iran.  
