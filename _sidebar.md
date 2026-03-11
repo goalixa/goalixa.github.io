@@ -13,6 +13,7 @@
     * [DevOps Overview](/posts/devops/README.md)
     * [Monitoring Stack Setup](/posts/monitoring-stack-prometheus-grafana-alertmanager.md)
     * [API Gateway and One PWA](/posts/api-gateway-pwa-microservices.md)
+    * [Why Staging with Kustomize](/posts/devops/why-staging-with-kustomize.md)
   * SRE
     * [SRE Overview](/posts/sre/README.md)
     * [PWA Path Change: High Latency](/posts/incident-reports/pwa-path-latency-incident.md)
@@ -22,6 +23,7 @@
     * [Latency Taught Me Better Software Engineering](/posts/software-engineering/latency-taught-me-better-software-engineering.md)
   * Goalixa Story
     * [Goalixa Story Overview](/posts/goalixa-story/README.md)
+    * [[Template] Goalixa Product Introduction](/posts/goalixa-story/goalixa-introduction-template.md)
     * [Survive in War Time](/posts/goalixa-story/survive-in-war-time.md)
   * GitOps
     * [GitOps Overview](/posts/gitops/README.md)

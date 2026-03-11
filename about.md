@@ -1,8 +1,5 @@
 # About Me
 
-> **Author:** Amirreza Rezaie
-
-
 <div class="profile-card">
   <img
     src="/assets/amirreza_rezaie.jpg"
@@ -12,28 +9,37 @@
   />
   <div>
     <h2>Hi, I am Amirreza Rezaie</h2>
-    <p>Founder of Goalixa.</p>
+    <p>SRE at Snapp and creator of Goalixa</p>
   </div>
 </div>
 
-## About
+## About Me
 
-I build Goalixa and share product updates, lessons learned, and practical ideas around productivity and product development.
+I have been working in the SRE field at Snapp for around 3 years.  
+During this time, I have gained strong hands-on experience with large-scale and complex systems, and learned deeply from real reliability, operations, and infrastructure challenges.
+
+## Experience and Technologies
+
+- OpenShift clusters
+- Ceph for cluster storage
+- Development with Python and Go
+- Monitoring and observability systems:
+  Grafana, ELK Stack, Prometheus, Thanos
+- Complex alerting systems
+- Message queue technologies:
+  RabbitMQ, Kafka, NATS
+
+Besides SRE, I am highly interested in DevOps and I am actively growing in this direction.
 
 ## Goalixa Story
 
-Goalixa started as a personal idea for better time management. It began as a local project and grew into a public product that anyone can use for free.
+I started Goalixa to get deeper experience with different technologies.  
+At first, it was only a local idea and project, but later I decided to move it toward a real production-ready service.
 
-## What You Will Find Here
+## How I Approach Goalixa Growth
 
-- Product announcements
-- Feature updates
-- Usage guides
-- Founder notes
-
-## Mission
-
-Build a simple and useful product that helps people plan better, stay focused, and manage their time with less friction.
+I like to use advanced tools and experiment with more complex architectures while building Goalixa.  
+I know this can sometimes be overengineering, but my main goal is learning: gaining practical experience and growing in platform engineering and DevOps.
 
 ## Links
 
