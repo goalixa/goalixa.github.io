@@ -24,6 +24,7 @@
   * Goalixa Story
     * [Goalixa Story Overview](/posts/goalixa-story/README.md)
     * [[Template] Goalixa Product Introduction](/posts/goalixa-story/goalixa-introduction-template.md)
+    * [Learning in Wartime: Preparing Infra](/posts/goalixa-story/learning-in-wartime-kubernetes-plan.md)
     * [Survive in War Time](/posts/goalixa-story/survive-in-war-time.md)
   * GitOps
     * [GitOps Overview](/posts/gitops/README.md)
