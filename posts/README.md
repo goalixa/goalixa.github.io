@@ -34,6 +34,7 @@ Use this folder for all blog posts.
 
 - [Software Engineering Section](/posts/software-engineering/README.md)
 - [Latency Taught Me Better Software Engineering](/posts/software-engineering/latency-taught-me-better-software-engineering.md)
+- [Using Claude to Speed Up Goalixa Development](/posts/software-engineering/using-claude-for-goalixa.md)
 
 ## Goalixa Story
 

@@ -21,6 +21,7 @@
   * Software Engineering
     * [Software Engineering Overview](/posts/software-engineering/README.md)
     * [Latency Taught Me Better Software Engineering](/posts/software-engineering/latency-taught-me-better-software-engineering.md)
+    * [Using Claude to Speed Up Development](/posts/software-engineering/using-claude-for-goalixa.md)
   * Goalixa Story
     * [Goalixa Story Overview](/posts/goalixa-story/README.md)
     * [[Template] Goalixa Product Introduction](/posts/goalixa-story/goalixa-introduction-template.md)
