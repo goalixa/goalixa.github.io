@@ -26,9 +26,10 @@
 
         function getStoredPreference() {
           try {
-            return localStorage.getItem(storageKey) || "auto";
+            var stored = localStorage.getItem(storageKey);
+            return stored ? stored : "light";
           } catch (e) {
-            return "auto";
+            return "light";
           }
         }
 

@@ -1,21 +1,21 @@
 :root {
-  --bg: #f6f8fc;
+  --bg: #f8fafc;
   --bg-elev: #ffffff;
-  --text: #0f172a;
-  --muted: #475569;
-  --heading: #0b1220;
-  --border: #dbe3ef;
-  --link: #1d4ed8;
-  --link-hover: #1e40af;
+  --text: #1e293b;
+  --muted: #64748b;
+  --heading: #0f172a;
+  --border: #e2e8f0;
+  --link: #2563eb;
+  --link-hover: #1d4ed8;
   --sidebar-bg: #ffffff;
-  --sidebar-text: #334155;
-  --sidebar-active: #1d4ed8;
+  --sidebar-text: #475569;
+  --sidebar-active: #2563eb;
   --code-bg: #f1f5f9;
-  --code-border: #d8e2ee;
-  --quote-bg: #f8fbff;
+  --code-border: #e2e8f0;
+  --quote-bg: #eff6ff;
   --quote-border: #bfdbfe;
   --toggle-bg: #ffffff;
-  --toggle-text: #0f172a;
+  --toggle-text: #1e293b;
   --toggle-border: #cbd5e1;
   --card-bg: #ffffff;
   --card-hover-bg: #f8fafc;
@@ -26,28 +26,28 @@
 }
 
 html[data-theme="dark"] {
-  --bg: #0a1220;
-  --bg-elev: #0f172a;
-  --text: #e5e7eb;
-  --muted: #9ca3af;
-  --heading: #f3f4f6;
-  --border: #1f2a3d;
-  --link: #7ab5ff;
-  --link-hover: #a5cbff;
-  --sidebar-bg: #0b1324;
+  --bg: #0f172a;
+  --bg-elev: #1e293b;
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --heading: #ffffff;
+  --border: #334155;
+  --link: #60a5fa;
+  --link-hover: #93c5fd;
+  --sidebar-bg: #1e293b;
   --sidebar-text: #cbd5e1;
-  --sidebar-active: #93c5fd;
-  --code-bg: #0b1324;
-  --code-border: #243247;
-  --quote-bg: #0c1527;
-  --quote-border: #325b88;
-  --toggle-bg: #111d34;
-  --toggle-text: #e5e7eb;
-  --toggle-border: #334155;
-  --card-bg: #0f172a;
-  --card-hover-bg: #1a2744;
-  --table-stripe: #131c2e;
-  --table-hover: #1a2744;
+  --sidebar-active: #60a5fa;
+  --code-bg: #1e293b;
+  --code-border: #334155;
+  --quote-bg: #1e3a5f;
+  --quote-border: #3b82f6;
+  --toggle-bg: #1e293b;
+  --toggle-text: #f1f5f9;
+  --toggle-border: #475569;
+  --card-bg: #1e293b;
+  --card-hover-bg: #334155;
+  --table-stripe: #1e293b;
+  --table-hover: #334155;
   --accent-bg: #1e3a5f;
   --accent-text: #93c5fd;
 }
@@ -58,12 +58,23 @@ html {
 
 body {
   background:
-    radial-gradient(circle at 8% 4%, rgba(29, 78, 216, 0.08), transparent 30%),
-    radial-gradient(circle at 92% 7%, rgba(14, 116, 144, 0.08), transparent 25%),
+    radial-gradient(circle at 8% 4%, rgba(37, 99, 235, 0.06), transparent 30%),
+    radial-gradient(circle at 92% 7%, rgba(14, 165, 233, 0.06), transparent 25%),
     var(--bg);
   color: var(--text);
   transition: background-color 0.2s ease, color 0.2s ease;
-  line-height: 1.7;
+  line-height: 1.75;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html[data-theme="dark"] body {
+  background:
+    radial-gradient(circle at 8% 4%, rgba(59, 130, 246, 0.08), transparent 30%),
+    radial-gradient(circle at 92% 7%, rgba(6, 182, 212, 0.06), transparent 25%),
+    var(--bg);
 }
 
 a {
@@ -83,36 +94,39 @@ a:hover {
 /* Heading Hierarchy */
 .markdown-section h1 {
   color: var(--heading);
-  font-size: 2.25rem;
-  font-weight: 700;
+  font-size: 2.5rem;
+  font-weight: 800;
   margin-top: 1.5rem;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--border);
   line-height: 1.2;
+  letter-spacing: -0.02em;
 }
 
 .markdown-section h2 {
   color: var(--heading);
-  font-size: 1.75rem;
-  font-weight: 650;
+  font-size: 1.875rem;
+  font-weight: 700;
   margin-top: 2rem;
   margin-bottom: 0.85rem;
   line-height: 1.3;
+  letter-spacing: -0.01em;
 }
 
 .markdown-section h3 {
   color: var(--heading);
-  font-size: 1.3rem;
-  font-weight: 600;
+  font-size: 1.5rem;
+  font-weight: 650;
   margin-top: 1.5rem;
   margin-bottom: 0.65rem;
   line-height: 1.4;
+  letter-spacing: -0.005em;
 }
 
 .markdown-section h4 {
   color: var(--heading);
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   font-weight: 600;
   margin-top: 1.25rem;
   margin-bottom: 0.5rem;
@@ -160,25 +174,30 @@ a:hover {
   background: var(--code-bg);
   color: var(--text);
   border: 1px solid var(--code-border);
-  padding: 0.15em 0.4em;
-  border-radius: 4px;
-  font-size: 0.9em;
+  padding: 0.2em 0.45em;
+  border-radius: 5px;
+  font-size: 0.875em;
+  font-family: "JetBrains Mono", "Fira Code", Consolas, Monaco, "Courier New", monospace;
+  font-variant-ligatures: none;
 }
 
 .markdown-section pre {
   background: var(--code-bg);
   border: 1px solid var(--code-border);
   border-radius: 12px;
-  padding: 1rem;
-  margin: 1.25rem 0;
+  padding: 1.125rem;
+  margin: 1.5rem 0;
   overflow-x: auto;
+  line-height: 1.6;
 }
 
 .markdown-section pre code {
   background: transparent;
   border: none;
   padding: 0;
-  font-size: 0.9em;
+  font-size: 0.875em;
+  font-family: "JetBrains Mono", "Fira Code", Consolas, Monaco, "Courier New", monospace;
+  font-variant-ligatures: none;
 }
 
 /* Enhanced Tables */
@@ -188,7 +207,11 @@ a:hover {
   margin: 1.5rem 0;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+html[data-theme="dark"] .markdown-section table {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 }
 
 .markdown-section table td,
@@ -264,7 +287,11 @@ a:hover {
 
 .search input:focus {
   border-color: var(--sidebar-active);
-  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+html[data-theme="dark"] .search input:focus {
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
 }
 
 .search .clear-button {
@@ -295,6 +322,10 @@ a:hover {
 .profile-card:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   border-color: var(--link);
+}
+
+html[data-theme="dark"] .profile-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .profile-card h2 {
@@ -381,6 +412,10 @@ a:hover {
   background: var(--card-hover-bg);
 }
 
+html[data-theme="dark"] .card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
 .card h3 {
   margin-top: 0;
   color: var(--heading);
@@ -457,12 +492,21 @@ a:hover {
   border-color: var(--link);
 }
 
+html[data-theme="dark"] .filter-btn.active {
+  background: #60a5fa;
+  border-color: #60a5fa;
+}
+
 .timeline-milestone {
   margin: 32px 0 24px;
   padding: 20px;
   background: linear-gradient(135deg, var(--accent-bg) 0%, rgba(219, 234, 254, 0.3) 100%);
   border-left: 4px solid var(--link);
   border-radius: 8px;
+}
+
+html[data-theme="dark"] .timeline-milestone {
+  background: linear-gradient(135deg, rgba(30, 58, 95, 0.6) 0%, rgba(30, 58, 95, 0.3) 100%);
 }
 
 .timeline-milestone strong {
@@ -482,9 +526,17 @@ a:hover {
   border-left-color: #ef4444;
 }
 
+html[data-theme="dark"] .timeline-milestone.incident-milestone {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(239, 68, 68, 0.08) 100%);
+}
+
 .timeline-milestone.story-milestone {
   background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
   border-left-color: #f59e0b;
+}
+
+html[data-theme="dark"] .timeline-milestone.story-milestone {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(245, 158, 11, 0.08) 100%);
 }
 
 .timeline-item {
@@ -516,6 +568,10 @@ a:hover {
   border-color: var(--link);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   transform: translateX(4px);
+}
+
+html[data-theme="dark"] .timeline-content:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .timeline-link {
@@ -640,10 +696,14 @@ a:hover {
 /* Homepage Hero Section */
 .homepage-hero {
   padding: 48px;
-  background: linear-gradient(135deg, var(--link) 0%, #0891b2 100%);
+  background: linear-gradient(135deg, #2563eb 0%, #0891b2 100%);
   border-radius: 16px;
   color: white;
   margin-bottom: 40px;
+}
+
+html[data-theme="dark"] .homepage-hero {
+  background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
 }
 
 .homepage-hero h2 {
@@ -668,6 +728,10 @@ a:hover {
 .featured-post:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+}
+
+html[data-theme="dark"] .featured-post:hover {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
 }
 
 .featured-post h3 {
@@ -697,6 +761,10 @@ a:hover {
   transform: translateX(8px);
   border-color: var(--link);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+html[data-theme="dark"] .post-item-enhanced:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .post-item-enhanced a {
