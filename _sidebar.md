@@ -1,40 +1,44 @@
 * [Home](/README.md)
 * [Goalixa Architecture](/goalixa-architecture.md)
+* [Timeline](/timeline.md)
+* [Journey](/journey.md)
 * Blog
-  * [Posts](/posts/README.md)
+  * [Welcome to the Blog](/posts/welcome-to-goalixa-blog.md) ⭐
+  * [All Posts](/posts/README.md)
+  * ---
+  * Latest Posts
+    * [Survive in War Time](/posts/goalixa-story/survive-in-war-time.md)
+    * [Using Claude to Speed Up Development](/posts/software-engineering/using-claude-for-goalixa.md)
+    * [Latency Taught Me Better Engineering](/posts/software-engineering/latency-taught-me-better-software-engineering.md)
+    * [PWA Path Incident Report](/posts/incident-reports/pwa-path-latency-incident.md)
+    * [Why Goalixa Needs Staging](/posts/devops/why-staging-with-kustomize.md)
+  * ---
+  * Goalixa Story
+    * [Story Overview](/posts/goalixa-story/README.md)
+    * [Survive in War Time](/posts/goalixa-story/survive-in-war-time.md) ⭐
+    * [Learning in Wartime: Preparing Infra](/posts/goalixa-story/learning-in-wartime-kubernetes-plan.md)
+    * [[Template] Product Introduction](/posts/goalixa-story/goalixa-introduction-template.md)
+  * Software Engineering
+    * [Engineering Overview](/posts/software-engineering/README.md)
+    * [Latency Taught Me Better Engineering](/posts/software-engineering/latency-taught-me-better-software-engineering.md) ⭐
+    * [Using Claude for Goalixa](/posts/software-engineering/using-claude-for-goalixa.md)
+    * [Why Goalixa Is AI-Developed](/posts/why-goalixa-is-ai-developed.md)
   * Incident Reports
-    * [Incident Reports Overview](/posts/incident-reports/README.md)
-    * [PWA Path Change: High Latency](/posts/incident-reports/pwa-path-latency-incident.md)
-  * Issues and Bugs
-    * [Issues and Bugs Overview](/posts/issues-and-bugs/README.md)
+    * [Incidents Overview](/posts/incident-reports/README.md)
     * [PWA Path Change: High Latency](/posts/incident-reports/pwa-path-latency-incident.md)
     * [Removing UI from Legacy Auth](/posts/removing-ui-from-legacy-auth-redirection.md)
-  * DevOps
+  * DevOps (includes SRE)
     * [DevOps Overview](/posts/devops/README.md)
     * [Monitoring Stack Setup](/posts/monitoring-stack-prometheus-grafana-alertmanager.md)
-    * [API Gateway and One PWA](/posts/api-gateway-pwa-microservices.md)
     * [Why Staging with Kustomize](/posts/devops/why-staging-with-kustomize.md)
-  * SRE
-    * [SRE Overview](/posts/sre/README.md)
-    * [PWA Path Change: High Latency](/posts/incident-reports/pwa-path-latency-incident.md)
-    * [Monitoring Stack Setup](/posts/monitoring-stack-prometheus-grafana-alertmanager.md)
-  * Software Engineering
-    * [Software Engineering Overview](/posts/software-engineering/README.md)
-    * [Latency Taught Me Better Software Engineering](/posts/software-engineering/latency-taught-me-better-software-engineering.md)
-    * [Using Claude to Speed Up Development](/posts/software-engineering/using-claude-for-goalixa.md)
-  * Goalixa Story
-    * [Goalixa Story Overview](/posts/goalixa-story/README.md)
-    * [[Template] Goalixa Product Introduction](/posts/goalixa-story/goalixa-introduction-template.md)
-    * [Learning in Wartime: Preparing Infra](/posts/goalixa-story/learning-in-wartime-kubernetes-plan.md)
-    * [Survive in War Time](/posts/goalixa-story/survive-in-war-time.md)
   * GitOps
     * [GitOps Overview](/posts/gitops/README.md)
-    * [ArgoCD Setup: First Step](/posts/gitops/argocd-first-step.md)
-    * [ArgoCD App and Sync Strategy](/posts/gitops/argocd-applications-sync-strategy.md)
+    * [ArgoCD Setup: First Step (Part 1)](/posts/gitops/argocd-first-step.md)
+    * [ArgoCD App and Sync Strategy (Part 2)](/posts/gitops/argocd-applications-sync-strategy.md)
   * Architecture and Platform
-    * [Migrate to PWA Success fully](/posts/migrate-to-pwa-success-fully.md)
-    * [Why Goalixa Is AI-Developed](/posts/why-goalixa-is-ai-developed.md)
-    * [Future Plan: EDA with NATS](/posts/event-driven-architecture-nats.md)
+    * [Migrate to PWA Successfully](/posts/migrate-to-pwa-success-fully.md) 🎉
+    * [BFF in Goalixa](/posts/bff-goalixa.md) ⭐
+    * [API Gateway and One PWA](/posts/api-gateway-pwa-microservices.md)
     * [Migrate Monolithic to Microservice](/posts/migrate-monolithic-to-microservice.md)
-    * [BFF in Goalixa](/posts/bff-goalixa.md)
+    * [Future Plan: EDA with NATS](/posts/event-driven-architecture-nats.md)
 * [About Me](/about.md)

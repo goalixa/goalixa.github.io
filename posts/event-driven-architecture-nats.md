@@ -1,3 +1,13 @@
+---
+title: Future Plan: Event-Driven Architecture with NATS
+date: 2026-02-20
+category: Architecture and Platform
+tags: [event-driven, architecture, nats, future-planning, messaging, design]
+author: Amirreza Rezaie
+read_time: 4 min
+featured: false
+---
+
 # Future Plan: Event-Driven Architecture with NATS
 
 > **Published:** 2026-02-20 | **Section:** Architecture & Platform | **Author:** Amirreza Rezaie

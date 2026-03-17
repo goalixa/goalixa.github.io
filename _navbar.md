@@ -1,4 +1,6 @@
 * [Home](/)
 * [Architecture](/goalixa-architecture.md)
+* [Timeline](/timeline.md)
+* [Journey](/journey.md)
 * [Posts](/posts/README.md)
 * [About Me](/about.md)

@@ -1,3 +1,15 @@
+---
+title: ArgoCD Applications and Sync Strategy in Goalixa
+date: 2026-02-20
+category: GitOps
+tags: [argocd, gitops, kubernetes, deployment, sync-strategy, applications]
+author: Amirreza Rezaie
+read_time: 4 min
+featured: false
+series: "ArgoCD Journey"
+series_part: 2
+---
+
 # ArgoCD Applications and Sync Strategy in Goalixa
 
 > **Published:** 2026-02-20 | **Section:** GitOps | **Author:** Amirreza Rezaie

@@ -1,3 +1,13 @@
+---
+title: Why Goalixa Needs a Staging Environment (Kustomize Plan)
+date: 2026-03-11
+category: DevOps
+tags: [staging, kustomize, kubernetes, deployment, devops, infrastructure]
+author: Amirreza Rezaie
+read_time: 5 min
+featured: false
+---
+
 # Why Goalixa Needs a Staging Environment (Kustomize Plan)
 
 > **Published:** 2026-03-11 | **Section:** DevOps | **Author:** Amirreza Rezaie

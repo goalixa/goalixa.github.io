@@ -1,3 +1,13 @@
+---
+title: Incident Report: PWA Path Change Caused High Latency
+date: 2026-02-25
+category: Incident Reports
+tags: [incident, latency, pwa, api-gateway, sre, performance]
+author: Amirreza Rezaie
+read_time: 4 min
+featured: false
+---
+
 # Incident Report: PWA Path Change Caused High Latency
 
 > **Published:** 2026-02-25 | **Section:** Incident Report / SRE | **Author:** Amirreza Rezaie

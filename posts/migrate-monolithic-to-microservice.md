@@ -1,3 +1,13 @@
+---
+title: Migrate Monolithic to Microservice
+date: 2026-02-20
+category: Architecture and Platform
+tags: [microservices, architecture, api-gateway, bff, migration, design]
+author: Amirreza Rezaie
+read_time: 5 min
+featured: true
+---
+
 # Migrate Monolithic to Microservice
 
 > **Published:** 2026-02-20 | **Section:** Architecture & Platform | **Author:** Amirreza Rezaie

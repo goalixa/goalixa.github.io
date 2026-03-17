@@ -1,3 +1,13 @@
+---
+title: "[Template] Goalixa Product Introduction (Non-Technical)"
+date: 2026-01-01
+category: Goalixa Story
+tags: [template, draft, introduction]
+author: Amirreza Rezaie
+read_time: 2 min
+featured: false
+---
+
 # [Template] Goalixa Product Introduction (Non-Technical)
 
 > **Published:** YYYY-MM-DD | **Section:** Goalixa Story | **Author:** Amirreza Rezaie

@@ -1,3 +1,13 @@
+---
+title: Removing UI from Legacy Services: Rebuilding Auth Redirect and Token Flow
+date: 2026-02-23
+category: Architecture and Platform
+tags: [authentication, auth, pwa, migration, tokens, security, api-gateway]
+author: Amirreza Rezaie
+read_time: 5 min
+featured: false
+---
+
 # Removing UI from Legacy Services: Rebuilding Auth Redirect and Token Flow
 
 > **Published:** 2026-02-23 | **Section:** Architecture & Platform | **Author:** Amirreza Rezaie

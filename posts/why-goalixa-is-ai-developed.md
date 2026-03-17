@@ -1,3 +1,13 @@
+---
+title: Why Most Goalixa Code Is AI-Developed
+date: 2026-02-20
+category: Software Engineering
+tags: [ai, development, philosophy, engineering, mindset]
+author: Amirreza Rezaie
+read_time: 4 min
+featured: false
+---
+
 # Why Most Goalixa Code Is AI-Developed
 
 > **Published:** 2026-02-20 | **Section:** Engineering Mindset | **Author:** Amirreza Rezaie

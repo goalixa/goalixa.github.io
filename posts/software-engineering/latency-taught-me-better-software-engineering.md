@@ -1,3 +1,13 @@
+---
+title: Latency Taught Me Better Software Engineering
+date: 2026-02-26
+category: Software Engineering
+tags: [latency, performance, software-engineering, api-gateway, microservices, best-practices]
+author: Amirreza Rezaie
+read_time: 5 min
+featured: true
+---
+
 # Latency Taught Me Better Software Engineering
 
 > **Published:** 2026-02-26 | **Section:** Software Engineering | **Author:** Amirreza Rezaie
