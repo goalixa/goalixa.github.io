@@ -43,6 +43,11 @@ Use this folder for all blog posts.
 - [Learning in Wartime: Preparing Goalixa Infrastructure](/posts/goalixa-story/learning-in-wartime-kubernetes-plan.md)
 - [Survive in War Time](/posts/goalixa-story/survive-in-war-time.md)
 
+## AI & Automation
+
+- [AI & Automation Section](/posts/ai/README.md)
+- [Syntra: My AI DevOps Teammate](/posts/ai/syntra-ai-devops-teammate.md) ⭐
+
 ## GitOps
 
 - [GitOps Section](/posts/gitops/README.md)

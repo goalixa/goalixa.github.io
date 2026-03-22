@@ -7,6 +7,7 @@
   * [All Posts](/posts/README.md)
   * ---
   * Latest Posts
+    * [Syntra: My AI DevOps Teammate](/posts/ai/syntra-ai-devops-teammate.md) 🆕
     * [Survive in War Time](/posts/goalixa-story/survive-in-war-time.md)
     * [Using Claude to Speed Up Development](/posts/software-engineering/using-claude-for-goalixa.md)
     * [Latency Taught Me Better Engineering](/posts/software-engineering/latency-taught-me-better-software-engineering.md)
@@ -35,6 +36,9 @@
     * [GitOps Overview](/posts/gitops/README.md)
     * [ArgoCD Setup: First Step (Part 1)](/posts/gitops/argocd-first-step.md)
     * [ArgoCD App and Sync Strategy (Part 2)](/posts/gitops/argocd-applications-sync-strategy.md)
+  * AI & Automation
+    * [AI Overview](/posts/ai/README.md)
+    * [Syntra: My AI DevOps Teammate](/posts/ai/syntra-ai-devops-teammate.md) ⭐
   * Architecture and Platform
     * [Migrate to PWA Successfully](/posts/migrate-to-pwa-success-fully.md) 🎉
     * [BFF in Goalixa](/posts/bff-goalixa.md) ⭐
