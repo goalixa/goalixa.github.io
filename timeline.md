@@ -155,7 +155,7 @@
 <div class="timeline-item" data-category="engineering">
   <div class="timeline-date">Feb 26</div>
   <div class="timeline-content">
-    <a href="#/posts/software-engineering/latency-taught-me-better-software-engineering.md" class="timeline-link">Latency Taught Me Better Software Engineering ⭐</a>
+    <a href="#/posts/software-engineering/latency-taught-me-better-software-engineering.md" class="timeline-link">Latency Taught Me Better Software Engineering   </a>
     <div class="timeline-meta">
       <span class="tag-pill engineering">Software Engineering</span>
       <span class="read-time-badge">🕐 5 min</span>
@@ -176,7 +176,7 @@
 <div class="timeline-item" data-category="story">
   <div class="timeline-date">Mar 6</div>
   <div class="timeline-content">
-    <a href="#/posts/goalixa-story/survive-in-war-time.md" class="timeline-link">Survive in War Time ⭐</a>
+    <a href="#/posts/goalixa-story/survive-in-war-time.md" class="timeline-link">Survive in War Time   </a>
     <div class="timeline-meta">
       <span class="tag-pill story">Goalixa Story</span>
       <span class="read-time-badge">🕐 3 min</span>

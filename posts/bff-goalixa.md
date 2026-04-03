@@ -1,13 +1,3 @@
----
-title: BFF in Goalixa: How PWA and Services Stay Clean and Scalable
-date: 2026-02-20
-category: Architecture and Platform
-tags: [bff, api-gateway, architecture, microservices, pwa, design-patterns]
-author: Amirreza Rezaie
-read_time: 5 min
-featured: true
----
-
 # BFF in Goalixa: How PWA and Services Stay Clean and Scalable
 
 > **Published:** 2026-02-20 | **Section:** Architecture & Platform | **Author:** Amirreza Rezaie

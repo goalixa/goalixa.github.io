@@ -4,7 +4,7 @@ Collection of posts about AI-powered development, automation, and intelligent sy
 
 ## Posts
 
-- [Syntra: My AI DevOps Teammate](./syntra-ai-devops-teammate.md) ⭐
+- [Syntra Architecture: Deep Dive into AI DevOps Orchestration](./syntra-architecture.md)     
 
 ## Topics Covered
 

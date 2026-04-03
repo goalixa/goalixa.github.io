@@ -1,13 +1,3 @@
----
-title: Welcome to the Goalixa Blog
-date: 2026-03-16
-category: Software Engineering
-tags: [welcome, introduction, goalixa, overview]
-author: Amirreza Rezaie
-read_time: 6 min
-featured: true
----
-
 # Welcome to the Goalixa Blog
 
 > **Published:** 2026-03-16 | **Section:** Software Engineering | **Author:** Amirreza Rezaie
@@ -100,7 +90,7 @@ Goalixa is built with modern, cloud-native technologies:
 
 Here are some key posts to get you started:
 
-### Featured Posts ⭐
+### Featured Posts   
 
 1. **[Latency Taught Me Better Software Engineering](#/posts/software-engineering/latency-taught-me-better-software-engineering.md)**
    How moving from dashboard metrics to user-perceived latency changed my engineering mindset.

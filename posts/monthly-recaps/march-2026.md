@@ -1,13 +1,3 @@
----
-title: March 2026: Wartime Challenges & Staging Environment Planning
-date: 2026-03-16
-category: DevOps
-tags: [monthly-recap, march-2026, staging, kustomize, challenges, iran]
-author: Amirreza Rezaie
-read_time: 4 min
-featured: false
----
-
 # March 2026: Wartime Challenges & Staging Environment Planning
 
 March 2026 presented unique challenges - building Goalixa during wartime in Iran with severe internet restrictions. Despite connectivity issues, significant progress was made in infrastructure planning and development workflow improvements.
@@ -19,7 +9,7 @@ March 2026 presented unique challenges - building Goalixa during wartime in Iran
 The most significant challenge in March was the internet situation in Iran. Most people had no stable connection, and only a small number could connect using expensive VPN services.
 
 **Personal Posts:**
-- [Survive in War Time](#/posts/goalixa-story/survive-in-war-time.md) ⭐ (March 6)
+- [Survive in War Time](#/posts/goalixa-story/survive-in-war-time.md)    (March 6)
 - [Learning in Wartime: Preparing Infrastructure](#/posts/goalixa-story/learning-in-wartime-kubernetes-plan.md) (March 11)
 
 **Challenges Faced:**
@@ -108,7 +98,7 @@ Each microservice now has a CLAUDE.md with:
 
 While the latency incident happened in late February, March brought deeper reflection on the engineering lessons.
 
-**Key Post:** [Latency Taught Me Better Software Engineering](#/posts/software-engineering/latency-taught-me-better-software-engineering.md) ⭐
+**Key Post:** [Latency Taught Me Better Software Engineering](#/posts/software-engineering/latency-taught-me-better-software-engineering.md)   
 
 **Engineering Mindset Shift:**
 1. Design for the full request path (not just one service)

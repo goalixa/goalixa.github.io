@@ -104,7 +104,7 @@ Successfully implemented a comprehensive redesign of the Goalixa engineering blo
 - Removed "SRE" section (merged into DevOps)
 - Renamed to "DevOps (includes SRE)" for clarity
 - Organized by category with visual separators
-- Added featured indicators (⭐) for key posts
+- Added featured indicators (  ) for key posts
 
 ### Phase 5: Content Enhancements ✅
 

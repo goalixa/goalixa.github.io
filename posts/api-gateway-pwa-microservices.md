@@ -1,13 +1,3 @@
----
-title: From Fragmented UIs to One PWA: Why API Gateway Is Step One for Real Microservices
-date: 2026-02-19
-category: Architecture and Platform
-tags: [api-gateway, pwa, microservices, architecture, migration, design]
-author: Amirreza Rezaie
-read_time: 6 min
-featured: true
----
-
 # From Fragmented UIs to One PWA: Why API Gateway Is Step One for Real Microservices
 
 > **Published:** 2026-02-19 | **Section:** Architecture & Platform | **Author:** Amirreza Rezaie

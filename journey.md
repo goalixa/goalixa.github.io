@@ -94,7 +94,7 @@ PWA (app.goalixa.com) → API Gateway → Backend Services
 **Time Period**: February 20, 2026
 
 **Key Posts in this Chapter**:
-- [Migrate to PWA Successfully](#/posts/migrate-to-pwa-success-fully.md) 🎉 - The milestone celebration post
+- [Migrate to PWA Successfully](#/posts/migrate-to-pwa-success-fully.md)   - The milestone celebration post
 - [BFF in Goalixa: How PWA and Services Stay Clean](#/posts/bff-goalixa.md) - Backend For Frontend pattern explanation
 - [Removing UI from Legacy Services](#/posts/removing-ui-from-legacy-auth-redirection.md) - Cleaning up auth flows
 
@@ -173,7 +173,7 @@ An incident on February 24-25, 2026, made this painfully clear. A PWA path/routi
 
 **Key Posts in this Chapter**:
 - [Incident Report: PWA Path Change Caused High Latency](#/posts/incident-reports/pwa-path-latency-incident.md) ⚠️ - Full incident timeline and impact
-- [Latency Taught Me Better Software Engineering](#/posts/software-engineering/latency-taught-me-better-software-engineering.md) ⭐ - The engineering mindset shift
+- [Latency Taught Me Better Software Engineering](#/posts/software-engineering/latency-taught-me-better-software-engineering.md)    - The engineering mindset shift
 
 **Lessons Learned**:
 - Performance is a product feature, not just an SRE metric

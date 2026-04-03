@@ -1,13 +1,3 @@
----
-title: Using Claude to Speed Up Goalixa Development
-date: 2026-03-12
-category: Software Engineering
-tags: [ai, claude, development, workflow, productivity, tooling]
-author: Amirreza Rezaie
-read_time: 5 min
-featured: false
----
-
 # Using Claude to Speed Up Goalixa Development
 
 > **Published:** 2026-03-12 | **Section:** Software Engineering | **Author:** Amirreza Rezaie

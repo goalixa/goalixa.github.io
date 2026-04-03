@@ -1,13 +1,3 @@
----
-title: February 2026: Microservices Migration & GitOps Foundation
-date: 2026-02-28
-category: DevOps
-tags: [monthly-recap, february-2026, microservices, gitops, argocd, monitoring]
-author: Amirreza Rezaie
-read_time: 4 min
-featured: false
----
-
 # February 2026 Recap: Microservices Migration & GitOps Foundation
 
 February 2026 was a transformative month for Goalixa. This month marked the completion of the major migration to a microservices architecture with PWA and API Gateway, along with establishing the foundation for GitOps operations.
@@ -92,7 +82,7 @@ On February 25, a PWA path/routing change caused high latency, providing valuabl
 
 The incident led to important realizations about software engineering practices.
 
-**Key Post:** [Latency Taught Me Better Software Engineering](#/posts/software-engineering/latency-taught-me-better-software-engineering.md) ⭐
+**Key Post:** [Latency Taught Me Better Software Engineering](#/posts/software-engineering/latency-taught-me-better-software-engineering.md)   
 
 **Lessons:**
 - Performance is a product feature, not just SRE metric

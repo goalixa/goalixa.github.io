@@ -48,7 +48,7 @@ Related Posts:
 **Topics:** Latency optimization, performance engineering, network optimization
 
 Related Posts:
-- [Latency Taught Me Better Software Engineering](#/posts/software-engineering/latency-taught-me-better-software-engineering.md) ⭐
+- [Latency Taught Me Better Software Engineering](#/posts/software-engineering/latency-taught-me-better-software-engineering.md)   
 - [Incident Report: PWA Path Latency](#/posts/incident-reports/pwa-path-latency-incident.md)
 
 ---
@@ -59,7 +59,7 @@ Related Posts:
 **Topics:** AI-assisted development, engineering practices, development workflow, Claude
 
 Related Posts:
-- [Latency Taught Me Better Software Engineering](#/posts/software-engineering/latency-taught-me-better-software-engineering.md) ⭐
+- [Latency Taught Me Better Software Engineering](#/posts/software-engineering/latency-taught-me-better-software-engineering.md)   
 - [Using Claude to Speed Up Development](#/posts/software-engineering/using-claude-for-goalixa.md)
 - [Why Goalixa Is AI-Developed](#/posts/why-goalixa-is-ai-developed.md)
 
@@ -82,7 +82,7 @@ Related Posts:
 **Topics:** Wartime challenges, Iran, internet restrictions, learning, personal story
 
 Related Posts:
-- [Survive in War Time](#/posts/goalixa-story/survive-in-war-time.md) ⭐
+- [Survive in War Time](#/posts/goalixa-story/survive-in-war-time.md)   
 - [Learning in Wartime: Preparing Infrastructure](#/posts/goalixa-story/learning-in-wartime-kubernetes-plan.md)
 - [Survive in War Time](#/posts/goalixa-story/survive-in-war-time.md)
 

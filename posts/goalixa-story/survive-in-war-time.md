@@ -1,13 +1,3 @@
----
-title: Survive in War Time
-date: 2026-03-06
-category: Goalixa Story
-tags: [personal, infrastructure, challenges, iran, internet]
-author: Amirreza Rezaie
-read_time: 3 min
-featured: true
----
-
 # Survive in War Time
 
 > **Published:** 2026-03-06 | **Section:** Goalixa Story | **Author:** Amirreza Rezaie

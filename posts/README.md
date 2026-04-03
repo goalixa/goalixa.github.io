@@ -46,7 +46,6 @@ Use this folder for all blog posts.
 ## AI & Automation
 
 - [AI & Automation Section](/posts/ai/README.md)
-- [Syntra: My AI DevOps Teammate](/posts/ai/syntra-ai-devops-teammate.md) ⭐
 
 ## GitOps
 

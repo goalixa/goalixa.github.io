@@ -1,13 +1,3 @@
----
-title: Monitoring Stack Setup: Prometheus, Grafana, and Alertmanager
-date: 2026-02-20
-category: DevOps
-tags: [monitoring, prometheus, grafana, alertmanager, observability, sre, metrics]
-author: Amirreza Rezaie
-read_time: 5 min
-featured: false
----
-
 # Monitoring Stack Setup: Prometheus, Grafana, and Alertmanager
 
 > **Published:** 2026-02-20 | **Section:** Reliability & Operations | **Author:** Amirreza Rezaie

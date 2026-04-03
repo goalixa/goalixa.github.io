@@ -1,15 +1,3 @@
----
-title: ArgoCD Setup: First Step in Goalixa GitOps Journey
-date: 2026-02-20
-category: GitOps
-tags: [argocd, gitops, kubernetes, deployment, cd]
-author: Amirreza Rezaie
-read_time: 4 min
-featured: false
-series: "ArgoCD Journey"
-series_part: 1
----
-
 # ArgoCD Setup: First Step in Goalixa GitOps Journey
 
 > **Published:** 2026-02-20 | **Section:** GitOps | **Author:** Amirreza Rezaie

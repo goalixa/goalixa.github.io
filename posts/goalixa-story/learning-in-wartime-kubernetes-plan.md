@@ -1,13 +1,3 @@
----
-title: Learning in Wartime: Preparing Goalixa Infrastructure
-date: 2026-03-11
-category: Goalixa Story
-tags: [learning, kubernetes, cilium, envoy, service-mesh, infrastructure]
-author: Amirreza Rezaie
-read_time: 3 min
-featured: false
----
-
 # Learning in Wartime: Preparing Goalixa Infrastructure
 
 > **Published:** 2026-03-11 | **Section:** Goalixa Story | **Author:** Amirreza Rezaie
