@@ -1,0 +1,408 @@
+---
+title: 'Architecture'
+description: 'Goalixa system architecture - microservices, infrastructure, CI/CD, monitoring, and GitOps'
+---
+
+# Goalixa Architecture
+
+> **Last Updated:** April 2026
+
+## What Is Goalixa?
+
+**Goalixa** is a personal productivity platform designed to help individuals transform big goals into actionable plans, organized projects, and daily tasks. The platform combines goal setting, project management, habit tracking, and time optimization into a unified experience that helps users stay focused and productive.
+
+Built as a modern cloud-native microservices application, Goalixa demonstrates production-ready architecture patterns with clear service boundaries, comprehensive observability, and GitOps-based deployment.
+
+---
+
+## User Request Journey: How Services Communicate
+
+When a user interacts with Goalixa, requests flow through a carefully orchestrated chain of microservices:
+
+```mermaid
+sequenceDiagram
+    participant User as 👤 User Browser/PWA
+    participant Ingress as 🌐 Ingress/Gateway
+    participant BFF as ⚡ BFF Service
+    participant Auth as 🔐 Auth Service
+    participant CoreAPI as 📦 Core API
+    participant PG as 🗄️ PostgreSQL
+    participant Redis as ⚡ Redis Cache
+
+    User->>Ingress: HTTPS Request
+    Ingress->>BFF: Route to BFF
+
+    alt Authentication Required
+        BFF->>Auth: Validate Token
+        Auth-->>BFF: User Context
+    end
+
+    alt Cache Hit
+        BFF->>Redis: Check Cache
+        Redis-->>BFF: Cached Data
+        BFF-->>User: Response (Cached)
+    else Cache Miss
+        BFF->>CoreAPI: Aggregate Request
+        CoreAPI->>PG: Query Database
+        PG-->>CoreAPI: Return Data
+        CoreAPI-->>BFF: Business Logic Result
+        BFF->>Redis: Cache Response
+        BFF-->>User: Response (Fresh)
+    end
+```
+
+### Request Flow Breakdown:
+
+1. **User Action** — User interacts with the PWA or web interface
+2. **Ingress** — Nginx Ingress routes HTTPS traffic to the appropriate service
+3. **BFF** — Backend for Frontend acts as the API gateway, handling authentication proxy and request aggregation
+4. **Auth Service** — Validates JWT tokens and provides user context
+5. **Core API** — Processes business logic and data operations
+6. **Data Layer** — PostgreSQL for persistent storage, Redis for caching
+7. **Response** — Data flows back through BFF to the user with optimal caching
+
+---
+
+## Services Overview
+
+Goalixa consists of specialized microservices, each with a single responsibility:
+
+| Service | Technology | Purpose | Database | Key Features |
+|---------|-----------|---------|----------|--------------|
+| **Landing** | Nginx + HTML/CSS/JS | Marketing website | None | Static content, responsive design, SEO optimized |
+| **PWA** | Vanilla JavaScript | Progressive Web App | None | Installable, offline support, client-side routing |
+| **Auth** | Python 3.11 + Flask | Authentication service | PostgreSQL | Dual-token JWT, Google OAuth, HTTP-only cookies |
+| **BFF** | Python 3.11 + FastAPI | Backend for Frontend | Redis (optional) | API gateway, auth proxy, response aggregation |
+| **Core API** | Python 3.11 + Flask | Main business logic | PostgreSQL | Tasks, goals, projects, habits, reports |
+| **Syntra** | Python 3.11 + FastAPI + CrewAI | AI DevOps orchestration | None | Task planning, DevOps automation, code review |
+
+### Service Details:
+
+#### Auth (Authentication Service)
+- **Dual-Token System**: Access tokens (15-minute TTL) + Refresh tokens (7-day TTL)
+- **Security**: HTTP-only cookies, token rotation on refresh
+- **OAuth**: Google OAuth integration for social login
+- **Database**: Dedicated PostgreSQL database (`authdb`)
+
+#### Core API (Main Business Logic)
+- **3-Layer Architecture**: Presentation → Service → Repository
+- **Features**: Task timer, goal tracking, project management, habits, reports
+- **Database**: Dedicated PostgreSQL database (`goalixa`)
+- **Backup**: Automated database backups
+
+#### BFF (Backend for Frontend)
+- **API Gateway**: Unified entry point (`/bff/*`)
+- **Aggregation**: Optimized endpoints like `/bff/aggregate/dashboard`
+- **Caching**: Redis-based performance optimization
+- **Auth Proxy**: Automatic token validation and refresh
+
+#### Syntra (AI DevOps Service)
+- **Multi-Agent System**: CrewAI-powered task orchestration
+- **Capabilities**: Kubernetes operations, code review, incident investigation
+- **Planning**: AI-driven task breakdown and execution
+
+---
+
+## Infrastructure
+
+Goalixa runs on a cloud-native infrastructure designed for high availability and scalability:
+
+```mermaid
+graph TB
+    subgraph "Cloud Infrastructure"
+        subgraph "Kubernetes Cluster"
+            subgraph "Production Namespace"
+                PWA[PWA Pods<br/>Replicas: 2]
+                Landing[Landing Pods<br/>Replicas: 2]
+                BFF[BFF Pods<br/>Replicas: 3]
+                Auth[Auth Pods<br/>Replicas: 2]
+                Core[Core API Pods<br/>Replicas: 3]
+            end
+
+            subgraph "Staging Namespace"
+                PWAStg[PWA Staging]
+                BFFStg[BFF Staging]
+                AuthStg[Auth Staging]
+                CoreStg[Core API Staging]
+            end
+
+            subgraph "Monitoring Stack"
+                Prometheus[Prometheus<br/>Metrics Collection]
+                Grafana[Grafana<br/>Dashboards]
+                AlertMgr[Alertmanager<br/>Alert Routing]
+                NodeExp[Node Exporters<br/>Host Metrics]
+            end
+        end
+
+        subgraph "Data Layer"
+            PG[(PostgreSQL<br/>Auth DB<br/>App DB)]
+            Redis[(Redis<br/>Cache Layer)]
+        end
+
+        PWA --> BFF
+        Landing --> BFF
+        BFF --> Auth
+        BFF --> Core
+        BFF --> Redis
+        Auth --> PG
+        Core --> PG
+
+        NodeExp --> Prometheus
+        Prometheus --> AlertMgr
+        Prometheus --> Grafana
+    end
+```
+
+### Infrastructure Components:
+
+- **Virtual Machines**: Linux servers hosting the Kubernetes cluster
+- **Kubernetes Cluster**: Container orchestration with namespace separation (staging/production)
+- **Pods**: Each service runs multiple replicas for high availability
+- **Services**: Kubernetes Services provide stable networking endpoints
+- **Ingress**: Nginx Ingress Controller for HTTPS routing
+
+---
+
+## Data Storage
+
+Goalixa uses a multi-database architecture optimized for different data types:
+
+```mermaid
+graph LR
+    subgraph "Application Layer"
+        BFF[BFF Service]
+        Auth[Auth Service]
+        Core[Core API]
+    end
+
+    subgraph "Data Layer"
+        PGAuth[(PostgreSQL<br/>authdb)]
+        PGApp[(PostgreSQL<br/>goalixa)]
+        Redis[(Redis<br/>Cache)]
+    end
+
+    Auth -->|User sessions,<br/>OAuth tokens,<br/>Refresh tokens| PGAuth
+    Core -->|Tasks, goals,<br/>Projects, habits,<br/>Time entries| PGApp
+    BFF -->|Aggregate responses,<br/>User sessions| Redis
+```
+
+### Database Details:
+
+| Database | Purpose | Technology | Connection |
+|----------|---------|------------|------------|
+| **authdb** | User accounts, sessions, OAuth tokens | PostgreSQL 16 | Auth Service |
+| **goalixa** | Tasks, goals, projects, habits, time entries | PostgreSQL 16 | Core API |
+| **Redis** | Response caching, session storage | Redis 7+ | BFF (optional) |
+
+---
+
+## CI/CD Pipeline
+
+Goalixa uses a modern GitOps-based CI/CD pipeline for automated deployments:
+
+```mermaid
+graph LR
+    subgraph "Development"
+        Dev[Developer<br/>Push Code]
+        GitHub[GitHub<br/>Repository]
+    end
+
+    subgraph "CI/CD Pipeline"
+        Actions[GitHub Actions<br/>Build & Test]
+        Harbor[Harbor<br/>Image Registry]
+    end
+
+    subgraph "CD Pipeline"
+        ArgoCD[ArgoCD<br/>GitOps Operator]
+        K8s[Kubernetes<br/>Cluster]
+    end
+
+    Dev -->|git push| GitHub
+    GitHub -->|trigger| Actions
+    Actions -->|docker build<br/>multi-arch| Harbor
+    Harbor -->|image:latest| ArgoCD
+    ArgoCD -->|sync manifests| K8s
+
+    style Actions fill:#10b981
+    style Harbor fill:#06b6d4
+    style ArgoCD fill:#f59e0b
+    style K8s fill:#6366f1
+```
+
+### Pipeline Stages:
+
+#### 1. **Continuous Integration (GitHub Actions)**
+- **Trigger**: Push to `staging` or `main` branch
+- **Build**: Multi-architecture Docker builds (amd64/arm64)
+- **Test**: Run unit tests and integration tests
+- **Push**: Deploy images to Harbor registry
+
+#### 2. **Container Registry (Harbor)**
+- **Private Registry**: Harbor container registry
+- **Image Tagging**: `{service}/{service}:latest`
+- **Multi-Arch**: Support for different CPU architectures
+- **Vulnerability Scanning**: Automated security scans
+
+#### 3. **Continuous Deployment (ArgoCD)**
+- **GitOps**: Configuration stored in Git repository
+- **Automatic Sync**: Detects image changes and auto-deploys
+- **Helm Integration**: Parameter-based deployments
+- **Environments**: Separate applications for staging/production
+
+### Branch Strategy:
+
+| Branch | Target Environment | Image Tag | Auto-Deploy |
+|--------|-------------------|-----------|-------------|
+| `staging` | Staging Namespace | `{service}-staging:latest` | Yes |
+| `main` | Production Namespace | `{service}:latest` | Yes |
+
+---
+
+## GitOps with ArgoCD
+
+ArgoCD is the backbone of Goalixa's deployment automation, implementing true GitOps practices:
+
+### How ArgoCD Works:
+
+1. **Declarative Configuration**: All Kubernetes manifests stored in Git
+2. **Automatic Sync**: ArgoCD detects changes and applies them automatically
+3. **Desired State**: Git is the single source of truth for cluster state
+4. **Self-Healing**: ArgoCD reconciles drift between actual and desired state
+
+### Benefits:
+
+- **Version Control**: All deployment changes tracked in Git
+- **Rollback**: Easy rollback to previous Git commits
+- **Audit Trail**: Complete history of deployment changes
+- **Collaboration**: Team can review deployment changes via PRs
+
+---
+
+## Harbor Container Registry
+
+Harbor serves as Goalixa's private Docker registry with enterprise-grade features:
+
+### Key Features:
+
+- **Security Scanning**: Vulnerability scanning for all images
+- **Access Control**: Role-based access control (RBAC)
+- **Replication**: Image replication between registries
+- **Notary**: Content trust for image signing
+- **Webhooks**: Notifications on image pushes
+
+---
+
+## Monitoring & Observability
+
+Goalixa implements comprehensive monitoring across the entire stack:
+
+```mermaid
+graph TB
+    subgraph "Metric Sources"
+        BFF[BFF Service<br/>/metrics]
+        Auth[Auth Service<br/>/metrics]
+        Core[Core API<br/>/metrics]
+        Nodes[Node Exporters<br/>Host Metrics]
+    end
+
+    subgraph "Monitoring Stack"
+        Prometheus[Prometheus<br/>Metrics Collection<br/>30s scrape interval]
+        AlertMgr[Alertmanager<br/>Alert Routing]
+    end
+
+    subgraph "Visualization"
+        Grafana[Grafana<br/>Dashboards & Alerts]
+    end
+
+    subgraph "Notifications"
+        Slack[Slack Channel]
+        Email[Email Alerts]
+    end
+
+    BFF -->|HTTP scrape| Prometheus
+    Auth -->|HTTP scrape| Prometheus
+    Core -->|HTTP scrape| Prometheus
+    Nodes -->|HTTP scrape| Prometheus
+
+    Prometheus -->|firing alerts| AlertMgr
+    Prometheus -->|query data| Grafana
+    AlertMgr -->|notifications| Slack
+    AlertMgr -->|notifications| Email
+    Grafana -->|alert rules| Slack
+
+    style Prometheus fill:#10b981
+    style Grafana fill:#06b6d4
+    style AlertMgr fill:#f59e0b
+```
+
+### Monitoring Components:
+
+#### 1. **Prometheus** (Metrics Collection)
+- **Scrape Interval**: Every 30 seconds
+- **Targets**: BFF Service, Auth Service, Core API, Node Exporters
+
+#### 2. **Grafana** (Visualization & Dashboards)
+- **Custom Dashboards**: Service-specific dashboards
+- **Metrics**: Request rate, latency, error rates, resource utilization
+
+#### 3. **Alertmanager** (Alert Routing)
+- **Alert Sources**: Prometheus alert rules
+- **Routing**: Intelligent alert grouping and routing
+- **Channels**: Slack, Email (configurable)
+
+#### 4. **Node Exporters** (Host Metrics)
+- **CPU**: Usage, load averages
+- **Memory**: Usage, swap, buffers
+- **Disk**: Usage, I/O statistics
+- **Network**: Traffic, errors
+
+---
+
+## Architecture Principles
+
+Goalixa's architecture is built on these core principles:
+
+### 1. **Microservices**
+- Single responsibility per service
+- Independent deployment and scaling
+- Clear service boundaries
+
+### 2. **Backend for Frontend (BFF)**
+- Optimized API for frontend needs
+- Request aggregation reduces round trips
+- Authentication proxy simplifies frontend
+
+### 3. **GitOps**
+- Infrastructure as code
+- Declarative configuration
+- Automated deployment
+
+### 4. **Observability First**
+- Comprehensive metrics collection
+- Structured logging
+- Proactive alerting
+
+### 5. **Security by Design**
+- Dual-token authentication
+- HTTP-only cookies
+- Short-lived access tokens
+- Secrets management
+
+---
+
+## Technology Stack Summary
+
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| **Frontend** | Vanilla JavaScript, PWA | Installable offline-capable app |
+| **API Gateway** | Nginx, FastAPI (BFF) | Request routing, aggregation |
+| **Services** | Python 3.11, Flask/FastAPI | Business logic |
+| **Data** | PostgreSQL 16, Redis 7+ | Persistent storage, caching |
+| **Containers** | Docker, Kubernetes | Containerization, orchestration |
+| **CI/CD** | GitHub Actions, Harbor, ArgoCD | Build, registry, deployment |
+| **Monitoring** | Prometheus, Grafana, Alertmanager | Metrics, visualization, alerting |
+| **AI** | CrewAI, LangChain | AI-powered DevOps automation |
+
+---
+
+*Built with ❤️ using modern cloud-native practices*

@@ -1,0 +1,263 @@
+---
+title: 'Journey'
+description: 'The complete story of building Goalixa - from idea to production, through challenges and lessons learned'
+---
+
+# The Goalixa Journey
+
+The complete story of building Goalixa - from idea to production, through challenges and lessons learned.
+
+<div style={{
+  padding: '24px',
+  background: '#dbeafe',
+  border: '1px solid #bfdbfe',
+  borderRadius: '12px',
+  margin: '24px 0'
+}}>
+  <p style={{ margin: 0, fontSize: '1.05rem', color: '#1e40af' }}>
+    This is the narrative story of how Goalixa evolved from a concept to a production-ready productivity platform. Each chapter represents a phase of the journey, with personal reflections and technical details.
+  </p>
+</div>
+
+---
+
+## Chapter 1: The Beginning
+
+### Why I Started Goalixa
+
+The journey began with a simple problem: I needed a better way to manage my goals, projects, and daily tasks. Existing tools didn't quite fit the way I think about productivity - I wanted something that could bridge the gap between high-level goals and daily action items.
+
+**Status**: 📖 Story in progress
+**Time Period**: Initial concept and early development
+
+**Key Posts in this Chapter**:
+- *Coming soon*: Full product introduction and vision
+
+**Lessons Learned**:
+- Start with a clear problem statement
+- Build what you would use yourself
+- Keep the vision simple but ambitious
+
+---
+
+## Chapter 2: Learning in Wartime
+
+### Building Under Crisis Conditions
+
+Building a startup is hard. Building a startup during wartime in Iran with severe internet restrictions is exponentially harder. In March 2026, I found myself in exactly this situation - intermittent internet access, VPN services as the only connection method, and servers located outside the country.
+
+Despite these challenges, I used the downtime to study deeply and plan the infrastructure upgrades that Goalixa would need.
+
+**Status**: 🔄 Ongoing challenges
+**Time Period**: March 2026 - Present
+
+**Key Posts in this Chapter**:
+- [Survive in War Time](/posts/goalixa-story/survive-in-war-time) - The reality of building with restricted internet
+- [Learning in Wartime: Preparing Goalixa Infrastructure](/posts/goalixa-story/learning-in-wartime-kubernetes-plan) - How I used downtime to study Kubernetes, Cilium, and service mesh
+
+**Lessons Learned**:
+- Adaptability is everything when circumstances change
+- Use downtime productively - study and plan
+- Infrastructure resilience matters more than I thought
+- Remote access patterns become critical in crisis
+
+---
+
+## Chapter 3: First Deployments & Early Architecture
+
+### From Monolith to Microservices
+
+The early architecture of Goalixa was straightforward: three main services (`app`, `auth`, `landing`), each with its own subdomain and frontend. While this worked initially, it created problems:
+
+- Complex redirect flows between domains
+- Cookie and session consistency challenges
+- Fragmented UI ownership
+- High blast radius during incidents
+
+The critical reliability issue became clear: when the `app` service went down, almost everything went down with it. This single-point-of-failure effect created unacceptable recovery pressure.
+
+**Status**: ✅ Migration completed
+**Time Period**: February 2026
+
+**Key Posts in this Chapter**:
+- [Migrate Monolithic to Microservice](/posts/migrate-monolithic-to-microservice) - Why the old architecture couldn't scale
+- [From Fragmented UIs to One PWA](/posts/api-gateway-pwa-microservices) - The decision to unify the frontend
+- [Why Most Goalixa Code Is AI-Developed](/posts/why-goalixa-is-ai-developed) - My philosophy on AI-assisted development
+
+**Lessons Learned**:
+- Microservices require unified frontend experience
+- API Gateway is essential for true microservices
+- Fragmented UIs slow down product iteration
+- Single points of failure create operational nightmares
+
+---
+
+## Chapter 4: The PWA Transformation
+
+### Unifying the Frontend Experience
+
+The biggest milestone in Goalixa's early life was the successful migration to a Progressive Web App (PWA) architecture combined with an API Gateway. This transformed Goalixa from multiple fragmented UIs into a single, cohesive user experience.
+
+The new flow became clear and simple:
+
+```
+PWA (app.goalixa.com) → API Gateway → Backend Services
+```
+
+**Status**: ✅ Completed and production-ready
+**Time Period**: February 20, 2026
+
+**Key Posts in this Chapter**:
+- [Migrate to PWA Successfully](/posts/migrate-to-pwa-success-fully) - The milestone celebration post
+- [BFF in Goalixa: How PWA and Services Stay Clean](/posts/bff-goalixa) - Backend For Frontend pattern explanation
+- [Removing UI from Legacy Services](/posts/removing-ui-from-legacy-auth-redirection) - Cleaning up auth flows
+
+**Lessons Learned**:
+- One UI is better than many
+- BFF pattern keeps both frontend and backend clean
+- API Gateway enables true service independence
+- Migration is worth the effort
+
+---
+
+## Chapter 5: Microservices Migration
+
+### Breaking Apart the Monolith
+
+With the PWA and Gateway in place, the real microservices migration began. The target architecture included:
+
+- One unified frontend (PWA)
+- API Gateway as single entry point
+- BFF layer for client-focused aggregation
+- Domain services focused only on business logic
+- Clear service tiers (Level A: critical, Level B: non-critical)
+
+**Status**: ✅ Foundation complete, migration ongoing
+**Time Period**: February 2026
+
+**Key Posts in this Chapter**:
+- [Migrate Monolithic to Microservice](/posts/migrate-monolithic-to-microservice) - The migration plan
+- [Future Plan: Event-Driven Architecture with NATS](/posts/event-driven-architecture-nats) - Next steps for time-based features
+
+**Lessons Learned**:
+- Define service boundaries early
+- Not everything needs to be a service immediately
+- Tier-based criticality helps prioritize reliability work
+
+---
+
+## Chapter 6: GitOps Journey with ArgoCD
+
+### Git as the Source of Truth
+
+After setting up Harbor as the image registry, the next logical step was implementing GitOps with ArgoCD. The goals were clear:
+
+- Git as source of truth for deployments
+- Safer and more predictable releases
+- Better visibility of drift between desired and running state
+- Faster rollback and recovery during incidents
+
+I implemented controlled sync initially, then moved toward automation for stable services.
+
+**Status**: ✅ First phase complete
+**Time Period**: February 2026
+
+**Key Posts in this Chapter**:
+- [ArgoCD Setup: First Step](/posts/gitops/argocd-first-step) (Part 1) - Initial bootstrap and setup
+- [ArgoCD Applications and Sync Strategy](/posts/gitops/argocd-applications-sync-strategy) (Part 2) - Defining applications and sync behavior
+
+**Lessons Learned**:
+- Start with manual sync, then automate
+- Keep manifests versioned and reviewable
+- Monitor health immediately after sync
+- Git alignment enables fast rollbacks
+
+---
+
+## Chapter 7: Challenges & Incidents
+
+### When Latency Became Real
+
+The most significant learning moment came when latency moved from a dashboard metric to something I could feel directly while using the app. This happened after introducing the API Gateway and separating backend services from the frontend.
+
+An incident on February 24-25, 2026, made this painfully clear. A PWA path/routing change caused noticeable slowness, visible in both monitoring graphs and real usage.
+
+**Status**: 📚 Resolved, lessons documented
+**Time Period**: February 24-26, 2026
+
+**Key Posts in this Chapter**:
+- [Incident Report: PWA Path Change Caused High Latency](/posts/incident-reports/pwa-path-latency-incident) ⚠️ - Full incident timeline and impact
+- [Latency Taught Me Better Software Engineering](/posts/software-engineering/latency-taught-me-better-software-engineering) - The engineering mindset shift
+
+**Lessons Learned**:
+- Performance is a product feature, not just an SRE metric
+- Every network hop must have clear value
+- Route changes are high-risk production changes
+- User-perceived latency is the real truth
+- Add observability before scaling complexity
+- Cache intentionally where safe and valuable
+
+---
+
+## Chapter 8: Current State & Future Plans
+
+### Building for Production
+
+As Goalixa approaches production readiness, the focus has shifted to reliability, staging environments, and sustainable development practices.
+
+**Current Priorities**:
+- Implementing staging environment with Kustomize
+- Reducing deployment risk with proper dev → staging → prod flow
+- Improving observability with comprehensive monitoring
+- Using AI (Claude) effectively for faster development
+
+**Status**: 🚧 In progress
+**Time Period**: March 2026 - Present
+
+**Key Posts in this Chapter**:
+- [Why Goalixa Needs a Staging Environment](/posts/devops/why-staging-with-kustomize) - Kustomize plan for safe deployments
+- [Monitoring Stack Setup: Prometheus, Grafana, Alertmanager](/posts/monitoring-stack-prometheus-grafana-alertmanager) - Observability foundation
+- [Using Claude to Speed Up Goalixa Development](/posts/software-engineering/using-claude-for-goalixa) - AI-assisted workflow
+
+**Future Plans**:
+- Complete staging environment implementation
+- Add Cilium for networking and security
+- Explore service mesh with Envoy
+- Implement event-driven architecture with NATS
+- Expand monitoring and alerting coverage
+
+---
+
+## Journey Summary
+
+### Key Milestones 🎯
+
+| Milestone | Date | Status |
+|-----------|------|--------|
+| Initial Concept | Early 2026 | ✅ Complete |
+| Microservices Decision | Feb 2026 | ✅ Complete |
+| PWA + Gateway Launch | Feb 20, 2026 | ✅ Complete |
+| GitOps with ArgoCD | Feb 2026 | ✅ Phase 1 Complete |
+| Latency Incident | Feb 25, 2026 | ✅ Resolved |
+| Staging Environment | Mar 2026 | 🚧 In Progress |
+| Production Launch | TBD | 📋 Planned |
+
+### Technology Choices
+
+- **Frontend**: Progressive Web App (PWA)
+- **API Gateway**: Nginx-based gateway
+- **Backend**: Python (Flask/FastAPI) microservices
+- **Container Orchestration**: Kubernetes
+- **GitOps**: ArgoCD + Harbor
+- **Monitoring**: Prometheus, Grafana, Alertmanager
+- **Development**: AI-assisted (Claude)
+
+### Personal Growth
+
+Building Goalixa has been an incredible learning journey. From understanding microservices architecture to implementing GitOps, from handling production incidents to building during wartime - every challenge has taught valuable lessons about engineering, resilience, and product development.
+
+The most important lesson: **Great engineering is not just about writing code - it's about building systems that stay fast, reliable, and understandable under real conditions.**
+
+---
+
+*Want the technical timeline?* See the [Timeline page](/timeline) for chronological post listings.
