@@ -1,30 +1,43 @@
-# About Me
+---
+title: 'About Me'
+---
 
-<div class="profile-card">
+<div style={{
+  display: 'flex',
+  gap: '20px',
+  alignItems: 'center',
+  margin: '20px 0 28px',
+  padding: '18px',
+  border: '1px solid #e2e8f0',
+  borderRadius: '12px',
+  background: 'white'
+}}>
   <img
     src="/assets/amirreza_rezaie.jpg"
-    onerror="this.onerror=null;this.src='/assets/profile.svg';"
+    onError={(e) => { e.currentTarget.src = '/assets/profile.svg' }}
     alt="Profile picture of Amirreza Rezaie"
-    class="profile-avatar"
+    style={{
+      width: '110px',
+      height: '110px',
+      borderRadius: '9999px',
+      border: '2px solid #e2e8f0',
+      objectFit: 'cover'
+    }}
   />
   <div>
-    <h2>Hi, I'm Amirreza Rezaie 👋</h2>
+    <h2 style={{ margin: '0 0 6px' }}>Hi, I'm Amirreza Rezaie 👋</h2>
     <p><strong>SRE at Snapp</strong> | Creator of <strong>Goalixa</strong></p>
-    <p style="margin-top: 8px; font-size: 0.95rem; color: var(--muted);">
+    <p style={{ marginTop: '8px', fontSize: '0.95rem', color: '#64748b' }}>
       Building reliable systems, learning in public, and exploring platform engineering
     </p>
   </div>
 </div>
-
----
 
 ## Who I Am
 
 I'm a Site Reliability Engineer at **Snapp** (Iran's leading ride-hailing platform) working on large-scale distributed systems. I'm passionate about infrastructure reliability, observability, and building systems that work.
 
 Beyond my day job, I'm the creator of **Goalixa** — a productivity platform I've been developing to deepen my understanding of modern software architecture, from microservices to GitOps deployments.
-
----
 
 ## What I Do
 
@@ -50,8 +63,6 @@ As an SRE, I work on:
 
 > **Why the complex architecture?** Goalixa is where I practice platform engineering and DevOps concepts hands-on. It might seem overengineered for a personal project, but learning is the main goal.
 
----
-
 ## Skills & Technologies
 
 ### Core Competencies {#section-about-skills}
@@ -75,8 +86,6 @@ As an SRE, I work on:
 - Platform engineering concepts
 - AI-assisted development workflows
 
----
-
 ## Philosophy & Approach
 
 ### Learning in Public {#section-about-philosophy}
@@ -94,43 +103,28 @@ Goalixa isn't perfect, and that's the point. It's a space where I can try new te
 - **Platform Engineering** — Internal developer platforms
 - **Observability** — Making systems transparent
 
----
-
 ## Recent Writing
 
 ### Featured Posts {#section-about-writing}
 
-- **[Using Claude for Goalixa Development](#/posts/software-engineering/using-claude-for-goalixa.md)** — How AI assists my development workflow
-- **[Survive in War Time](#/posts/goalixa-story/survive-in-war-time.md)** — Building Goalixa during challenging times
-- **[Why Goalixa is AI-Developed](#/posts/why-goalixa-is-ai-developed.md)** — My approach to AI-assisted development
-- **[PWA Path Latency Incident](#/posts/incident-reports/pwa-path-latency-incident.md)** — A real incident postmortem
+- **[Using Claude for Goalixa Development](/posts/software-engineering/using-claude-for-goalixa)** — How AI assists my development workflow
+- **[Survive in War Time](/posts/goalixa-story/survive-in-war-time)** — Building Goalixa during challenging times
+- **[Why Goalixa is AI-Developed](/posts/why-goalixa-is-ai-developed)** — My approach to AI-assisted development
+- **[PWA Path Latency Incident](/posts/incident-reports/pwa-path-latency-incident)** — A real incident postmortem
 
 ### Series {#section-about-series}
 
-- **[Goalixa Story](#/posts/goalixa-story/)** — The journey of building Goalixa
-- **[Incident Reports](#/posts/incident-reports/)** — Real incidents and lessons learned
-- **[GitOps Journey](#/posts/gitops/)** — ArgoCD and GitOps exploration
-- **[Monthly Recaps](#/posts/monthly-recaps/)** — Progress updates and reflections
-
----
+- **[Goalixa Story](/posts/goalixa-story)** — The journey of building Goalixa
+- **[Incident Reports](/posts/incident-reports)** — Real incidents and lessons learned
+- **[GitOps Journey](/posts/gitops)** — ArgoCD and GitOps exploration
+- **[Monthly Recaps](/posts/monthly-recaps)** — Progress updates and reflections
 
 ## Connect
 
 Let's connect! I'm always happy to discuss SRE, infrastructure, or chat about Goalixa.
 
-<div class="about-links">
-
-[<img src="https://simpleicons.org/icons/linkedin.svg" alt="LinkedIn" width="20" height="20"> **LinkedIn**](https://linkedin.com/in/amirreza-rezaie-)
-{: .about-link }
-
-[<img src="https://simpleicons.org/icons/github.svg" alt="GitHub" width="20" height="20"> **GitHub**](https://github.com/AmirrezaRezaie)
-{: .about-link }
-
-[<img src="https://simpleicons.org/icons/globe.svg" alt="Website" width="20" height="20"> **goalixa.com**](https://goalixa.com)
-{: .about-link }
-
-</div>
-
----
+- **[LinkedIn](https://linkedin.com/in/amirreza-rezaie-)** — Professional connections
+- **[GitHub](https://github.com/AmirrezaRezaie)** — Code & projects
+- **[goalixa.com](https://goalixa.com)** — The product
 
 > *"The best way to learn is to build something that might fail, fail publicly, and write about what you learned."*
