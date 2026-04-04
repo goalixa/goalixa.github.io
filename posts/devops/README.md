@@ -1,10 +1,37 @@
 # DevOps
 
-> **Author:** Amirreza Rezaie
+> Infrastructure, deployment, and operations learnings from running Goalixa in production.
 
-Deployment, platform operations, observability setup, and delivery workflows.
+---
 
-- [Monitoring Stack Setup: Prometheus, Grafana, and Alertmanager](/posts/monitoring-stack-prometheus-grafana-alertmanager.md)
-- [GitOps Section](/posts/gitops/README.md)
-- [From Fragmented UIs to One PWA: Why API Gateway Is Step One for Real Microservices](/posts/api-gateway-pwa-microservices.md)
-- [Why Goalixa Needs a Staging Environment (Kustomize Plan)](/posts/devops/why-staging-with-kustomize.md)
+## Overview
+
+Posts in this section cover the practical side of operating cloud-native services — from Kubernetes orchestration and GitOps workflows to monitoring stacks and staging environment strategies.
+
+---
+
+## Posts
+
+### [Why Goalixa Needs a Staging Environment (Kustomize Plan)](./why-staging-with-kustomize.md)
+Planning a staging environment with Kustomize for configuration management. Why every production-bound service needs a staging sandbox and how to implement it.
+
+### [Monitoring Stack Setup: Prometheus, Grafana, and Alertmanager](/posts/monitoring-stack-prometheus-grafana-alertmanager.md)
+Setting up comprehensive observability at three levels: service, OS/node, and cluster. How to collect metrics, visualize them in Grafana, and route alerts with Alertmanager.
+
+---
+
+## Topics Covered
+
+- **Kubernetes**: Orchestration, deployments, namespaces, probes, and resource management
+- **GitOps**: ArgoCD for continuous deployment, declarative configuration
+- **Container Registry**: Harbor for image management, vulnerability scanning
+- **Monitoring**: Prometheus metrics, Grafana dashboards, alerting strategies
+- **Staging**: Environment separation, testing before production
+
+---
+
+## Related
+
+- [GitOps Posts](/posts/gitops/README.md) — ArgoCD and GitOps practices
+- [Architecture Overview](/goalixa-architecture.md) — Complete infrastructure design
+- [Incident Reports](/posts/incident-reports/README.md) — Production incidents and learnings

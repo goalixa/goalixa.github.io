@@ -1,8 +1,35 @@
 # Software Engineering
 
-> **Author:** Amirreza Rezaie
+> Practical software engineering insights from building Goalixa in production.
 
-Practical software engineering ideas from real Goalixa development experience.
+---
 
-- [Latency Taught Me Better Software Engineering](/posts/software-engineering/latency-taught-me-better-software-engineering.md)
-- [Using Claude to Speed Up Goalixa Development](/posts/software-engineering/using-claude-for-goalixa.md)
+## Overview
+
+Posts in this section cover real-world software engineering challenges and solutions — from latency optimization and system design to AI-assisted development and code quality practices.
+
+---
+
+## Posts
+
+### [Latency Taught Me Better Software Engineering](./latency-taught-me-better-software-engineering.md)
+How moving from dashboard metrics to user-perceived latency changed my engineering mindset. A deep dive into why performance is a product feature, not just an SRE metric.
+
+### [Using Claude to Speed Up Goalixa Development](./using-claude-for-goalixa.md)
+Implementing service-level CLAUDE.md files for effective AI-assisted development. How to structure context for AI tools to get meaningful help with real projects.
+
+---
+
+## Topics Covered
+
+- **Performance Engineering**: Latency optimization, caching strategies, database query optimization
+- **AI-Assisted Development**: Working effectively with Claude and other AI coding tools
+- **System Design**: Microservices patterns, API design, architectural trade-offs
+- **Code Quality**: Testing strategies, refactoring, maintainability
+
+---
+
+## Related
+
+- [Architecture Overview](/goalixa-architecture.md) — Complete system design
+- [DevOps Posts](/posts/devops/README.md) — Infrastructure and deployment
