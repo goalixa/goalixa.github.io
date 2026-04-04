@@ -3,8 +3,7 @@
 * [Timeline](/timeline.md)
 * [Journey](/journey.md)
 * Blog
-  * [Welcome to the Blog](/posts/welcome-to-goalixa-blog.md)   
-  * [All Posts](/posts/README.md)
+  * [Welcome to the Blog](/posts/welcome-to-goalixa-blog.md)
   * ---
   * Latest Posts
     * [Syntra Architecture: Deep Dive into AI DevOps Orchestration](/posts/ai/syntra-architecture.md)  
@@ -16,29 +15,35 @@
   * ---
   * Goalixa Story
     * [Story Overview](/posts/goalixa-story/README.md)
-    * [Survive in War Time](/posts/goalixa-story/survive-in-war-time.md)   
+    * [Survive in War Time](/posts/goalixa-story/survive-in-war-time.md)
     * [Learning in Wartime: Preparing Infra](/posts/goalixa-story/learning-in-wartime-kubernetes-plan.md)
     * [[Template] Product Introduction](/posts/goalixa-story/goalixa-introduction-template.md)
+  * ---
   * Software Engineering
     * [Engineering Overview](/posts/software-engineering/README.md)
-    * [Latency Taught Me Better Engineering](/posts/software-engineering/latency-taught-me-better-software-engineering.md)   
+    * [Latency Taught Me Better Engineering](/posts/software-engineering/latency-taught-me-better-software-engineering.md)
     * [Using Claude for Goalixa](/posts/software-engineering/using-claude-for-goalixa.md)
     * [Why Goalixa Is AI-Developed](/posts/why-goalixa-is-ai-developed.md)
+  * ---
   * Incident Reports
     * [Incidents Overview](/posts/incident-reports/README.md)
     * [PWA Path Change: High Latency](/posts/incident-reports/pwa-path-latency-incident.md)
     * [Removing UI from Legacy Auth](/posts/removing-ui-from-legacy-auth-redirection.md)
+  * ---
   * DevOps (includes SRE)
     * [DevOps Overview](/posts/devops/README.md)
     * [Monitoring Stack Setup](/posts/monitoring-stack-prometheus-grafana-alertmanager.md)
     * [Why Staging with Kustomize](/posts/devops/why-staging-with-kustomize.md)
+  * ---
   * GitOps
     * [GitOps Overview](/posts/gitops/README.md)
     * [ArgoCD Setup: First Step (Part 1)](/posts/gitops/argocd-first-step.md)
     * [ArgoCD App and Sync Strategy (Part 2)](/posts/gitops/argocd-applications-sync-strategy.md)
+  * ---
   * AI & Automation
     * [AI Overview](/posts/ai/README.md)
-    * [Syntra Architecture: Deep Dive into AI DevOps Orchestration](/posts/ai/syntra-architecture.md)  
+    * [Syntra Architecture: Deep Dive into AI DevOps Orchestration](/posts/ai/syntra-architecture.md)
+  * ---
   * Architecture and Platform
     * [Migrate to PWA Successfully](/posts/migrate-to-pwa-success-fully.md)  
     * [BFF in Goalixa](/posts/bff-goalixa.md)   

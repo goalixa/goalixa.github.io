@@ -503,6 +503,13 @@ html[data-theme="dark"] .filter-btn.active {
   background: linear-gradient(135deg, var(--accent-bg) 0%, rgba(219, 234, 254, 0.3) 100%);
   border-left: 4px solid var(--link);
   border-radius: 8px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.timeline-milestone[style*="display: none"] {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
 }
 
 html[data-theme="dark"] .timeline-milestone {
@@ -543,6 +550,13 @@ html[data-theme="dark"] .timeline-milestone.story-milestone {
   position: relative;
   padding-left: 120px;
   margin-bottom: 24px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.timeline-item[style*="display: none"] {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
 }
 
 .timeline-date {

@@ -35,7 +35,7 @@ Infrastructure, deployment, and operations. Covering Kubernetes, monitoring with
 **🚀 [GitOps](#/posts/gitops/README.md)**
 Our GitOps journey with ArgoCD, including setup, sync strategies, and deployment automation.
 
-**🏗️ [Architecture and Platform](#/posts/README.md#architecture-and-platform)**
+**🏗️ [Architecture and Platform](#/goalixa-architecture.md)**
 System design, microservices architecture, API Gateway patterns, BFF (Backend For Frontend), and event-driven architecture plans.
 
 ## How to Navigate This Blog

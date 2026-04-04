@@ -168,6 +168,6 @@ Engineering notes, architecture updates, DevOps and SRE learnings, and personal 
 - [**Incident Reports**](#/posts/incident-reports/README.md) - Post-mortems and learnings
 - [**DevOps**](#/posts/devops/README.md) - Infrastructure, monitoring, operations
 - [**GitOps**](#/posts/gitops/README.md) - ArgoCD, deployment automation
-- [**Architecture**](#/posts/README.md#architecture-and-platform) - System design and patterns
+- [**Architecture**](#/goalixa-architecture.md) - System design and patterns
 
-[View all posts →](#/posts/README.md)
+[View all posts →](#/timeline.md)

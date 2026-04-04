@@ -169,6 +169,45 @@
                 window.__goalixaEnsureThemeToggle();
               }
 
+              // Timeline filtering functionality
+              var filterButtons = document.querySelectorAll('.filter-btn');
+              var timelineItems = document.querySelectorAll('.timeline-item');
+
+              if (filterButtons.length > 0) {
+                filterButtons.forEach(function(btn) {
+                  btn.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(function(b) {
+                      b.classList.remove('active');
+                    });
+                    // Add active class to clicked button
+                    btn.classList.add('active');
+
+                    var filter = btn.getAttribute('data-filter');
+
+                    // Show/hide timeline items based on filter
+                    timelineItems.forEach(function(item) {
+                      var category = item.getAttribute('data-category');
+                      if (filter === 'all' || category === filter) {
+                        item.style.display = 'block';
+                      } else {
+                        item.style.display = 'none';
+                      }
+                    });
+
+                    // Also handle milestones (show all for any filter except specific category filters)
+                    var milestones = document.querySelectorAll('.timeline-milestone');
+                    milestones.forEach(function(milestone) {
+                      if (filter === 'all') {
+                        milestone.style.display = 'block';
+                      } else {
+                        milestone.style.display = 'none';
+                      }
+                    });
+                  });
+                });
+              }
+
               // Inject footer
               var footer = document.querySelector(".docsify-footer");
               if (!footer) {
@@ -176,7 +215,7 @@
                 if (content) {
                   content.insertAdjacentHTML(
                     "beforeend",
-                    '<div class="docsify-footer"><p><strong><a href="#/">Home</a></strong> &nbsp;|&nbsp; <strong><a href="#/posts/README.md">Posts</a></strong> &nbsp;|&nbsp; <strong><a href="#/goalixa-architecture.md">Architecture</a></strong> &nbsp;|&nbsp; <strong><a href="#/about.md">About Me</a></strong></p><p>© 2026 Goalixa. Built with <a href="https://docsify.js.org">Docsify</a>.</p><p><a href="https://linkedin.com/in/amirreza-rezaie-">LinkedIn</a> &nbsp;|&nbsp; <a href="https://github.com/AmirrezaRezaie">GitHub</a> &nbsp;|&nbsp; <a href="https://goalixa.com">goalixa.com</a></p></div>'
+                    '<div class="docsify-footer"><p><strong><a href="#/">Home</a></strong> &nbsp;|&nbsp; <strong><a href="#/timeline.md">Timeline</a></strong> &nbsp;|&nbsp; <strong><a href="#/goalixa-architecture.md">Architecture</a></strong> &nbsp;|&nbsp; <strong><a href="#/about.md">About Me</a></strong></p><p>© 2026 Goalixa. Built with <a href="https://docsify.js.org">Docsify</a>.</p><p><a href="https://linkedin.com/in/amirreza-rezaie-">LinkedIn</a> &nbsp;|&nbsp; <a href="https://github.com/AmirrezaRezaie">GitHub</a> &nbsp;|&nbsp; <a href="https://goalixa.com">goalixa.com</a></p></div>'
                   );
                 }
               }

@@ -1,3 +1,3 @@
 # Goalixa Blog
 
-[Read Posts](/posts/README.md)
+[Read Posts](/timeline.md)
