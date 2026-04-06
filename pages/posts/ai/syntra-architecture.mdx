@@ -587,48 +587,41 @@ graph TB
 
 ```mermaid
 graph TB
-    subgraph "Goalixa Infrastructure"
-        subgraph "Services"
-            CoreAPI[Core API]
-            Auth[Auth Service]
-            BFF[BFF]
-            PWA[PWA]
-            Landing[Landing]
-        end
-
-        subgraph "Syntra Deployment"
-            SyntraAPI[Syntra API]
-            SyntraCLI[Syntra CLI<br/>(User machines)]
-            SyntraAdmin[Admin Panel]
-        end
-
-        subgraph "Data & Storage"
-            Postgres[(PostgreSQL)]
-            Memory[(Incident Memory)]
-        end
-
-        subgraph "Ingress"
-            Ingress[NGINX Ingress]
-        end
-
-        Ingress --> CoreAPI
-        Ingress --> Auth
-        Ingress --> BFF
-        Ingress --> PWA
-        Ingress --> Landing
-        Ingress --> SyntraAPI
-        Ingress --> SyntraAdmin
-
-        SyntraAPI --> Auth
-        SyntraAPI --> CoreAPI
-        SyntraAPI --> Memory
+    subgraph "Goalixa Services"
+        CoreAPI[Core API]
+        Auth[Auth Service]
+        BFF[BFF]
+        PWA[PWA]
+        Landing[Landing]
     end
 
-    SyntraCLI -.->|HTTPS| SyntraAPI
+    subgraph "Syntra"
+        SyntraAPI[Syntra API]
+        SyntraAdmin[Admin Panel]
+    end
+
+    subgraph "Data"
+        Postgres[(PostgreSQL)]
+        Memory[(Incident Memory)]
+    end
+
+    Ingress[NGINX Ingress] --> CoreAPI
+    Ingress --> Auth
+    Ingress --> BFF
+    Ingress --> PWA
+    Ingress --> Landing
+    Ingress --> SyntraAPI
+    Ingress --> SyntraAdmin
+
+    SyntraAPI --> Auth
+    SyntraAPI --> CoreAPI
+    SyntraAPI --> Memory
+    CoreAPI --> Postgres
+
+    SyntraCLI[Syntra CLI] -.->|HTTPS| SyntraAPI
 
     style SyntraAPI fill:#b3e5fc
     style SyntraAdmin fill:#b3e5fc
-    style SyntraCLI fill:#e1f5fe
 ```
 
 ---
