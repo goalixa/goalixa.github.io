@@ -1,0 +1,441 @@
+---
+title: Core-API
+description: Main backend API service for Goalixa
+---
+
+# Core-API
+
+The **Core-API** is the primary backend service handling all business logic for task tracking, time entries, goals, projects, habits, reminders, and reports.
+
+## Overview
+
+Core-API is a Flask-based Python microservice that provides the main backend functionality for Goalixa. It follows a 3-layer architecture pattern:
+
+```mermaid
+graph TB
+    subgraph "Client Layer"
+        PWA[PWA App]
+        BFF[BFF Service]
+    end
+
+    subgraph "Core-API Service"
+        Routes["API Routes<br/>(routes.py)"]
+        Service["Service Layer<br/>(task_service.py)"]
+        Repo["Repository Layer<br/>(postgres_repository.py)"]
+    end
+
+    subgraph "Data Layer"
+        DB[(PostgreSQL)]
+    end
+
+    PWA --> Routes
+    BFF --> Routes
+    Routes --> Service
+    Service --> Repo
+    Repo --> DB
+```
+
+## Technology Stack
+
+| Component | Technology |
+|-----------|------------|
+| **Framework** | Flask (Python 3.11) |
+| **Database** | PostgreSQL |
+| **Driver** | psycopg |
+| **Authentication** | JWT (dual-token) |
+| **Metrics** | Prometheus |
+| **Logging** | Structured logging |
+
+## Project Structure
+
+```
+Core-API/
+├── main.py                      # Application entry point
+├── app/
+│   ├── __init__.py
+│   ├── auth_client.py           # Auth service client
+│   ├── metrics.py               # Prometheus metrics
+│   ├── observability.py         # Logging configuration
+│   ├── presentation/
+│   │   └── routes.py            # API endpoints
+│   ├── service/
+│   │   └── task_service.py      # Business logic
+│   ├── repository/
+│   │   └── postgres_repository.py  # Database operations
+│   └── auth/
+│       ├── jwt.py               # JWT validation
+│       ├── models.py            # Auth models
+│       ├── oauth.py             # OAuth handlers
+│       └── routes.py            # Auth endpoints
+├── docker-compose.yml
+└── k8s/                         # Kubernetes manifests
+```
+
+## API Endpoints
+
+### Health
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/health` | Service health check |
+
+### Tasks
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/tasks` | List all tasks |
+| POST | `/api/tasks` | Create new task |
+| POST | `/api/tasks/<id>/start` | Start timer |
+| POST | `/api/tasks/<id>/stop` | Stop timer |
+| POST | `/api/tasks/<id>/complete` | Mark complete |
+| POST | `/api/tasks/<id>/reopen` | Reopen task |
+| POST | `/api/tasks/<id>/delete` | Delete task |
+
+### Projects
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/projects` | List projects |
+| POST | `/api/projects` | Create project |
+| POST | `/api/projects/<id>/edit` | Update project |
+| POST | `/api/projects/<id>/delete` | Delete project |
+
+### Goals
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/goals` | List goals |
+| POST | `/api/goals` | Create goal |
+| POST | `/api/goals/<id>/edit` | Update goal |
+| POST | `/api/goals/<id>/delete` | Delete goal |
+| POST | `/api/goals/<id>/subgoals` | Add subgoals |
+
+### Habits
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/habits` | List habits |
+| POST | `/api/habits` | Create habit |
+| POST | `/api/habits/<id>/toggle` | Toggle completion |
+| POST | `/api/habits/<id>/update` | Update habit |
+| POST | `/api/habits/<id>/delete` | Delete habit |
+
+### Time Entries
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/timer/entries` | List time entries |
+| GET | `/api/timer/dashboard` | Timer dashboard data |
+
+### Reminders
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/reminders` | List reminders |
+| POST | `/api/reminders` | Create reminder |
+| POST | `/api/reminders/<id>/update` | Update reminder |
+| POST | `/api/reminders/<id>/toggle` | Toggle reminder |
+| POST | `/api/reminders/<id>/delete` | Delete reminder |
+
+### Labels
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/labels` | List labels |
+| POST | `/api/labels` | Create label |
+| POST | `/api/labels/<id>/edit` | Update label |
+| POST | `/api/labels/<id>/delete` | Delete label |
+
+### Reports
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/reports/summary` | Summary report |
+
+### Settings
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/settings/profile` | Get profile |
+| POST | `/api/settings/profile` | Update profile |
+| POST | `/api/settings/timezone` | Update timezone |
+| POST | `/api/settings/notifications` | Update notifications |
+
+## Data Models
+
+### Task
+
+```python
+class Task:
+    id: int
+    title: str
+    description: str
+    status: str          # "pending", "in_progress", "completed"
+    priority: str         # "low", "medium", "high"
+    project_id: int
+    labels: List[Label]
+    created_at: datetime
+    updated_at: datetime
+    completed_at: Optional[datetime]
+    due_date: Optional[date]
+    daily_check: bool
+    timer_start: Optional[datetime]
+```
+
+### Project
+
+```python
+class Project:
+    id: int
+    name: str
+    color: str
+    user_id: int
+    created_at: datetime
+    updated_at: datetime
+```
+
+### Goal
+
+```python
+class Goal:
+    id: int
+    title: str
+    description: str
+    target_date: date
+    status: str           # "pending", "in_progress", "completed"
+    progress: int          # 0-100
+    user_id: int
+    subgoals: List[SubGoal]
+    created_at: datetime
+    updated_at: datetime
+```
+
+### Habit
+
+```python
+class Habit:
+    id: int
+    name: str
+    frequency: str         # "daily", "weekly"
+    streak: int
+    completed_dates: List[date]
+    user_id: int
+    created_at: datetime
+```
+
+### TimeEntry
+
+```python
+class TimeEntry:
+    id: int
+    task_id: int
+    start_time: datetime
+    end_time: Optional[datetime]
+    duration: int          # seconds
+    user_id: int
+```
+
+## Code Examples
+
+### Creating a Task
+
+```bash
+curl -X POST http://localhost:5000/api/tasks \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <access_token>" \
+  -d '{
+    "title": "Implement new feature",
+    "description": "Add authentication flow",
+    "priority": "high",
+    "project_id": 1,
+    "due_date": "2026-04-15"
+  }'
+```
+
+**Response:**
+```json
+{
+  "id": 123,
+  "title": "Implement new feature",
+  "status": "pending",
+  "priority": "high",
+  "project_id": 1,
+  "created_at": "2026-04-06T10:00:00Z"
+}
+```
+
+### Starting Timer on Task
+
+```bash
+curl -X POST http://localhost:5000/api/tasks/123/start \
+  -H "Authorization: Bearer <access_token>"
+```
+
+**Response:**
+```json
+{
+  "message": "Timer started",
+  "timer_start": "2026-04-06T10:30:00Z"
+}
+```
+
+### Getting Goals with Subgoals
+
+```bash
+curl -X GET http://localhost:5000/api/goals/1 \
+  -H "Authorization: Bearer <access_token>"
+```
+
+**Response:**
+```json
+{
+  "id": 1,
+  "title": "Launch MVP",
+  "description": "Release first version",
+  "target_date": "2026-06-01",
+  "status": "in_progress",
+  "progress": 45,
+  "subgoals": [
+    {"id": 1, "title": "Setup CI/CD", "completed": true},
+    {"id": 2, "title": "Add auth", "completed": true},
+    {"id": 3, "title": "Create dashboard", "completed": false}
+  ]
+}
+```
+
+### Creating a Habit
+
+```bash
+curl -X POST http://localhost:5000/api/habits \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <access_token>" \
+  -d '{
+    "name": "Morning exercise",
+    "frequency": "daily"
+  }'
+```
+
+**Response:**
+```json
+{
+  "id": 1,
+  "name": "Morning exercise",
+  "frequency": "daily",
+  "streak": 0,
+  "completed_dates": [],
+  "created_at": "2026-04-06T10:00:00Z"
+}
+```
+
+## Configuration
+
+### Environment Variables
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `DATABASE_URL` | PostgreSQL connection string | Yes |
+| `SECRET_KEY` | Flask secret key | Yes |
+| `AUTH_JWT_SECRET` | JWT validation secret | Yes |
+| `AUTH_SERVICE_URL` | Auth service URL | Yes |
+| `LOG_LEVEL` | Logging level (default: INFO) | No |
+
+### Docker
+
+```bash
+# Run locally with docker-compose
+docker-compose up
+
+# Run with custom configuration
+docker run -e DATABASE_URL=postgresql://user:pass@host:5432/goalixa \
+  -e SECRET_KEY=your-secret \
+  goalixa-core-api:latest
+```
+
+### Kubernetes Deployment
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: core-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: core-api
+  template:
+    metadata:
+      labels:
+        app: core-api
+    spec:
+      containers:
+      - name: core-api
+        image: goalixa/core-api:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: goalixa-secrets
+              key: database-url
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: goalixa-secrets
+              key: secret-key
+        - name: AUTH_JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: goalixa-secrets
+              key: jwt-secret
+        - name: AUTH_SERVICE_URL
+          value: http://auth-service:5001
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+```
+
+## Metrics
+
+The service exposes Prometheus metrics at `/metrics`:
+
+| Metric | Type | Description |
+|--------|------|-------------|
+| `goalixa_requests_total` | Counter | Total requests by endpoint |
+| `goalixa_request_duration_seconds` | Histogram | Request duration |
+| `goalixa_tasks_created` | Counter | Tasks created |
+| `goalixa_timer_started` | Counter | Timers started |
+| `goalixa_goals_completed` | Counter | Goals completed |
+| `goalixa_habits_completed` | Counter | Habits completed |
+
+## Health Checks
+
+```bash
+curl http://localhost:5000/health
+```
+
+**Response:**
+```json
+{
+  "status": "healthy",
+  "database": "connected",
+  "timestamp": "2026-04-06T10:00:00Z"
+}
+```

@@ -1,0 +1,400 @@
+---
+title: Auth Service
+description: Authentication service for Goalixa
+---
+
+# Auth Service
+
+The **Auth Service** provides secure user authentication with a dual-token JWT system for the Goalixa platform.
+
+## Overview
+
+Goalixa Auth is a Flask-based authentication service that handles:
+- User registration and login
+- JWT token management (access + refresh tokens)
+- OAuth integration (Google)
+- Password reset flows
+- Session management
+
+```mermaid
+graph TB
+    subgraph "Clients"
+        PWA[PWA App]
+        BFF[BFF Service]
+        CLI[Syntra CLI]
+        Admin[Admin Panel]
+    end
+
+    subgraph "Auth Service"
+        API["API Routes<br/>(app.py)"]
+        JWT["JWT Handler<br/>(jwt.py)"]
+        DB[(SQLite/PostgreSQL)]
+    end
+
+    PWA --> API
+    BFF --> API
+    CLI --> API
+    Admin --> API
+    JWT --> DB
+```
+
+## Technology Stack
+
+| Component | Technology |
+|-----------|------------|
+| **Framework** | Flask (Python 3.11) |
+| **Database** | SQLite (default), PostgreSQL support |
+| **ORM** | SQLAlchemy |
+| **Auth** | Authlib (Google OAuth), JWT |
+| **Metrics** | Prometheus |
+
+## Project Structure
+
+```
+goalixa-auth/
+├── app.py                    # Single-file Flask application
+├── auth/
+│   ├── jwt.py               # JWT token handling
+│   ├── models.py            # Database models
+│   ├── oauth.py             # Google OAuth
+│   ├── email.py             # Email service
+│   ├── metrics.py           # Prometheus metrics
+│   └── rate_limiter.py      # Rate limiting
+├── data.db                  # SQLite database
+└── requirements.txt
+```
+
+## API Endpoints
+
+### Authentication
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/login` | User login |
+| POST | `/api/register` | User registration |
+| POST | `/api/logout` | Logout and revoke token |
+| POST | `/api/refresh` | Refresh access token |
+| GET | `/api/me` | Get current user |
+
+### Password Reset
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/forgot` | Request password reset |
+| POST | `/api/password-reset/confirm` | Confirm new password |
+
+### Email Verification
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/verify-email` | Verify email with token |
+
+### OAuth
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/oauth/google/start` | Initiate Google OAuth |
+| GET | `/api/oauth/google/callback` | Handle OAuth callback |
+
+### Session Management
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/sessions` | List active sessions |
+| POST | `/api/sessions/<id>/revoke` | Revoke session |
+| POST | `/api/sessions/revoke-all` | Revoke all sessions |
+
+### System
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/health` | Health check |
+| GET | `/metrics` | Prometheus metrics |
+
+## Dual-Token System
+
+### Access Token
+- **TTL**: 15 minutes (configurable)
+- **Purpose**: API authentication
+- **Storage**: HTTP-only cookie
+
+### Refresh Token
+- **TTL**: 7 days (configurable)
+- **Purpose**: Obtain new access tokens
+- **Storage**: HTTP-only cookie + database (device tracking)
+- **Rotation**: New refresh token on each refresh
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant A as Auth Service
+    participant DB as Database
+
+    U->>A: POST /api/login
+    A->>DB: Create refresh token
+    A-->>U: Set access_token (15min)<br/>Set refresh_token (7 days)
+
+    Note over U,A: Access token expires after 15 min
+
+    U->>A: POST /api/refresh
+    A->>DB: Validate refresh token<br/>Rotate token
+    DB->>DB: Revoke old refresh token<br/>Create new refresh token
+    A-->>U: New access_token<br/>New refresh_token
+```
+
+## Data Models
+
+### User
+
+```python
+class User:
+    id: int
+    email: str
+    password_hash: str
+    active: bool
+    email_verified: bool
+    created_at: datetime
+    updated_at: datetime
+```
+
+### RefreshToken
+
+```python
+class RefreshToken:
+    id: int
+    user_id: int
+    jti: str              # Token identifier
+    token: str            # Hashed token
+    device_name: str
+    device_type: str
+    fingerprint: str
+    user_agent: str
+    ip_address: str
+    expires_at: datetime
+    created_at: datetime
+```
+
+### PasswordResetToken
+
+```python
+class PasswordResetToken:
+    id: int
+    user_id: int
+    token: str
+    expires_at: datetime  # 30 minute TTL
+    created_at: datetime
+```
+
+## Code Examples
+
+### User Registration
+
+```bash
+curl -X POST http://localhost:5001/api/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "password": "SecurePass123!"
+  }'
+```
+
+**Response:**
+```json
+{
+  "message": "User registered successfully",
+  "user": {
+    "id": 1,
+    "email": "user@example.com",
+    "email_verified": false
+  }
+}
+```
+
+### User Login
+
+```bash
+curl -X POST http://localhost:5001/api/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "password": "SecurePass123!"
+  }'
+```
+
+**Response:**
+```json
+{
+  "message": "Login successful",
+  "user": {
+    "id": 1,
+    "email": "user@example.com",
+    "email_verified": true
+  }
+}
+```
+
+Cookies are set automatically:
+- `access_token` - HTTP-only, 15 minute TTL
+- `refresh_token` - HTTP-only, 7 day TTL
+
+### Refreshing Access Token
+
+```bash
+curl -X POST http://localhost:5001/api/refresh \
+  -H "Cookie: refresh_token=<refresh_token>"
+```
+
+**Response:**
+```json
+{
+  "message": "Token refreshed"
+}
+```
+
+### Logging Out
+
+```bash
+curl -X POST http://localhost:5001/api/logout \
+  -H "Cookie: access_token=<access_token>"
+```
+
+### Google OAuth
+
+```bash
+# Step 1: Initiate OAuth
+curl -X GET "http://localhost:5001/api/oauth/google/start?return_to=http://localhost:3000"
+
+# Redirects to Google, then callback sets cookies
+```
+
+## Security Features
+
+### Rate Limiting
+
+| Endpoint | Limit |
+|----------|-------|
+| Login | 5 per 5 minutes |
+| Password reset | 3 per 5 minutes |
+| Register | 5 per 5 minutes |
+
+### Password Requirements
+
+- Minimum 8 characters
+- At least one uppercase letter
+- At least one lowercase letter
+- At least one digit
+- At least one special character
+
+### Cookie Security
+
+```python
+# All auth cookies are:
+- HTTPOnly: True      # Prevent JavaScript access
+- Secure: True        # HTTPS only in production
+- SameSite: "lax"     # CSRF protection
+- Domain: Configurable
+```
+
+### Session Limits
+
+- Maximum 5 refresh tokens per user
+- Oldest token revoked when limit exceeded
+- Individual session revocation supported
+
+## Configuration
+
+### Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `AUTH_JWT_SECRET` | JWT signing secret | Required |
+| `AUTH_DATABASE_URI` | Database connection | `sqlite:///data.db` |
+| `AUTH_ACCESS_TOKEN_TTL_MINUTES` | Access token TTL | 15 |
+| `AUTH_REFRESH_TOKEN_TTL_DAYS` | Refresh token TTL | 7 |
+| `AUTH_COOKIE_DOMAIN` | Cookie domain | None |
+| `AUTH_COOKIE_SECURE` | Secure cookies | 1 |
+| `GOOGLE_CLIENT_ID` | Google OAuth client ID | None |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret | None |
+| `REGISTERABLE` | Enable registration | 1 |
+
+### Docker
+
+```bash
+docker run -p 5001:5001 \
+  -e AUTH_JWT_SECRET=your-secret \
+  -e GOOGLE_CLIENT_ID=your-client-id \
+  -e GOOGLE_CLIENT_SECRET=your-client-secret \
+  goalixa-auth:latest
+```
+
+## Kubernetes Deployment
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+      - name: auth-service
+        image: goalixa/auth:latest
+        ports:
+        - containerPort: 5001
+        env:
+        - name: AUTH_JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: goalixa-secrets
+              key: jwt-secret
+        - name: AUTH_DATABASE_URI
+          value: postgresql://user:pass@postgres:5432/auth
+        - name: GOOGLE_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: goalixa-secrets
+              key: google-client-id
+        - name: GOOGLE_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: goalixa-secrets
+              key: google-client-secret
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5001
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5001
+          initialDelaySeconds: 5
+          periodSeconds: 5
+```
+
+## Metrics
+
+| Metric | Type | Description |
+|--------|------|-------------|
+| `auth_login_total` | Counter | Total login attempts |
+| `auth_login_success_total` | Counter | Successful logins |
+| `auth_register_total` | Counter | Total registrations |
+| `auth_logout_total` | Counter | Total logouts |
+| `auth_refresh_total` | Counter | Token refreshes |
+| `auth_password_reset_total` | Counter | Password resets |
