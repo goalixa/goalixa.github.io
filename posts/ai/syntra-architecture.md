@@ -43,6 +43,13 @@ graph TB
         AgentManager[Agent Manager]
     end
 
+    subgraph "Skills Layer"
+        DevopsSkill[DevOps Skill]
+        IncidentSkill[Incident Skill]
+        ReviewSkill[Review Skill]
+        PlanningSkill[Planning Skill]
+    end
+
     subgraph "Agent Layer"
         Planner[Planner Agent<br/>Intent Recognition & Planning]
         Evidence[Evidence Collector Agent<br/>Diagnostic Data Gathering]
@@ -57,6 +64,12 @@ graph TB
         LLMTools[LLM Tools<br/>Claude Integration]
         GitTools[Git Tools<br/>Repo Operations]
     end
+
+    Planner --> PlanningSkill
+    Evidence --> IncidentSkill
+    Incident --> IncidentSkill
+    DevOps --> DevopsSkill
+    Reviewer --> ReviewSkill
 
     subgraph "Infrastructure Layer"
         K8s[Kubernetes Cluster]
@@ -82,6 +95,12 @@ graph TB
     AgentManager --> DevOps
     AgentManager --> Reviewer
 
+    DevopsSkill --> K8sTools
+    DevopsSkill --> GitTools
+    IncidentSkill --> K8sTools
+    IncidentSkill --> LLMTools
+    ReviewSkill --> GitTools
+
     Evidence --> K8sTools
     Evidence --> RuleTools
     Incident --> LLMTools
@@ -96,11 +115,84 @@ graph TB
 
     style CLI fill:#e1f5fe
     style Web fill:#e1f5fe
+    style DevopsSkill fill:#ffecb3
+    style IncidentSkill fill:#ffecb3
+    style ReviewSkill fill:#ffecb3
+    style PlanningSkill fill:#ffecb3
     style Planner fill:#fff9c4
     style Evidence fill:#c8e6c9
     style Incident fill:#ffccbc
     style DevOps fill:#b3e5fc
     style Reviewer fill:#d1c4e9
+```
+
+---
+
+## Skills Layer
+
+### What are Skills?
+
+Skills are domain-specific expertise modules that enhance agent capabilities. They provide:
+
+- **Domain Knowledge**: Patterns, best practices, known issues
+- **Specialized Tools**: Pre-built functions for domain operations
+- **Documentation**: Guides and reference materials
+- **Incident Patterns**: Known failure scenarios and remediation
+
+### Available Skills
+
+```mermaid
+graph TB
+    subgraph "Syntra Skills"
+        Devops[DevOps Skill]
+        Incident[Incident Skill]
+        Review[Review Skill]
+        Planning[Planning Skill]
+    end
+
+    subgraph "Provided to Agents"
+        K8sPatterns[K8s Patterns]
+        Remediation[Remediation Steps]
+        Investigation[Investigation Flows]
+        Patterns[Code Patterns]
+        Decomposition[Task Breakdown]
+    end
+
+    Devops --> K8sPatterns
+    Devops --> Remediation
+    Incident --> Investigation
+    Review --> Patterns
+    Planning --> Decomposition
+
+    style Devops fill:#ffecb3
+    style Incident fill:#ffecb3
+    style Review fill:#ffecb3
+    style Planning fill:#ffecb3
+```
+
+### Skill Breakdown
+
+| Skill | Agent | Capabilities |
+|-------|-------|--------------|
+| **DevOps** | DevOpsAgent | Deploy, rollback, scale, diagnose pods, ConfigMaps/Secrets |
+| **Incident** | IncidentAgent, EvidenceCollector | Evidence collection, pattern matching, root cause analysis |
+| **Review** | ReviewerAgent | Security checks, code quality, git analysis |
+| **Planning** | PlannerAgent | Task decomposition, estimation, prioritization |
+
+### Skill Structure
+
+Each skill follows a consistent structure:
+
+```
+skills/
+├── SKILL.md              # Domain knowledge & patterns
+├── __init__.py           # Skill implementation
+├── tools/                # Domain-specific tools
+│   ├── deployment_tools.py
+│   ├── troubleshooting_tools.py
+│   └── config_tools.py
+└── docs/                 # Reference documentation
+    └── incident_patterns.md
 ```
 
 ---

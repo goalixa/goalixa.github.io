@@ -13,5 +13,8 @@ export default {
   },
   "goalixa-landing": {
     title: "Landing Page"
+  },
+  "syntra": {
+    title: "Syntra"
   }
 }
