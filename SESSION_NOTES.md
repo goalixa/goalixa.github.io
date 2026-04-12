@@ -1,5 +1,43 @@
 # Goalixa Blog Redesign - Session Notes
 
+**Date:** 2026-04-12
+**Project:** Goalixa Blog - GitHub Actions Workflow Fix
+**Status:** ✅ Complete
+
+## Summary
+
+Fixed the GitHub Actions CI/CD workflow that was failing during npm ci execution due to missing cache-dependency-path configuration.
+
+## Fix Applied
+
+**File Modified:**
+- `.github/workflows/deploy.yml` - Added `cache-dependency-path` to setup-node action
+
+**Change:**
+```yaml
+# Before
+- name: Setup Node.js
+  uses: actions/setup-node@v4
+  with:
+    node-version: '20'
+    cache: 'npm'
+
+# After
+- name: Setup Node.js
+  uses: actions/setup-node@v4
+  with:
+    node-version: '20'
+    cache: 'npm'
+    cache-dependency-path: 'package-lock.json'
+```
+
+**Root Cause:**
+The `cache: 'npm'` setting requires the action to know where the lock file is located. Without `cache-dependency-path`, the npm caching mechanism couldn't properly cache dependencies, causing npm ci to hang with "Exit handler never called!" error.
+
+## Previous Sessions (Preserved)
+
+---
+
 **Date:** 2026-03-16
 **Project:** Goalixa Blog Redesign
 **Status:** ✅ Complete
