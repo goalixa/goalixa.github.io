@@ -54,7 +54,7 @@ jobs:
       # Build (via npx)
       # =========================
       - name: Build Next.js app
-        run: npx next build
+        run: ./node_modules/.bin/next build
 
       # =========================
       # Upload artifact
