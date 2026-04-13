@@ -35,25 +35,26 @@ jobs:
           cache: npm
 
       # =========================
-      # Install dependencies (SAFE)
+      # Install dependencies
       # =========================
       - name: Install dependencies
-        run: |
-          npm ci
-          echo "Checking Next.js installation..."
-          ls node_modules/.bin | grep next
+        run: npm install --legacy-peer-deps
 
       # =========================
-      # Build (SAFE via npx)
+      # Debug: List installed packages
+      # =========================
+      - name: Debug - Verify installation
+        run: |
+          echo "Node version: $(node --version)"
+          echo "NPM version: $(npm --version)"
+          echo "Next.js installed: $(npm list next --depth=0)"
+          ls -la node_modules/.bin/ | head -20
+
+      # =========================
+      # Build (via npx)
       # =========================
       - name: Build Next.js app
-        run: npx next build
-
-      # =========================
-      # Export static site
-      # =========================
-      - name: Export static site
-        run: npm run export
+        run: npm run build
 
       # =========================
       # Upload artifact
