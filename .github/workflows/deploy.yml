@@ -1,41 +1,93 @@
-name: Deploy to GitHub Pages
+name: 🚀 Production Deploy - GitHub Pages
 
 on:
   push:
     branches: [main]
 
+  workflow_dispatch:
+
+# -------------------------
+# Strict permissions (least privilege)
+# -------------------------
 permissions:
   contents: read
   pages: write
   id-token: write
 
+# -------------------------
+# Prevent race conditions
+# -------------------------
 concurrency:
-  group: "pages"
+  group: pages-production
   cancel-in-progress: true
 
 jobs:
   build:
+    name: 🧱 Build & Export
     runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v4
+    env:
+      NODE_ENV: production
 
-      - uses: actions/setup-node@v4
+    steps:
+      # -------------------------
+      # Checkout source
+      # -------------------------
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      # -------------------------
+      # Setup Node (pinned = stability)
+      # -------------------------
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
 
-      - run: npm install --legacy-peer-deps
+      # -------------------------
+      # Clean install (SRE best practice)
+      # -------------------------
+      - name: 🧼 Clean install dependencies
+        run: |
+          npm ci
 
-      - run: npm run build
+      # -------------------------
+      # Build (Next.js + Nextra export)
+      # -------------------------
+      - name: 🏗️ Build static site
+        run: |
+          npm run build
 
-      - uses: actions/upload-pages-artifact@v3
+      # -------------------------
+      # Verify output (critical safety gate)
+      # -------------------------
+      - name: 🔍 Verify build output
+        run: |
+          test -d out || (echo "❌ out/ not found! Build failed" && exit 1)
+          ls -la out
+
+      # -------------------------
+      # Upload artifact safely
+      # -------------------------
+      - name: 📦 Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          path: ./out
+          path: out
 
   deploy:
+    name: 🚀 Deploy to Pages
     needs: build
     runs-on: ubuntu-latest
 
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
-      - uses: actions/deploy-pages@v4
+      # -------------------------
+      # Deploy step
+      # -------------------------
+      - name: 🚀 Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
