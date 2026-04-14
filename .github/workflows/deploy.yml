@@ -6,17 +6,11 @@ on:
 
   workflow_dispatch:
 
-# -------------------------
-# Strict permissions (least privilege)
-# -------------------------
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# -------------------------
-# Prevent race conditions
-# -------------------------
 concurrency:
   group: pages-production
   cancel-in-progress: true
@@ -26,41 +20,36 @@ jobs:
     name: 🧱 Build & Export
     runs-on: ubuntu-latest
 
-    env:
-      NODE_ENV: production
-
     steps:
       # -------------------------
-      # Checkout source
+      # Checkout
       # -------------------------
       - name: 📥 Checkout
         uses: actions/checkout@v4
 
       # -------------------------
-      # Setup Node (pinned = stability)
+      # Setup Node
       # -------------------------
       - name: 🟢 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
 
       # -------------------------
-      # Clean install (SRE best practice)
+      # Install dependencies (FIXED)
       # -------------------------
-      - name: 🧼 Clean install dependencies
+      - name: 🧼 Install dependencies
         run: |
-          npm ci
+          npm install --no-audit --no-fund --include=dev
 
       # -------------------------
-      # Build (Next.js + Nextra export)
+      # Build
       # -------------------------
       - name: 🏗️ Build static site
-        run: |
-          npm run build
+        run: npm run build
 
       # -------------------------
-      # Verify output (critical safety gate)
+      # Verify output
       # -------------------------
       - name: 🔍 Verify build output
         run: |
@@ -68,7 +57,7 @@ jobs:
           ls -la out
 
       # -------------------------
-      # Upload artifact safely
+      # Upload artifact
       # -------------------------
       - name: 📦 Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
@@ -85,9 +74,6 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      # -------------------------
-      # Deploy step
-      # -------------------------
       - name: 🚀 Deploy
         id: deployment
         uses: actions/deploy-pages@v4
