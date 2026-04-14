@@ -41,20 +41,19 @@ jobs:
         run: npm install --legacy-peer-deps
 
       # =========================
-      # Debug: List installed packages
+      # Debug: Verify installation
       # =========================
       - name: Debug - Verify installation
         run: |
           echo "Node version: $(node --version)"
           echo "NPM version: $(npm --version)"
-          echo "Next.js installed: $(npm list next --depth=0)"
-          ls -la node_modules/.bin/ | head -20
+          npm list next
 
       # =========================
       # Build (via npx)
       # =========================
       - name: Build Next.js app
-        run: ./node_modules/.bin/next build
+        run: npx next build
 
       # =========================
       # Upload artifact
