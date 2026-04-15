@@ -39,7 +39,7 @@
     * [ArgoCD Setup: First Step (Part 1)](/posts/gitops/argocd-first-step.md)
     * [ArgoCD App and Sync Strategy (Part 2)](/posts/gitops/argocd-applications-sync-strategy.md)
   * ---
-  * AI & Automation
+  * AI
     * [AI Overview](/posts/ai/README.md)
     * [Syntra Architecture: Deep Dive into AI DevOps Orchestration](/posts/ai/syntra-architecture.md)
   * ---
