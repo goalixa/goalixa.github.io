@@ -21,12 +21,13 @@ Related Posts:
 
 ## DevOps & Infrastructure
 
-**Posts:** 3
-**Topics:** Kubernetes, monitoring, staging environments, Kustomize, reliability
+**Posts:** 4
+**Topics:** Kubernetes, k3s, kubeadm, monitoring, staging environments, Kustomize, reliability, cluster migration
 
 Related Posts:
 - [Monitoring Stack Setup: Prometheus, Grafana, Alertmanager](#/posts/monitoring-stack-prometheus-grafana-alertmanager.md)
 - [Why Goalixa Needs a Staging Environment](#/posts/devops/why-staging-with-kustomize.md)
+- [Migrating from k3s to kubeadm](#/posts/sre/migrating-from-k3s-to-kubeadm.md)
 - [API Gateway and One PWA](#/posts/api-gateway-pwa-microservices.md)
 
 ---
@@ -116,6 +117,16 @@ Related Posts:
 Related Posts:
 - [Using Claude to Speed Up Development](#/posts/software-engineering/using-claude-for-goalixa.md)
 - [Why Goalixa Is AI-Developed](#/posts/why-goalixa-is-ai-developed.md)
+
+---
+
+## SRE (Site Reliability Engineering)
+
+**Posts:** 1
+**Topics:** Kubernetes migration, k3s, kubeadm, cluster operations, control plane, etcd, SRE skills
+
+Related Posts:
+- [Migrating from k3s to kubeadm](#/posts/sre/migrating-from-k3s-to-kubeadm.md)
 
 ---
 

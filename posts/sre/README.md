@@ -22,8 +22,8 @@ Posts in this section cover SRE practices applied to Goalixa — from monitoring
 
 ## Related Posts
 
-### [Incident Report: PWA Path Change Caused High Latency](/posts/incident-reports/pwa-path-latency-incident.md)
-A detailed analysis of a production incident that exposed latency issues after introducing API Gateway.
+### [Migrating from k3s to kubeadm: My Kubernetes Migration Journey](/posts/sre/migrating-from-k3s-to-kubeadm.md)
+A detailed walkthrough of migrating from k3s to a full kubeadm-based cluster — including strategy, challenges, and SRE lessons learned.
 
 ### [Monitoring Stack Setup: Prometheus, Grafana, and Alertmanager](/posts/monitoring-stack-prometheus-grafana-alertmanager.md)
 Setting up comprehensive observability across services, nodes, and clusters.

@@ -14,6 +14,28 @@
 
 ---
 
+## April 2026
+
+### Apr 15, 2026 - SRE Milestone
+<div class="timeline-milestone">
+  <strong>🔧 Major Milestone: Kubernetes Migration Strategy</strong>
+  <p>Documenting the k3s to kubeadm migration journey for deeper SRE skills</p>
+</div>
+
+<div class="timeline-item" data-category="devops">
+  <div class="timeline-date">Apr 15</div>
+  <div class="timeline-content">
+    <a href="#/posts/sre/migrating-from-k3s-to-kubeadm.md" class="timeline-link">From k3s to kubeadm: My Kubernetes Migration Journey</a>
+    <div class="timeline-meta">
+      <span class="tag-pill devops">DevOps</span>
+      <span class="tag-pill sre">SRE</span>
+      <span class="read-time-badge">🕐 8 min</span>
+    </div>
+  </div>
+</div>
+
+---
+
 ## February 2026
 
 ### Feb 19, 2026

@@ -6,7 +6,8 @@
   * [Welcome to the Blog](/posts/welcome-to-goalixa-blog.md)
   * ---
   * Latest Posts
-    * [Syntra Architecture: Deep Dive into AI DevOps Orchestration](/posts/ai/syntra-architecture.md)  
+    * [Migrating from k3s to kubeadm](/posts/sre/migrating-from-k3s-to-kubeadm.md)
+    * [Syntra Architecture: Deep Dive into AI DevOps Orchestration](/posts/ai/syntra-architecture.md)
     * [Survive in War Time](/posts/goalixa-story/survive-in-war-time.md)
     * [Using Claude to Speed Up Development](/posts/software-engineering/using-claude-for-goalixa.md)
     * [Latency Taught Me Better Engineering](/posts/software-engineering/latency-taught-me-better-software-engineering.md)
@@ -33,6 +34,7 @@
     * [DevOps Overview](/posts/devops/README.md)
     * [Monitoring Stack Setup](/posts/monitoring-stack-prometheus-grafana-alertmanager.md)
     * [Why Staging with Kustomize](/posts/devops/why-staging-with-kustomize.md)
+    * [Migrating from k3s to kubeadm](/posts/sre/migrating-from-k3s-to-kubeadm.md)
   * ---
   * GitOps
     * [GitOps Overview](/posts/gitops/README.md)
