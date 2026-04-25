@@ -45,6 +45,10 @@
     * [AI Overview](/posts/ai/README.md)
     * [Syntra Architecture: Deep Dive into AI DevOps Orchestration](/posts/ai/syntra-architecture.md)
   * ---
+  * Cloud Engineering
+    * [Cloud Engineering Overview](/posts/cloud-engineering/README.md)
+    * [Migrate to New Cluster](/posts/cloud-engineering/migrate-to-new-cluster.md)
+  * ---
   * Architecture and Platform
     * [Migrate to PWA Successfully](/posts/migrate-to-pwa-success-fully.md)  
     * [BFF in Goalixa](/posts/bff-goalixa.md)   

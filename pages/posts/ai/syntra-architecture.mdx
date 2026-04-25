@@ -1,0 +1,275 @@
+# Syntra Architecture: Deep Dive into AI DevOps Orchestration
+
+> **Published:** 2026-04-03 | **Section:** AI & Automation | **Author:** Amirreza Rezaie
+
+## Overview
+
+**Syntra** is the central AI teammate for the Goalixa platform — an intelligent orchestration service that manages incidents, automates DevOps workflows, and provides seamless Kubernetes cluster management through a multi-agent system powered by CrewAI.
+
+### What Syntra Solves
+
+As a solo developer building Goalixa, I faced three critical challenges:
+
+1. **Incident Management Overload** - Debugging production issues across multiple microservices
+2. **Context Switching** - Constantly moving between development, deployment, and operations
+3. **Operational Complexity** - Managing Kubernetes clusters, Git repositories, and service health
+
+Syntra addresses these by acting as an **always-available DevOps teammate** that:
+- Investigates incidents automatically
+- Manages Kubernetes operations with AI
+- Provides a unified CLI interface for all operations
+- Learns from past incidents to improve future responses
+
+---
+
+## System Architecture
+
+### High-Level Architecture
+
+The system consists of multiple layers:
+
+**Client Layer**: Syntra CLI and Admin Panel (syntra.goalixa.com)
+
+**API Gateway Layer**: FastAPI REST API with Auth Proxy
+
+**Orchestration Layer**: CrewAI Orchestrator and Agent Manager
+
+**Skills Layer**: DevOps, Incident, Review, and Planning Skills
+
+**Agent Layer**: Planner, Evidence Collector, Incident, DevOps, and Reviewer Agents
+
+**Tools Layer**: Kubernetes Tools, Rule Tools, LLM Tools (Claude), Git Tools
+
+**Infrastructure Layer**: Kubernetes Cluster, Git Repositories, Incident Memory (ChromaDB)
+
+---
+
+## Skills Layer
+
+### What are Skills?
+
+Skills are domain-specific expertise modules that enhance agent capabilities. They provide:
+
+- **Domain Knowledge**: Patterns, best practices, known issues
+- **Specialized Tools**: Pre-built functions for domain operations
+- **Documentation**: Guides and reference materials
+- **Incident Patterns**: Known failure scenarios and remediation
+
+### Available Skills
+
+| Skill | Agent | Capabilities |
+|-------|-------|--------------|
+| **DevOps** | DevOpsAgent | Deploy, rollback, scale, diagnose pods, ConfigMaps/Secrets |
+| **Incident** | IncidentAgent, EvidenceCollector | Evidence collection, pattern matching, root cause analysis |
+| **Review** | ReviewerAgent | Security checks, code quality, git analysis |
+| **Planning** | PlannerAgent | Task decomposition, estimation, prioritization |
+
+### Skill Structure
+
+Each skill follows a consistent structure:
+
+```
+skills/
+├── SKILL.md              # Domain knowledge & patterns
+├── __init__.py           # Skill implementation
+├── tools/                # Domain-specific tools
+│   ├── deployment_tools.py
+│   ├── troubleshooting_tools.py
+│   └── config_tools.py
+└── docs/                 # Reference documentation
+    └── incident_patterns.md
+```
+
+---
+
+## Agent System Design
+
+### Agent Hierarchy & Responsibilities
+
+The agents work in a pipeline:
+
+1. **Planner Agent** (Intent Recognition) → Analyzes request
+2. **Evidence Collector** (Diagnostic Phase) → Collects data
+3. **Incident Agent** (Analysis Phase) → Root cause analysis
+4. **DevOps Agent** (Execution Phase) → Executes fix
+5. **Reviewer Agent** (Validation Phase) → Validates result
+
+### Agent Detailed Specifications
+
+#### 1. Planner Agent - The Incident Commander
+
+**Role:** Intent Recognition & Workflow Orchestration
+
+**Capabilities:**
+- Natural language request parsing
+- Intent classification (diagnose_pod, namespace_overview, collect_evidence, general_help)
+- Execution plan generation
+- Required information identification
+- Agent delegation
+
+#### 2. Evidence Collector Agent - The Detective
+
+**Role:** Diagnostic Data Gathering
+
+**Capabilities:**
+- Pod state inspection (all containers)
+- Log collection with timestamps
+- Event filtering and correlation
+- Related pod discovery (same deployment, replica sets)
+- Kubernetes connectivity verification
+
+#### 3. Incident Agent - The Analyst
+
+**Role:** Root Cause Analysis & Pattern Detection
+
+**Dual Approach:**
+
+1. **Rule-Based Detection (First Pass)**: OOM kills, CrashLoopBackOff, Image pull failures, Probe failures
+2. **LLM Fallback (Unknown Issues)**: Complex multi-factor failures, Novel error patterns, Cross-service dependencies
+
+**Detection Confidence Threshold:** 70%
+- Below 70%: Escalate to LLM (Claude)
+- Above 70%: Provide rule-based diagnosis
+
+#### 4. DevOps Agent - The Executor
+
+**Role:** Kubernetes Operations Execution
+
+**Safety Model:**
+- Default: Read-only access
+- Write operations require explicit confirmation
+- Destructive operations (delete, scale down) blocked in CLI
+
+#### 5. Reviewer Agent - The Validator
+
+**Role:** Change Validation & Quality Assurance
+
+---
+
+## Authentication & Authorization
+
+### Dual Authentication System
+
+Syntra implements two authentication mechanisms:
+
+**CLI Authentication**: API Key-based (`X-API-Key: sk_live_xxx`)
+- Rate limits: 60 req/min, 1000 req/hour
+- Key types: `sk_live_` (Production), `sk_test_` (Read-only), `sk_admin_` (All + key management)
+
+**Web Authentication**: JWT-based with Goalixa Auth Service
+- Access Token: 15-minute TTL
+- Refresh Token: 7-day TTL with rotation
+- HTTP-only cookies for web sessions
+
+---
+
+## CLI Workflow
+
+### Syntra CLI Commands
+
+```bash
+# Authentication
+syntra login                    # Authenticate with Goalixa Auth
+syntra logout                   # Logout and clear credentials
+syntra status                   # Show authentication status
+
+# Direct Commands
+syntra ask "diagnose pod auth-service"    # Single task execution
+syntra health                   # Check Syntra service health
+syntra agents                   # List available agents
+syntra tools                    # List available tools
+
+# Interactive Mode
+syntra                          # Start interactive REPL
+syntra repl --enhanced          # Enhanced REPL with history
+
+# Configuration
+syntra config set endpoint https://syntra.goalixa.com
+syntra config set api-key sk_live_abc123
+syntra config list              # Show all configuration
+```
+
+---
+
+## Technology Stack
+
+| Component | Technology | Purpose |
+|-----------|------------|---------|
+| **API Framework** | FastAPI | High-performance REST API |
+| **AI Orchestration** | CrewAI | Multi-agent coordination |
+| **LLM Integration** | LangChain + Claude | Advanced reasoning |
+| **Kubernetes** | Python K8s Client | Cluster operations |
+| **CLI** | Typer + Rich | Beautiful command-line interface |
+| **Authentication** | Goalixa Auth | Centralized auth service |
+| **Vector DB** | ChromaDB (planned) | Incident memory |
+| **Python Version** | 3.11+ | Runtime |
+
+---
+
+## Security Model
+
+### Defense in Depth
+
+1. **Layer 1: Authentication** - JWT / API Key Validation
+2. **Layer 2: Authorization** - Role-Based Access Control
+3. **Layer 3: Rate Limiting** - Per-Key Rate Limits
+4. **Layer 4: Agent Safety** - Read-Only Default, Confirmation for Writes
+5. **Layer 5: Audit Logging** - All Actions Logged
+
+---
+
+## Current Status & Roadmap
+
+### Implemented
+- PlannerAgent with intent recognition
+- EvidenceCollectorAgent with K8s integration
+- IncidentAgent with rule-based detection
+- FastAPI REST API with authentication
+- Kubernetes tools (pod state, logs, events)
+- CLI framework (basic)
+- Admin panel authentication proxy
+- API key management with rate limiting
+
+### In Progress
+- LLM integration (Claude) for complex incidents
+- ChromaDB incident memory
+- Complete CLI implementation
+- Enhanced admin panel
+
+### Planned
+- DevOpsAgent full implementation
+- ReviewerAgent full implementation
+- Git operations tools
+- Multi-cluster support
+- Advanced analytics dashboard
+- Self-healing automation
+- Slack/Discord integration
+
+---
+
+## Key Takeaways
+
+1. **Syntra is a Central AI Teammate** - Not just a tool, but an intelligent assistant that learns and collaborates
+2. **Multi-Agent Architecture** - Specialized agents handle different aspects of incident response
+3. **Dual Authentication** - Supports both API keys (CLI) and JWT (web) for different use cases
+4. **Hybrid AI Approach** - Fast rule-based detection + LLM fallback for complex issues
+5. **Safety First** - Multiple security layers, read-only defaults, explicit confirmations
+6. **Continuous Learning** - Incident memory system improves future responses
+
+---
+
+## Related Posts
+
+- [Using Claude for Goalixa](/software-engineering/using-claude-for-goalixa) - AI development workflow
+- [ArgoCD Setup: First Step](/posts/gitops/argocd-first-step) - GitOps infrastructure
+- [Monitoring Stack Setup](/devops/monitoring-stack-prometheus-grafana-alertmanager) - Observability
+
+---
+
+## Connect & Explore
+
+**Syntra Repository:** [https://github.com/goalixa/syntra](https://github.com/goalixa/syntra)
+
+**Goalixa Project:** [https://github.com/goalixa](https://github.com/goalixa)
+
+**Live Demo:** [https://syntra.goalixa.com](https://syntra.goalixa.com)

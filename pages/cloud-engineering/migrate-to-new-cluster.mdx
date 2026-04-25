@@ -1,0 +1,275 @@
+# Migrate to New Kubernetes Cluster
+
+> **Published:** 2026-04-19 | **Section:** Cloud Engineering | **Author:** Amirreza Rezaie
+
+From K3s to production-grade infrastructure: a complete migration journey with Cilium, Longhorn, and Vault.
+
+---
+
+## Introduction
+
+Many months ago, when I first created Goalixa's base services, I used a K3s cluster for infrastructure. At that time, my goal was simply to get a monolithic service up and running and expose it on the internet. I didn't care much about what happened at the infrastructure level — I just needed something that worked.
+
+But now everything has changed. Goalixa has evolved into a system with multiple critical components and microservices, capable of serving real production traffic. As an SRE engineer, I know that reliability is paramount in this business. I need infrastructure that is manageable, scalable, and highly configurable.
+
+This post documents the complete journey of migrating from a simple K3s setup to a production-grade Kubernetes cluster — covering networking, storage, secrets management, and the lessons learned along the way.
+
+---
+
+## The Problems
+
+### Why K3s Was No Longer Enough
+
+While K3s served its purpose in the early days, it introduced several critical issues as the system grew:
+
+**Storage Problems**: In K3s, I used local storage for persistent values. When I drained and removed a node from the cluster, I lost all data from that node. One night, I drained a node from the cluster, and when I checked Grafana the next morning, everything was gone. Every graph, every metric — simply disappeared. This was a wake-up call.
+
+**Network Limitations**: The default networking in K3s wasn't sufficient for the level of observability and control I needed in production. I required advanced networking features, better security, and more granular control over traffic.
+
+**Scalability Concerns**: As the number of microservices grew, I needed a more robust infrastructure that could scale horizontally and handle failures gracefully without data loss.
+
+### Critical Concerns
+
+The most important concern during this migration was **data integrity**. I couldn't afford to lose any data during the transition. Every database, every persistent volume, every piece of configuration needed to be carefully migrated.
+
+Additionally, I had accumulated secrets over time — API keys, database credentials, tokens, and certificates. Managing these securely during and after the migration was paramount.
+
+---
+
+## Critical Issues Encountered
+
+Before the migration was complete, I encountered several critical issues that highlighted why this work was necessary:
+
+### Grafana Not Available
+
+One of the immediate problems was Grafana becoming unavailable. After a node drain, the metrics and monitoring infrastructure simply stopped working. This wasn't acceptable for production — I needed persistent storage that could survive node failures.
+
+### BFF Service Image Pull Issue
+
+When draining nodes, the BFF (Backend for Frontend) service experienced image pull failures. This caused complete business downtime. The root cause was related to how the cluster handled storage and pod scheduling during node maintenance.
+
+These incidents confirmed that local storage and basic Kubernetes setup wouldn't cut it for production reliability.
+
+---
+
+## Network Level
+
+### Cilium for CNI
+
+The first major decision was to replace the default CNI with Cilium. Cilium provides:
+
+- **Advanced Networking**: eBPF-based networking for high performance
+- **Security**: Network policies with identity-based visibility
+- **Observability**: Built-in Hubble for network traffic analysis
+- **Scalability**: Handles thousands of services and endpoints efficiently
+
+#### Hubble Integration
+
+Hubble provides deep observability into cluster networking. I configured Hubble to:
+
+- Monitor all network traffic between services
+- Identify latency bottlenecks
+- Detect anomalies in communication patterns
+- Provide detailed flow logs for troubleshooting
+
+After setting up Cilium and Hubble, I gained visibility into how services communicated, which was invaluable for debugging and optimization.
+
+### NGINX Ingress Controller
+
+With Cilium properly configured, I set up the NGINX Ingress Controller for managing ingress and traffic. This provides:
+
+- **Load Balancing**: Distribute traffic across service replicas
+- **TLS Termination**: Handle SSL/TLS certificates
+- **Path-based Routing**: Route requests to appropriate services
+- **Rate Limiting**: Protect services from traffic spikes
+
+The combination of Cilium for pod-to-pod communication and NGINX Ingress for external traffic provides a complete networking solution.
+
+---
+
+## Storage Level
+
+### Secret Management with Vault
+
+HashiCorp Vault became the cornerstone of my secrets management strategy. The implementation covered:
+
+- **Centralized Secrets**: All secrets stored in one place
+- **Dynamic Secrets**: Generate credentials on-demand for databases
+- **Encryption at Rest**: All secrets encrypted when stored
+- **Access Control**: Fine-grained policies for different teams and services
+
+#### Vault Setup in the New Cluster
+
+I configured Vault using the official Helm chart with:
+
+- **High Availability**: Running multiple Vault pods for redundancy
+- **Unseal Strategy**: Using Kubernetes service-based auto-unseal
+- **Storage Backend**: Using Longhorn for persistent Vault data
+
+After setup, I migrated all existing secrets from the old cluster to Vault in the new cluster.
+
+### Longhorn for Persistent Storage
+
+After evaluating options, I chose Longhorn for storage management:
+
+- **Distributed Block Storage**: Replicates data across multiple nodes
+- **Data Safety**: Replicas survive node failures
+- **Easy Management**: Simple UI for volume management
+- **Backup Support**: Built-in backup to external storage
+
+Longhorn solved the critical issue of data persistence. With replicas spread across nodes, draining a node no longer means data loss.
+
+#### Database Migration
+
+I migrated all databases to the new cluster using Longhorn:
+
+- PostgreSQL databases for Core-API
+- Redis data for BFF caching
+- Metrics data for Prometheus and Grafana
+
+Each database got dedicated persistent volumes with appropriate replica counts.
+
+### Ceph Considerations
+
+Initially, I considered Ceph for storage class. However, after evaluating Longhorn's capabilities, I found it better suited for my use case. Longhorn provides:
+
+- Simpler deployment and management
+- Adequate performance for my workloads
+- Excellent integration with Kubernetes
+- Built-in backup functionality
+
+---
+
+## CI/CD
+
+### ArgoCD for GitOps
+
+ArgoCD was already set up in the new cluster, providing:
+
+- **Declarative Deployments**: All configurations stored in Git
+- **Automated Sync**: Changes automatically deployed to the cluster
+- **Health Monitoring**: Visual feedback on application status
+- **Rollback Capability**: Easy reversion to previous versions
+
+The challenge was integrating Vault with ArgoCD for secrets management. I needed to:
+
+- Configure ArgoCD to authenticate with Vault
+- Update applications to read secrets from Vault
+- Ensure seamless secret injection during deployments
+
+### Harbor for Container Registry
+
+Harbor remains a critical component for storing and managing container images. The migration plan includes setting up Harbor in the new cluster, though this is scheduled for the final phase of migration.
+
+---
+
+## Migration Process
+
+### Phase 1: Infrastructure Setup (Completed)
+
+- [x] Configure Cilium CNI
+- [x] Set up Hubble for observability
+- [x] Install NGINX Ingress Controller
+- [x] Deploy Longhorn for persistent storage
+- [x] Configure Vault for secrets management
+- [x] Set up ArgoCD
+
+### Phase 2: Database Migration (Completed)
+
+- [x] Create backups from old cluster
+- [x] Migrate databases to new cluster with Longhorn storage
+- [x] Verify data integrity after migration
+- [x] Test database connectivity from applications
+
+### Phase 3: Application Migration (In Progress)
+
+- [ ] Deploy applications using ArgoCD
+- [ ] Reduce load from old cluster
+- [ ] Switch traffic to new cluster
+- [ ] Verify all services are functioning
+
+### Phase 4: Cluster Transition (Planned)
+
+- [ ] Remove nodes from old K3s cluster
+- [ ] Clean up old nodes
+- [ ] Join new nodes to the production cluster
+- [ ] Scale down old cluster completely
+
+### Phase 5: Harbor Migration (Planned)
+
+- [ ] Set up Harbor in new cluster
+- [ ] Migrate container images
+- [ ] Update image references in ArgoCD
+
+---
+
+## Secrets Management Deep Dive
+
+### Learning Vault
+
+Working with Vault required a significant learning curve. Key concepts I had to master:
+
+**Secret Engines**: Different backends for different types of secrets (KV, Database, AWS, etc.)
+
+**Authentication Methods**: Various ways to authenticate with Vault (Kubernetes, GitHub, userpass, etc.)
+
+**Policies**: Defining who can access what secrets
+
+**Transit Secrets**: Encryption as a service for application data
+
+### Integration with Applications
+
+The pattern I'm implementing:
+
+1. Applications authenticate using Kubernetes ServiceAccount
+2. Vault validates the ServiceAccount against Kubernetes
+3. Applications read secrets via Vault API or sidecar injector
+4. Secrets are automatically rotated when needed
+
+This provides a clean separation between application code and secrets management.
+
+---
+
+## Lessons Learned
+
+### 1. Storage is Fundamental
+
+Local storage was the root cause of most data loss incidents. Moving to distributed storage (Longhorn) was essential for production reliability.
+
+### 2. Plan for Failure
+
+Every component should be designed to handle failure gracefully. Replication, backups, and automatic failover are not optional in production.
+
+### 3. Observability First
+
+Before making any infrastructure changes, ensure you can see what's happening. Hubble, Prometheus, and Grafana are essential tools.
+
+### 4. Secrets Are Critical
+
+Invest time in proper secrets management from the start. Retrofitting Vault is harder than building it in from the beginning.
+
+### 5. Migration Requires Patience
+
+Rushing the migration risks data loss. Each phase needs thorough testing before proceeding to the next.
+
+---
+
+## What's Next
+
+The migration is ongoing. Current priorities:
+
+1. Complete application migration to new cluster
+2. Configure Vault integration with all services
+3. Set up Harbor in the new cluster
+4. Migrate remaining workloads
+5. Decommission old K3s cluster
+
+This journey has transformed Goalixa's infrastructure from a simple cluster to a production-ready system capable of serving real traffic with confidence.
+
+---
+
+## Related Posts
+
+- [Monitoring Stack Setup: Prometheus, Grafana, and Alertmanager](/devops/monitoring-stack-prometheus-grafana-alertmanager)
+- [ArgoCD First Step](/posts/gitops/argocd-first-step)
+- [Why Goalixa Needs a Staging Environment](/devops/why-staging-with-kustomize)
