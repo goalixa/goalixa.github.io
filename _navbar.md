@@ -1,5 +1,0 @@
-* [Home](/)
-* [Architecture](/goalixa-architecture.md)
-* [Timeline](/timeline.md)
-* [Journey](/journey.md)
-* [About Me](/about.md)

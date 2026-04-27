@@ -6,27 +6,59 @@ const themeConfig = {
   docsRepositoryBase: 'https://github.com/goalixa/goalixa.github.io/tree/main',
   useNextSeoProps() {
     return {
-      titleTemplate: '%s – Goalixa'
+      titleTemplate: '%s – Amirreza Rezaie'
     }
   },
   logo: (
-    <img src="/assets/goalixa-logo.png" alt="Goalixa" style={{ height: '28px', width: 'auto' }} />
+    <span style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600 }}>
+      <img src="/assets/goalixa-logo.png" alt="Goalixa" style={{ height: '28px', width: 'auto' }} />
+      <span>Engineering Blog</span>
+    </span>
   ),
   head: (
     <>
       <link rel="icon" href="/assets/goalixa-logo.png" type="image/png" />
-      <meta name="description" content="Amirreza Rezaie's engineering blog - Site Reliability Engineer at Snapp" />
+      <meta name="description" content="Amirreza Rezaie - Site Reliability Engineer at Snapp. Building reliable systems, learning in public." />
+      <meta name="author" content="Amirreza Rezaie" />
+      <meta property="og:title" content="Amirreza Rezaie - Engineering Blog" />
+      <meta property="og:description" content="SRE insights, platform engineering, and building Goalixa - a productivity platform." />
+      <meta property="og:type" content="website" />
     </>
   ),
+  banner: {
+    key: 'goalixa-2026',
+    text: (
+      <a href="/journey" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+        Read the full Goalixa journey - from concept to production →
+      </a>
+    )
+  },
   footer: {
-    text: '© ' + new Date().getFullYear() + ' Amirreza Rezaie — Site Reliability Engineer at Snapp. Building reliable systems and learning every day.'
+    text: (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+        <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center' }}>
+          <a href="https://linkedin.com/in/amirreza-rezaie-" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <a href="https://github.com/AmirrezaRezaie" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="https://goalixa.com" target="_blank" rel="noopener noreferrer">Goalixa</a>
+        </div>
+        <span style={{ opacity: 0.7, fontSize: '0.9rem' }}>
+          © {new Date().getFullYear()} Amirreza Rezaie — Site Reliability Engineer at Snapp
+        </span>
+      </div>
+    )
   },
   sidebar: {
-    defaultMenuCollapseLevel: 2,
-    toggleButton: true
+    defaultMenuCollapseLevel: 1,
+    toggleButton: true,
+    autoCollapse: true
   },
   toc: {
-    float: true
+    float: true,
+    backToTop: true
+  },
+  navigation: {
+    prev: true,
+    next: true
   },
   feedback: {
     content: 'Question? Give feedback →',
@@ -34,7 +66,9 @@ const themeConfig = {
   },
   editLink: {
     text: 'Edit this page on GitHub →'
-  }
+  },
+  primaryHue: 220,
+  primarySaturation: 100
 }
 
 export default themeConfig
