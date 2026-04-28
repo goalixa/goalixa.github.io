@@ -1,0 +1,350 @@
+/* Timeline Page - Minimal Modern Design */
+
+/* Container */
+.timeline-container {
+  position: relative;
+  color: var(--welcome-text, #1a1a1a);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.dark .timeline-container {
+  color: var(--welcome-text, #f9fafb);
+}
+
+/* Grid Layout */
+.timeline-grid {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 0 40px 0;
+  display: grid;
+  gap: 40px;
+}
+
+/* Header */
+.timeline-header {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.timeline-title {
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0 0 16px;
+  letter-spacing: -0.02em;
+  color: var(--welcome-text, #1a1a1a);
+}
+
+.dark .timeline-title {
+  color: var(--welcome-text, #f9fafb);
+}
+
+.timeline-subtitle {
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: var(--welcome-text-muted, #6b7280);
+  margin: 0;
+  font-weight: 400;
+}
+
+.dark .timeline-subtitle {
+  color: var(--welcome-text-muted, #9ca3af);
+}
+
+/* Content */
+.timeline-content {
+  width: 100%;
+}
+
+/* Month Headers */
+.timeline-content h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 48px 0 24px;
+  padding: 16px 20px;
+  background: var(--welcome-card-hover, #f9fafb);
+  border-left: 4px solid var(--welcome-accent, #2563eb);
+  border-radius: 8px;
+  color: var(--welcome-text, #1a1a1a);
+  letter-spacing: -0.01em;
+}
+
+.dark .timeline-content h2 {
+  background: var(--welcome-card-hover, #252b3b);
+  border-color: var(--welcome-accent, #3b82f6);
+  color: var(--welcome-text, #f9fafb);
+}
+
+.timeline-content h2:first-of-type {
+  margin-top: 0;
+}
+
+/* Date Headers (h3) */
+.timeline-content h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 32px 0 16px;
+  color: var(--welcome-accent, #2563eb);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dark .timeline-content h3 {
+  color: var(--welcome-accent, #3b82f6);
+}
+
+.timeline-content h3::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  background: var(--welcome-accent, #2563eb);
+  border-radius: 50%;
+  border: 3px solid var(--welcome-bg, #ffffff);
+  box-shadow: 0 0 0 2px var(--welcome-accent, #2563eb);
+}
+
+.dark .timeline-content h3::before {
+  background: var(--welcome-accent, #3b82f6);
+  border-color: var(--welcome-bg, #0f1419);
+  box-shadow: 0 0 0 2px var(--welcome-accent, #3b82f6);
+}
+
+/* Milestone Markers */
+.timeline-content h3:has(+ p > strong:first-child) {
+  color: var(--welcome-text, #1a1a1a);
+  font-size: 1.125rem;
+  margin: 40px 0 16px;
+}
+
+.dark .timeline-content h3:has(+ p > strong:first-child) {
+  color: var(--welcome-text, #f9fafb);
+}
+
+.timeline-content h3:has(+ p > strong:first-child)::before {
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  border-color: var(--welcome-bg, #ffffff);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.3);
+}
+
+.dark .timeline-content h3:has(+ p > strong:first-child)::before {
+  border-color: var(--welcome-bg, #0f1419);
+}
+
+/* Milestone Content */
+.timeline-content h3 + p > strong:first-child {
+  display: block;
+  font-size: 1.125rem;
+  color: var(--welcome-text, #1a1a1a);
+  margin-bottom: 8px;
+}
+
+.dark .timeline-content h3 + p > strong:first-child {
+  color: var(--welcome-text, #f9fafb);
+}
+
+/* Timeline Items (links) */
+.timeline-content a[href^="/"] {
+  display: block;
+  padding: 16px 20px;
+  background: var(--welcome-card-bg, #ffffff);
+  border: 1px solid var(--welcome-border, #e5e7eb);
+  border-radius: 8px;
+  margin: 12px 0;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  color: var(--welcome-text, #1a1a1a);
+  font-weight: 600;
+}
+
+.dark .timeline-content a[href^="/"] {
+  background: var(--welcome-card-bg, #1a1f2e);
+  border-color: var(--welcome-border, #1f2937);
+  color: var(--welcome-text, #f9fafb);
+}
+
+.timeline-content a[href^="/"]:hover {
+  border-color: var(--welcome-accent, #2563eb);
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.dark .timeline-content a[href^="/"]:hover {
+  border-color: var(--welcome-accent, #3b82f6);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Category Badges */
+.timeline-content span[style*="background"] {
+  display: inline-block !important;
+  padding: 4px 10px !important;
+  border-radius: 12px !important;
+  font-size: 0.8125rem !important;
+  font-weight: 500 !important;
+  margin-left: 0 !important;
+  margin-right: 8px !important;
+}
+
+/* Read Time */
+.timeline-content span[style*="color"][style*="fontSize"] {
+  font-size: 0.875rem !important;
+  color: var(--welcome-text-muted, #6b7280) !important;
+  font-weight: 400 !important;
+}
+
+.dark .timeline-content span[style*="color"][style*="fontSize"] {
+  color: var(--welcome-text-muted, #9ca3af) !important;
+}
+
+/* Paragraphs */
+.timeline-content p {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--welcome-text-muted, #6b7280);
+  margin: 0 0 16px;
+}
+
+.dark .timeline-content p {
+  color: var(--welcome-text-muted, #9ca3af);
+}
+
+/* Horizontal Rules */
+.timeline-content hr {
+  border: none;
+  height: 1px;
+  background: var(--welcome-border, #e5e7eb);
+  margin: 24px 0;
+}
+
+.dark .timeline-content hr {
+  background: var(--welcome-border, #1f2937);
+}
+
+/* Timeline Categories Section */
+.timeline-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0;
+  display: grid;
+  gap: 12px;
+}
+
+.timeline-content li {
+  padding: 12px 16px;
+  background: var(--welcome-card-bg, #ffffff);
+  border: 1px solid var(--welcome-border, #e5e7eb);
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--welcome-text-muted, #6b7280);
+}
+
+.dark .timeline-content li {
+  background: var(--welcome-card-bg, #1a1f2e);
+  border-color: var(--welcome-border, #1f2937);
+  color: var(--welcome-text-muted, #9ca3af);
+}
+
+.timeline-content li strong {
+  color: var(--welcome-text, #1a1a1a);
+  font-weight: 600;
+}
+
+.dark .timeline-content li strong {
+  color: var(--welcome-text, #f9fafb);
+}
+
+/* Footer Note */
+.timeline-content > p:last-child {
+  text-align: center;
+  font-style: italic;
+  color: var(--welcome-text-muted, #6b7280);
+  margin-top: 40px;
+  padding: 20px;
+  background: var(--welcome-card-hover, #f9fafb);
+  border-radius: 8px;
+}
+
+.dark .timeline-content > p:last-child {
+  color: var(--welcome-text-muted, #9ca3af);
+  background: var(--welcome-card-hover, #252b3b);
+}
+
+.timeline-content > p:last-child a {
+  color: var(--welcome-accent, #2563eb);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.dark .timeline-content > p:last-child a {
+  color: var(--welcome-accent, #3b82f6);
+}
+
+.timeline-content > p:last-child a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+  .timeline-grid {
+    padding: 0 0 40px 0;
+    gap: 50px;
+  }
+
+  .timeline-title {
+    font-size: 2.5rem;
+  }
+
+  .timeline-subtitle {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .timeline-grid {
+    padding: 0 0 40px 0;
+    gap: 40px;
+  }
+
+  .timeline-content h2 {
+    font-size: 1.375rem;
+    padding: 14px 18px;
+  }
+
+  .timeline-content a[href^="/"] {
+    padding: 14px 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .timeline-grid {
+    padding: 0 0 40px 0;
+    gap: 40px;
+  }
+
+  .timeline-title {
+    font-size: 2rem;
+  }
+
+  .timeline-subtitle {
+    font-size: 0.9375rem;
+  }
+
+  .timeline-content h2 {
+    font-size: 1.25rem;
+    padding: 12px 16px;
+  }
+
+  .timeline-content h3 {
+    font-size: 0.9375rem;
+  }
+
+  .timeline-content a[href^="/"] {
+    padding: 12px 16px;
+  }
+}
