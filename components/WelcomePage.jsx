@@ -109,7 +109,7 @@ export default function WelcomePage() {
               </span>
             </a>
 
-            <a href="/sre/k3s-to-kubeadm-migration" className="welcome-featured-card">
+            <a href="/sre/migrating-from-k3s-to-kubeadm" className="welcome-featured-card">
               <div className="welcome-featured-meta">
                 <span className="welcome-featured-tag">SRE</span>
                 <span>Recent</span>
