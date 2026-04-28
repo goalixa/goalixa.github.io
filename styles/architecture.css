@@ -1,0 +1,400 @@
+/* Architecture Page - Minimal Modern Design */
+
+/* Container */
+.arch-container {
+  position: relative;
+  color: var(--welcome-text, #1a1a1a);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.dark .arch-container {
+  color: var(--welcome-text, #f9fafb);
+}
+
+/* Grid Layout */
+.arch-grid {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 0 40px 0;
+  display: grid;
+  gap: 60px;
+}
+
+/* Header */
+.arch-header {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.arch-title {
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0 0 12px;
+  letter-spacing: -0.02em;
+  color: var(--welcome-text, #1a1a1a);
+}
+
+.dark .arch-title {
+  color: var(--welcome-text, #f9fafb);
+}
+
+.arch-updated {
+  font-size: 0.9375rem;
+  color: var(--welcome-text-muted, #6b7280);
+  margin: 0;
+}
+
+.dark .arch-updated {
+  color: var(--welcome-text-muted, #9ca3af);
+}
+
+/* Section */
+.arch-section {
+  width: 100%;
+}
+
+.arch-section-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: var(--welcome-text, #1a1a1a);
+  letter-spacing: -0.01em;
+}
+
+.dark .arch-section-title {
+  color: var(--welcome-text, #f9fafb);
+}
+
+/* Card */
+.arch-card {
+  background: var(--welcome-card-bg, #ffffff);
+  border: 1px solid var(--welcome-border, #e5e7eb);
+  border-radius: 12px;
+  padding: 28px;
+}
+
+.dark .arch-card {
+  background: var(--welcome-card-bg, #1a1f2e);
+  border-color: var(--welcome-border, #1f2937);
+}
+
+.arch-card p {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--welcome-text-muted, #6b7280);
+  margin: 0 0 16px;
+}
+
+.dark .arch-card p {
+  color: var(--welcome-text-muted, #9ca3af);
+}
+
+.arch-card p:last-child {
+  margin-bottom: 0;
+}
+
+.arch-card strong {
+  color: var(--welcome-text, #1a1a1a);
+  font-weight: 600;
+}
+
+.dark .arch-card strong {
+  color: var(--welcome-text, #f9fafb);
+}
+
+/* Content (MDX) */
+.arch-content {
+  width: 100%;
+}
+
+.arch-content h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 48px 0 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--welcome-border, #e5e7eb);
+  color: var(--welcome-text, #1a1a1a);
+  letter-spacing: -0.01em;
+}
+
+.dark .arch-content h2 {
+  border-color: var(--welcome-border, #1f2937);
+  color: var(--welcome-text, #f9fafb);
+}
+
+.arch-content h2:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.arch-content h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 32px 0 16px;
+  color: var(--welcome-text, #1a1a1a);
+}
+
+.dark .arch-content h3 {
+  color: var(--welcome-text, #f9fafb);
+}
+
+.arch-content h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 24px 0 12px;
+  color: var(--welcome-text, #1a1a1a);
+}
+
+.dark .arch-content h4 {
+  color: var(--welcome-text, #f9fafb);
+}
+
+.arch-content p {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--welcome-text-muted, #6b7280);
+  margin: 0 0 16px;
+}
+
+.dark .arch-content p {
+  color: var(--welcome-text-muted, #9ca3af);
+}
+
+.arch-content strong {
+  color: var(--welcome-text, #1a1a1a);
+  font-weight: 600;
+}
+
+.dark .arch-content strong {
+  color: var(--welcome-text, #f9fafb);
+}
+
+.arch-content code {
+  padding: 2px 6px;
+  background: var(--welcome-card-hover, #f9fafb);
+  border: 1px solid var(--welcome-border, #e5e7eb);
+  border-radius: 4px;
+  font-size: 0.875em;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  color: var(--welcome-accent, #2563eb);
+}
+
+.dark .arch-content code {
+  background: var(--welcome-card-hover, #252b3b);
+  border-color: var(--welcome-border, #1f2937);
+  color: var(--welcome-accent, #3b82f6);
+}
+
+.arch-content pre {
+  background: var(--welcome-card-bg, #ffffff);
+  border: 1px solid var(--welcome-border, #e5e7eb);
+  border-radius: 12px;
+  padding: 20px;
+  overflow-x: auto;
+  margin: 16px 0;
+}
+
+.dark .arch-content pre {
+  background: var(--welcome-card-bg, #1a1f2e);
+  border-color: var(--welcome-border, #1f2937);
+}
+
+.arch-content pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--welcome-text, #1a1a1a);
+  font-size: 0.875rem;
+}
+
+.dark .arch-content pre code {
+  color: var(--welcome-text, #f9fafb);
+}
+
+/* Lists */
+.arch-content ul,
+.arch-content ol {
+  padding-left: 24px;
+  margin: 16px 0;
+}
+
+.arch-content li {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--welcome-text-muted, #6b7280);
+  margin-bottom: 8px;
+}
+
+.dark .arch-content li {
+  color: var(--welcome-text-muted, #9ca3af);
+}
+
+/* Tables */
+.arch-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  background: var(--welcome-card-bg, #ffffff);
+  border: 1px solid var(--welcome-border, #e5e7eb);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.dark .arch-content table {
+  background: var(--welcome-card-bg, #1a1f2e);
+  border-color: var(--welcome-border, #1f2937);
+}
+
+.arch-content th {
+  background: var(--welcome-card-hover, #f9fafb);
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--welcome-text, #1a1a1a);
+  border-bottom: 1px solid var(--welcome-border, #e5e7eb);
+}
+
+.dark .arch-content th {
+  background: var(--welcome-card-hover, #252b3b);
+  color: var(--welcome-text, #f9fafb);
+  border-color: var(--welcome-border, #1f2937);
+}
+
+.arch-content td {
+  padding: 12px 16px;
+  font-size: 0.9375rem;
+  color: var(--welcome-text-muted, #6b7280);
+  border-bottom: 1px solid var(--welcome-border, #e5e7eb);
+}
+
+.dark .arch-content td {
+  color: var(--welcome-text-muted, #9ca3af);
+  border-color: var(--welcome-border, #1f2937);
+}
+
+.arch-content tr:last-child td {
+  border-bottom: none;
+}
+
+.arch-content td strong {
+  color: var(--welcome-text, #1a1a1a);
+}
+
+.dark .arch-content td strong {
+  color: var(--welcome-text, #f9fafb);
+}
+
+/* Blockquotes */
+.arch-content blockquote {
+  padding: 16px 20px;
+  margin: 24px 0;
+  background: var(--welcome-card-hover, #f9fafb);
+  border-left: 4px solid var(--welcome-accent, #2563eb);
+  border-radius: 8px;
+}
+
+.dark .arch-content blockquote {
+  background: var(--welcome-card-hover, #252b3b);
+  border-color: var(--welcome-accent, #3b82f6);
+}
+
+.arch-content blockquote p {
+  margin: 0;
+  color: var(--welcome-text, #1a1a1a);
+}
+
+.dark .arch-content blockquote p {
+  color: var(--welcome-text, #f9fafb);
+}
+
+/* Mermaid Diagrams */
+.arch-content .mermaid {
+  background: var(--welcome-card-bg, #ffffff);
+  border: 1px solid var(--welcome-border, #e5e7eb);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 24px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.dark .arch-content .mermaid {
+  background: var(--welcome-card-bg, #1a1f2e);
+  border-color: var(--welcome-border, #1f2937);
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+  .arch-grid {
+    padding: 0 0 40px 0;
+    gap: 50px;
+  }
+
+  .arch-title {
+    font-size: 2.5rem;
+  }
+
+  .arch-content h2 {
+    font-size: 1.5rem;
+  }
+
+  .arch-content table {
+    font-size: 0.875rem;
+  }
+
+  .arch-content th,
+  .arch-content td {
+    padding: 10px 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .arch-grid {
+    padding: 0 0 40px 0;
+    gap: 50px;
+  }
+
+  .arch-section-title {
+    font-size: 1.5rem;
+  }
+
+  .arch-card {
+    padding: 24px;
+  }
+
+  /* Make tables scrollable on mobile */
+  .arch-content table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .arch-grid {
+    padding: 0 0 40px 0;
+    gap: 40px;
+  }
+
+  .arch-title {
+    font-size: 2rem;
+  }
+
+  .arch-card {
+    padding: 20px;
+  }
+
+  .arch-content h3 {
+    font-size: 1.125rem;
+  }
+
+  .arch-content h4 {
+    font-size: 1rem;
+  }
+}
