@@ -1,17 +1,33 @@
+---
+title: 'PWA Path Change Caused High Latency'
+description: 'Incident report documenting how a path change in the PWA caused high latency and how we diagnosed and fixed it.'
+---
+
+import PostMeta from '../../../components/PostMeta'
+
 # Incident Report: PWA Path Change Caused High Latency
 
-> **Published:** 2026-02-25 | **Section:** Incident Report / SRE | **Author:** Amirreza Rezaie
+<PostMeta
+  date="February 25, 2026"
+  category="Incident Report"
+  readTime="6 min"
+/>
 
 After introducing API Gateway and separating backend services from the frontend, I started to experience real slowness in Goalixa.
 
-Before this, latency was mostly something I saw in SRE dashboards.  
-Now I can feel it directly while using the app, and that gave me much better understanding of what latency means in real product experience.
+Before this, latency was mostly something I saw in SRE dashboards. Now I can feel it directly while using the app, and that gave me much better understanding of what latency means in real product experience.
+
+---
 
 ## Incident Timeline
 
-- **2026-02-24:** I changed the path/routing setup in the PWA.
-- Right after that change, the website became noticeably slow.
-- Monitoring showed latency increase in the PWA service.
+| Time | Event |
+|------|-------|
+| **2026-02-24** | Changed the path/routing setup in the PWA |
+| **Shortly after** | Website became noticeably slow |
+| **Detection** | Monitoring showed latency increase in the PWA service |
+
+---
 
 ## Impact
 
@@ -19,28 +35,48 @@ Now I can feel it directly while using the app, and that gave me much better und
 - Higher latency visible in monitoring graphs
 - Network instability symptoms between frontend and backend paths
 
-## Why This Matters
+---
 
-Even in monolithic systems, latency is critical.  
-In gateway-based and service-separated systems, latency becomes even more sensitive because every extra network hop and misconfiguration adds delay.
+## Root Cause
+
+Even in monolithic systems, latency is critical. In gateway-based and service-separated systems, latency becomes even more sensitive because every extra network hop and misconfiguration adds delay.
+
+The path change introduced inefficient routing that caused multiple unnecessary hops between services.
+
+---
 
 ## Actions Taken
 
-- Fixed major bugs in:
-  - PWA
-  - API Gateway
-  - Core API
-- Reviewed route/path behavior to remove high-latency flow
+Fixed major bugs in:
 
-## Next Optimization Step
+- **PWA** - Corrected path routing configuration
+- **API Gateway** - Optimized request forwarding
+- **Core API** - Reviewed endpoint response times
+
+Reviewed route/path behavior to remove high-latency flow.
+
+---
+
+## Next Optimization Steps
 
 I want to enable caching mechanisms after stabilizing the bug fixes:
 
-- Gateway-level caching where safe
-- Static and edge caching for PWA assets
-- API response caching for read-heavy endpoints
+1. **Gateway-level caching** - Where safe for idempotent requests
+2. **Static and edge caching** - For PWA assets
+3. **API response caching** - For read-heavy endpoints
+
+---
 
 ## Lessons Learned
 
-Seeing latency in charts is useful, but feeling it in real usage is different.  
+Seeing latency in charts is useful, but feeling it in real usage is different.
+
 This incident helped me connect SRE metrics to actual user experience and prioritize bottleneck analysis in both code and network paths.
+
+---
+
+## Related Posts
+
+- [Latency Taught Me Better Software Engineering](/software-engineering/latency-taught-me-better-software-engineering)
+- [API Gateway and PWA Microservices](/platform/api-gateway-pwa-microservices)
+- [Monitoring Stack Setup](/devops/monitoring-stack-prometheus-grafana-alertmanager)

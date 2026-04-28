@@ -1,6 +1,208 @@
 # Goalixa Blog Redesign - Session Notes
 
 **Date:** 2026-04-27
+**Project:** Landing Page & Post Standardization
+**Status:** ✅ Complete
+
+## Summary
+
+Created a beautiful landing page with Goalixa branding and standardized all post components and formatting across the blog.
+
+## Changes Made
+
+### New Components Created
+
+1. **Hero.jsx** - Landing page hero section with:
+   - Goalixa logo display
+   - Title and subtitle
+   - Call-to-action buttons (Explore Posts, Read the Journey)
+   - Stats section (20+ Articles, 6 Categories, 1 Platform)
+
+2. **CategoryCard.jsx** - Standardized category display card with:
+   - Icon support
+   - Title and description
+   - Post count display
+   - Hover effects
+
+3. **PostMeta.jsx** - Standardized post metadata header with:
+   - Publication date
+   - Category badge
+   - Read time
+   - Author avatar and name
+
+4. **SectionHeader.jsx** - Consistent section headers with:
+   - Title and description
+   - Optional action link with arrow
+
+### Updated Components
+
+- **PostCard.jsx** - Enhanced with read time, better structure
+- **FeaturedPosts.jsx** - Updated to match new design system
+
+### New CSS Sections Added (styles.css)
+
+- **Landing Hero** - Full viewport hero with gradient background
+- **Buttons** - `.btn-primary` and `.btn-secondary` styles
+- **Stats** - Landing page statistics display
+- **Category Cards** - Grid layout for categories
+- **Post Cards** - Featured and regular post cards
+- **Post Meta Header** - Metadata display for posts
+- **Section Headers** - Consistent section titling
+- **Quick Links** - Navigation grid
+- **Author Section** - Profile display component
+- **Responsive styles** - Mobile-first breakpoints
+
+### Pages Updated
+
+- **pages/index.mdx** - Complete redesign with:
+  - Hero section with Goalixa logo
+  - Featured posts section
+  - Browse by category grid
+  - Quick navigation links
+  - Tech stack display
+  - Author bio section
+
+- **pages/posts/index.mdx** - New posts landing page with:
+  - Category grid
+  - Recent posts list
+  - Other sections links
+
+- **pages/posts/_meta.js** - Added index page configuration
+
+### Posts Standardized
+
+Updated posts to use the new PostMeta component format:
+- `/posts/incident-reports/pwa-path-latency-incident.mdx`
+- `/posts/ai/syntra-architecture.mdx`
+- `/posts/gitops/argocd-first-step.mdx`
+- `/sre/migrating-from-k3s-to-kubeadm.mdx`
+
+### Design Principles Applied
+
+1. **Consistent Structure** - All posts use PostMeta component
+2. **CSS Variables** - All colors use theme variables
+3. **Dark Mode Support** - All components work in both themes
+4. **Responsive Design** - Mobile-first with breakpoints
+5. **No Emojis** - Clean, professional look using text/icons
+6. **Clear Hierarchy** - Section headers with descriptions
+
+## Files Created/Modified
+
+**Created:**
+- `components/Hero.jsx`
+- `components/CategoryCard.jsx`
+- `components/PostMeta.jsx`
+- `components/SectionHeader.jsx`
+- `pages/posts/index.mdx`
+
+**Modified:**
+- `styles.css` (added 350+ lines)
+- `pages/index.mdx` (complete rewrite)
+- `pages/posts/_meta.js`
+- `components/PostCard.jsx`
+- `components/FeaturedPosts.jsx`
+- Multiple post files (standardized format)
+
+## Post Format Standard
+
+All posts should follow this structure:
+
+```mdx
+---
+title: 'Post Title'
+description: 'Brief description for SEO'
+---
+
+import PostMeta from '../../../components/PostMeta'
+
+# Post Title
+
+<PostMeta
+  date="Month Day, Year"
+  category="Category Name"
+  readTime="X min"
+/>
+
+Content here...
+
+---
+
+## Related Posts
+
+- [Related Post](/path/to/post)
+```
+
+## Next Steps
+
+- Apply PostMeta to remaining posts
+- Consider adding related posts component
+- Add RSS feed generation
+
+---
+
+**Date:** 2026-04-27
+**Project:** About Me Page - Design System Refactor
+**Status:** ✅ Complete
+
+## Summary
+
+Refactored the About Me page to follow the existing design system by removing inline styles, using CSS variables and classes from `styles.css`, and improving dark mode support and maintainability.
+
+## Changes Made
+
+### Design Improvements
+- Replaced hardcoded inline styles with CSS classes from `styles.css`
+- Migrated to CSS variables (`--card-bg`, `--link`, `--accent-bg`, `--border`, etc.)
+- Removed all emojis (💼, 💻, 🎯) for a cleaner professional look
+- Improved dark mode support by using CSS variables instead of hardcoded colors
+- Better responsive design by leveraging existing responsive CSS classes
+
+### Component Usage
+- Used `.profile-card` and `.profile-avatar` for profile section
+- Used `.about-links` and `.about-link` for social links
+- Used `.card` class for work experience section
+- Used `.badge` class for technology tags
+- Used `.featured-post` and `.card` for featured work links
+
+### Structure Improvements
+- Simplified markup by removing nested divs with inline styles
+- Consistent spacing and typography throughout
+- Better semantic structure
+- More maintainable codebase
+
+## Files Modified
+- `pages/about.mdx` - Complete refactor of all sections
+
+## Design Principles Applied
+1. **Use design system** - Leveraged predefined CSS classes
+2. **CSS variables** - Used theme variables for colors
+3. **No hardcoded colors** - Removed all hex color values
+4. **Dark mode first** - CSS variables ensure proper theme switching
+5. **No emojis** - Clean, professional aesthetic
+6. **Maintainability** - Easier to update and modify
+
+## Before/After Comparison
+
+**Before:**
+- Heavy inline styles with hardcoded colors
+- Emojis in connect section
+- Poor dark mode support
+- Inconsistent spacing
+
+**After:**
+- Clean CSS classes from design system
+- No emojis
+- Full dark mode support via CSS variables
+- Consistent spacing using predefined classes
+
+## Next Steps
+- Page is ready for production
+- All sections now follow the design system
+- Dark/light theme will work correctly
+
+---
+
+**Date:** 2026-04-27
 **Project:** Goalixa Blog - Complete Structure & UI Improvement
 **Status:** ✅ Complete
 
