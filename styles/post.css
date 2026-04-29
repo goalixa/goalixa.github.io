@@ -1,18 +1,19 @@
-/* Individual Blog Post - Enhanced Reading Experience */
+/* Individual Blog Post - Enhanced Reading Experience with Hybrid Width */
 
-/* Article Container */
+/* Article Container - wider for technical content */
 article {
-  max-width: 750px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 20px 0;
+  padding: 20px 24px;
 }
 
-/* Enhanced Typography */
+/* Enhanced Typography - Narrow for readability */
 article h1 {
   font-size: 2.5rem;
   font-weight: 800;
   line-height: 1.15;
-  margin: 0 0 24px;
+  margin: 0 auto 24px;
+  max-width: 800px;
   letter-spacing: -0.02em;
   color: var(--welcome-text, #1a1a1a);
 }
@@ -24,7 +25,8 @@ article h1 {
 article h2 {
   font-size: 1.75rem;
   font-weight: 700;
-  margin: 48px 0 20px;
+  margin: 48px auto 20px;
+  max-width: 800px;
   padding-top: 24px;
   border-top: 1px solid var(--welcome-border, #e5e7eb);
   color: var(--welcome-text, #1a1a1a);
@@ -44,7 +46,8 @@ article h2:first-of-type {
 article h3 {
   font-size: 1.375rem;
   font-weight: 600;
-  margin: 32px 0 16px;
+  margin: 32px auto 16px;
+  max-width: 800px;
   color: var(--welcome-text, #1a1a1a);
   scroll-margin-top: 80px;
 }
@@ -56,7 +59,8 @@ article h3 {
 article h4 {
   font-size: 1.125rem;
   font-weight: 600;
-  margin: 24px 0 12px;
+  margin: 24px auto 12px;
+  max-width: 800px;
   color: var(--welcome-text, #1a1a1a);
 }
 
@@ -64,11 +68,13 @@ article h4 {
   color: var(--welcome-text, #f9fafb);
 }
 
+/* Paragraphs - narrow for readability (800px) */
 article p {
   font-size: 1.0625rem;
   line-height: 1.8;
   color: var(--welcome-text-muted, #6b7280);
-  margin: 0 0 20px;
+  margin: 0 auto 20px;
+  max-width: 800px;
 }
 
 .dark article p {
@@ -90,7 +96,8 @@ article > blockquote:first-of-type {
   border-left: 4px solid var(--welcome-accent, #2563eb);
   border-radius: 8px;
   padding: 16px 20px;
-  margin: 0 0 32px;
+  margin: 0 auto 32px;
+  max-width: 800px;
   font-size: 0.9375rem;
 }
 
@@ -101,6 +108,7 @@ article > blockquote:first-of-type {
 
 article > blockquote:first-of-type p {
   margin: 0;
+  max-width: none;
   color: var(--welcome-text, #1a1a1a);
 }
 
@@ -117,10 +125,11 @@ article > blockquote:first-of-type strong {
   color: var(--welcome-accent, #3b82f6);
 }
 
-/* Regular Blockquotes */
+/* Regular Blockquotes - narrow like text */
 article blockquote {
   padding: 16px 20px;
-  margin: 24px 0;
+  margin: 24px auto;
+  max-width: 800px;
   background: var(--welcome-card-bg, #ffffff);
   border-left: 4px solid var(--welcome-border, #e5e7eb);
   border-radius: 8px;
@@ -131,11 +140,12 @@ article blockquote {
   border-color: var(--welcome-border, #1f2937);
 }
 
-/* Lists */
+/* Lists - narrow for readability */
 article ul,
 article ol {
   padding-left: 28px;
-  margin: 20px 0;
+  margin: 20px auto;
+  max-width: 800px;
 }
 
 article li {
@@ -181,14 +191,15 @@ article code {
   color: var(--welcome-accent, #3b82f6);
 }
 
-/* Code Blocks */
+/* Code Blocks - wide for long code lines (1200px) */
 article pre {
   background: var(--welcome-card-bg, #ffffff);
   border: 1px solid var(--welcome-border, #e5e7eb);
   border-radius: 12px;
   padding: 20px;
   overflow-x: auto;
-  margin: 24px 0;
+  margin: 24px auto;
+  max-width: 1200px;
   line-height: 1.6;
 }
 
@@ -231,12 +242,14 @@ article a:hover {
   color: var(--welcome-accent, #60a5fa);
 }
 
-/* Images */
+/* Images - medium width for visual content (1000px) */
 article img {
-  max-width: 100%;
+  max-width: 1000px;
+  width: 100%;
   height: auto;
   border-radius: 12px;
-  margin: 24px 0;
+  margin: 24px auto;
+  display: block;
   border: 1px solid var(--welcome-border, #e5e7eb);
 }
 
@@ -244,11 +257,12 @@ article img {
   border-color: var(--welcome-border, #1f2937);
 }
 
-/* Tables */
+/* Tables - wide for data (1200px) */
 article table {
   width: 100%;
+  max-width: 1200px;
   border-collapse: collapse;
-  margin: 24px 0;
+  margin: 24px auto;
   background: var(--welcome-card-bg, #ffffff);
   border: 1px solid var(--welcome-border, #e5e7eb);
   border-radius: 12px;
@@ -324,10 +338,11 @@ article hr {
   background: linear-gradient(90deg, var(--welcome-accent, #3b82f6), #60a5fa);
 }
 
-/* Callout Boxes */
+/* Callout Boxes - narrow like text (800px) */
 .callout {
   padding: 16px 20px;
-  margin: 24px 0;
+  margin: 24px auto;
+  max-width: 800px;
   border-radius: 8px;
   border-left: 4px solid;
 }
@@ -399,6 +414,7 @@ article hr {
 
 .callout p {
   margin: 0;
+  max-width: none; /* Remove inherited max-width */
   font-size: 1rem;
 }
 

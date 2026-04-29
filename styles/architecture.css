@@ -11,13 +11,13 @@
   color: var(--welcome-text, #f9fafb);
 }
 
-/* Grid Layout */
+/* Grid Layout - Hybrid Width System */
 .arch-grid {
   position: relative;
   width: 100%;
-  max-width: 1000px;
+  max-width: 1400px; /* Wider container for technical content */
   margin: 0 auto;
-  padding: 0 0 40px 0;
+  padding: 0 24px 40px 24px;
   display: grid;
   gap: 60px;
 }
@@ -106,19 +106,21 @@
   color: var(--welcome-text, #f9fafb);
 }
 
-/* Content (MDX) */
+/* Content (MDX) - Hybrid Width System */
 .arch-content {
   width: 100%;
 }
 
+/* Text content - narrow for readability */
 .arch-content h2 {
   font-size: 1.75rem;
   font-weight: 700;
-  margin: 48px 0 24px;
+  margin: 48px auto 24px;
   padding-top: 24px;
   border-top: 1px solid var(--welcome-border, #e5e7eb);
   color: var(--welcome-text, #1a1a1a);
   letter-spacing: -0.01em;
+  max-width: 800px;
 }
 
 .dark .arch-content h2 {
@@ -135,8 +137,9 @@
 .arch-content h3 {
   font-size: 1.25rem;
   font-weight: 600;
-  margin: 32px 0 16px;
+  margin: 32px auto 16px;
   color: var(--welcome-text, #1a1a1a);
+  max-width: 800px;
 }
 
 .dark .arch-content h3 {
@@ -146,19 +149,22 @@
 .arch-content h4 {
   font-size: 1.125rem;
   font-weight: 600;
-  margin: 24px 0 12px;
+  margin: 24px auto 12px;
   color: var(--welcome-text, #1a1a1a);
+  max-width: 800px;
 }
 
 .dark .arch-content h4 {
   color: var(--welcome-text, #f9fafb);
 }
 
+/* Paragraphs - narrow for readability (800px) */
 .arch-content p {
   font-size: 1rem;
   line-height: 1.7;
   color: var(--welcome-text-muted, #6b7280);
-  margin: 0 0 16px;
+  margin: 0 auto 16px;
+  max-width: 800px;
 }
 
 .dark .arch-content p {
@@ -190,13 +196,15 @@
   color: var(--welcome-accent, #3b82f6);
 }
 
+/* Code blocks - wide for long code lines (1200px) */
 .arch-content pre {
   background: var(--welcome-card-bg, #ffffff);
   border: 1px solid var(--welcome-border, #e5e7eb);
   border-radius: 12px;
   padding: 20px;
   overflow-x: auto;
-  margin: 16px 0;
+  margin: 24px auto;
+  max-width: 1200px;
 }
 
 .dark .arch-content pre {
@@ -216,11 +224,12 @@
   color: var(--welcome-text, #f9fafb);
 }
 
-/* Lists */
+/* Lists - narrow for readability */
 .arch-content ul,
 .arch-content ol {
   padding-left: 24px;
-  margin: 16px 0;
+  margin: 16px auto;
+  max-width: 800px;
 }
 
 .arch-content li {
@@ -234,11 +243,12 @@
   color: var(--welcome-text-muted, #9ca3af);
 }
 
-/* Tables */
+/* Tables - wide for data (1200px) */
 .arch-content table {
   width: 100%;
+  max-width: 1200px;
   border-collapse: collapse;
-  margin: 24px 0;
+  margin: 24px auto;
   background: var(--welcome-card-bg, #ffffff);
   border: 1px solid var(--welcome-border, #e5e7eb);
   border-radius: 12px;
@@ -290,10 +300,11 @@
   color: var(--welcome-text, #f9fafb);
 }
 
-/* Blockquotes */
+/* Blockquotes - narrow like text */
 .arch-content blockquote {
   padding: 16px 20px;
-  margin: 24px 0;
+  margin: 24px auto;
+  max-width: 800px;
   background: var(--welcome-card-hover, #f9fafb);
   border-left: 4px solid var(--welcome-accent, #2563eb);
   border-radius: 8px;
@@ -307,21 +318,24 @@
 .arch-content blockquote p {
   margin: 0;
   color: var(--welcome-text, #1a1a1a);
+  max-width: none; /* Remove inner p max-width */
 }
 
 .dark .arch-content blockquote p {
   color: var(--welcome-text, #f9fafb);
 }
 
-/* Mermaid Diagrams */
+/* Mermaid Diagrams - wide for complex diagrams (1200px) */
 .arch-content .mermaid {
   background: var(--welcome-card-bg, #ffffff);
   border: 1px solid var(--welcome-border, #e5e7eb);
   border-radius: 12px;
   padding: 24px;
-  margin: 24px 0;
+  margin: 32px auto;
+  max-width: 1200px;
   display: flex;
   justify-content: center;
+  overflow-x: auto;
 }
 
 .dark .arch-content .mermaid {
