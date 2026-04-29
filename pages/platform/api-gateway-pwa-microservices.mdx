@@ -1,6 +1,13 @@
+import Breadcrumbs from '../../components/Breadcrumbs'
+import { CalloutInfo, CalloutWarning } from '../../components/Callout'
+import PostNavigation from '../../components/PostNavigation'
+import RelatedPosts from '../../components/RelatedPosts'
+
+<Breadcrumbs />
+
 # From Fragmented UIs to One PWA: Why API Gateway Is Step One for Real Microservices
 
-> **Published:** 2026-02-19 | **Section:** Architecture & Platform | **Author:** Amirreza Rezaie
+> **Published:** 2026-02-19 | **Section:** Architecture & Platform | **Author:** Amirreza Rezaie | **Reading Time:** 6 min
 
 Many teams think "microservices" only means splitting backend services. In practice, if UIs are also fragmented (for example, separate auth UI, separate app UI, separate timer UI), product complexity increases and delivery slows down.
 
@@ -16,6 +23,10 @@ In short:
 PWA (app.goalixa.com) -> API Gateway/BFF -> auth / timer / app-core services
 ```
 
+<CalloutInfo title="💡 Key Insight">
+The API Gateway/BFF pattern isn't just about routing - it's about creating a clean separation between frontend and backend concerns while maintaining a unified user experience.
+</CalloutInfo>
+
 ## Problems We Are Currently Dealing With
 
 Right now, we are facing issues on multiple fronts:
@@ -26,24 +37,24 @@ Right now, we are facing issues on multiple fronts:
 - Backend traffic and UI traffic are not cleanly separated, which makes routing, security policy enforcement, and debugging more difficult.
 - As the system grows, this setup increases operational overhead and slows down product iteration.
 
-This is why we are actively investigating an `API Gateway + BFF` approach.  
+This is why we are actively investigating an `API Gateway + BFF` approach.
 With this model, we can manage traffic through clear path-based rules, separate UI concerns from backend concerns, and move toward a more practical microservices architecture.
 
 ## Why this is the right direction
 
-1. Unified user experience  
+1. Unified user experience
 Users do not jump between different UIs. Login, timer, and core product flows stay in one consistent app experience.
 
-2. Faster UI delivery  
+2. Faster UI delivery
 One frontend codebase, one design system, and one release flow. Less duplication in forms, state handling, and routing.
 
-3. Cleaner backend boundaries  
+3. Cleaner backend boundaries
 When services do not own UI, each service can focus on its domain: `auth` for identity/session, `timer` for scheduling/runs, and so on.
 
-4. Better security and control  
+4. Better security and control
 With an API Gateway/BFF model, policies are centralized: auth forwarding, rate limiting, logging, tracing, and error standards.
 
-5. A practical path to real microservices  
+5. A practical path to real microservices
 This is not only technical separation. It also clarifies ownership, responsibilities, and deployment boundaries.
 
 ## What API Gateway/BFF does
@@ -65,13 +76,17 @@ Even with a single UI, auth should remain an independent backend service. Practi
 - Clear endpoints: `login`, `logout`, `refresh`, `me`
 - Authorization enforced in backend services (not only in UI)
 
+<CalloutWarning title="⚠️ Security Note">
+Never rely solely on frontend authentication. Always enforce authorization in your backend services to prevent unauthorized access.
+</CalloutWarning>
+
 ## Low-risk migration path
 
-1. Discovery: map all current UIs, routes, and dependencies  
-2. Contract First: finalize OpenAPI contracts for auth/timer/app  
-3. Gateway First: move PWA traffic behind one API entry point  
-4. Auth Unification: move all auth UI flows into the PWA  
-5. Strangler Rollout: migrate modules gradually with feature flags  
+1. Discovery: map all current UIs, routes, and dependencies
+2. Contract First: finalize OpenAPI contracts for auth/timer/app
+3. Gateway First: move PWA traffic behind one API entry point
+4. Auth Unification: move all auth UI flows into the PWA
+5. Strangler Rollout: migrate modules gradually with feature flags
 6. Decommission: retire old UIs and enforce strong monitoring
 
 ## Summary
@@ -79,3 +94,37 @@ Even with a single UI, auth should remain an independent backend service. Practi
 Fully separating frontend from services and consolidating UI into one PWA, together with API Gateway, is not a cosmetic change. It is a foundational architecture move that makes the product simpler, safer, and more scalable.
 
 If Goalixa is moving toward practical microservices, this is one of the best starting points.
+
+---
+
+<PostNavigation
+  previousPost={{
+    title: "Removing UI from Legacy Auth: Redirection Strategy",
+    href: "/platform/removing-ui-from-legacy-auth-redirection"
+  }}
+  nextPost={{
+    title: "Migrating Monolithic to Microservices",
+    href: "/platform/migrate-monolithic-to-microservice"
+  }}
+/>
+
+<RelatedPosts posts={[
+  {
+    title: "Migrating to PWA Successfully",
+    href: "/platform/migrate-to-pwa-success-fully",
+    category: "Platform",
+    description: "Complete guide to transforming a traditional web app into a Progressive Web Application with offline support."
+  },
+  {
+    title: "Event-Driven Architecture with NATS",
+    href: "/platform/event-driven-architecture-nats",
+    category: "Platform",
+    description: "Future plans for implementing event-driven patterns in Goalixa using NATS messaging."
+  },
+  {
+    title: "Why Goalixa is AI-Developed",
+    href: "/platform/why-goalixa-is-ai-developed",
+    category: "Software Engineering",
+    description: "How AI-assisted development accelerated the Goalixa platform build process."
+  }
+]} />

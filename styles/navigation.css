@@ -1,0 +1,340 @@
+/* Post Navigation & Related Content Styles */
+
+/* Breadcrumbs */
+.breadcrumbs {
+  margin: 0 0 24px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--welcome-border, #e5e7eb);
+}
+
+.dark .breadcrumbs {
+  border-color: var(--welcome-border, #1f2937);
+}
+
+.breadcrumbs-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 8px;
+}
+
+.breadcrumbs-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+}
+
+.breadcrumbs-link {
+  color: var(--welcome-text-muted, #6b7280);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.dark .breadcrumbs-link {
+  color: var(--welcome-text-muted, #9ca3af);
+}
+
+.breadcrumbs-link:hover {
+  color: var(--welcome-accent, #2563eb);
+}
+
+.dark .breadcrumbs-link:hover {
+  color: var(--welcome-accent, #3b82f6);
+}
+
+.breadcrumbs-separator {
+  color: var(--welcome-text-muted, #6b7280);
+  opacity: 0.5;
+}
+
+.dark .breadcrumbs-separator {
+  color: var(--welcome-text-muted, #9ca3af);
+}
+
+.breadcrumbs-current {
+  color: var(--welcome-text, #1a1a1a);
+  font-weight: 500;
+}
+
+.dark .breadcrumbs-current {
+  color: var(--welcome-text, #f9fafb);
+}
+
+/* Reading Time */
+.reading-time {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.9375rem;
+  color: var(--welcome-text-muted, #6b7280);
+  font-weight: 400;
+}
+
+.dark .reading-time {
+  color: var(--welcome-text-muted, #9ca3af);
+}
+
+/* Post Navigation (Next/Previous) */
+.post-navigation {
+  margin: 60px 0 40px;
+  padding: 32px 0;
+  border-top: 2px solid var(--welcome-border, #e5e7eb);
+  border-bottom: 2px solid var(--welcome-border, #e5e7eb);
+}
+
+.dark .post-navigation {
+  border-color: var(--welcome-border, #1f2937);
+}
+
+.post-nav-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.post-nav-link {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  background: var(--welcome-card-bg, #ffffff);
+  border: 1px solid var(--welcome-border, #e5e7eb);
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.dark .post-nav-link {
+  background: var(--welcome-card-bg, #1a1f2e);
+  border-color: var(--welcome-border, #1f2937);
+}
+
+.post-nav-link:hover {
+  border-color: var(--welcome-accent, #2563eb);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.dark .post-nav-link:hover {
+  border-color: var(--welcome-accent, #3b82f6);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.post-nav-prev {
+  grid-column: 1;
+}
+
+.post-nav-next {
+  grid-column: 2;
+  text-align: right;
+  align-items: flex-end;
+}
+
+.post-nav-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--welcome-text-muted, #6b7280);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dark .post-nav-label {
+  color: var(--welcome-text-muted, #9ca3af);
+}
+
+.post-nav-label svg {
+  color: var(--welcome-accent, #2563eb);
+}
+
+.dark .post-nav-label svg {
+  color: var(--welcome-accent, #3b82f6);
+}
+
+.post-nav-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--welcome-text, #1a1a1a);
+  line-height: 1.4;
+}
+
+.dark .post-nav-title {
+  color: var(--welcome-text, #f9fafb);
+}
+
+/* Single post (when only one nav link) */
+.post-nav-grid:has(.post-nav-link:only-child) {
+  grid-template-columns: 1fr;
+}
+
+.post-nav-grid:has(.post-nav-link:only-child) .post-nav-next {
+  grid-column: 1;
+}
+
+/* Related Posts */
+.related-posts {
+  margin: 60px 0 40px;
+}
+
+.related-posts-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 24px;
+  color: var(--welcome-text, #1a1a1a);
+  letter-spacing: -0.01em;
+}
+
+.dark .related-posts-title {
+  color: var(--welcome-text, #f9fafb);
+}
+
+.related-posts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.related-post-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  background: var(--welcome-card-bg, #ffffff);
+  border: 1px solid var(--welcome-border, #e5e7eb);
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.dark .related-post-card {
+  background: var(--welcome-card-bg, #1a1f2e);
+  border-color: var(--welcome-border, #1f2937);
+}
+
+.related-post-card:hover {
+  border-color: var(--welcome-accent, #2563eb);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.dark .related-post-card:hover {
+  border-color: var(--welcome-accent, #3b82f6);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.related-post-category {
+  display: inline-block;
+  padding: 4px 10px;
+  background: var(--welcome-card-hover, #f9fafb);
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--welcome-accent, #2563eb);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  width: fit-content;
+}
+
+.dark .related-post-category {
+  background: var(--welcome-card-hover, #252b3b);
+  color: var(--welcome-accent, #3b82f6);
+}
+
+.related-post-title {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--welcome-text, #1a1a1a);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.dark .related-post-title {
+  color: var(--welcome-text, #f9fafb);
+}
+
+.related-post-description {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--welcome-text-muted, #6b7280);
+  margin: 0;
+  flex-grow: 1;
+}
+
+.dark .related-post-description {
+  color: var(--welcome-text-muted, #9ca3af);
+}
+
+.related-post-link {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--welcome-accent, #2563eb);
+}
+
+.dark .related-post-link {
+  color: var(--welcome-accent, #3b82f6);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .breadcrumbs-list {
+    gap: 6px;
+  }
+
+  .breadcrumbs-item {
+    font-size: 0.8125rem;
+  }
+
+  .post-nav-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .post-nav-next {
+    text-align: left;
+    align-items: flex-start;
+  }
+
+  .post-nav-prev {
+    grid-column: 1;
+  }
+
+  .post-nav-next {
+    grid-column: 1;
+  }
+
+  .related-posts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .related-posts {
+    margin: 40px 0 32px;
+  }
+
+  .post-navigation {
+    margin: 40px 0 32px;
+    padding: 24px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .breadcrumbs {
+    margin-bottom: 16px;
+  }
+
+  .post-nav-link {
+    padding: 16px;
+  }
+
+  .post-nav-title {
+    font-size: 1rem;
+  }
+
+  .related-post-card {
+    padding: 16px;
+  }
+}

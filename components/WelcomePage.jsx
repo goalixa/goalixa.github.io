@@ -1,3 +1,6 @@
+import Search from './Search'
+import { posts } from '../data/posts'
+
 export default function WelcomePage() {
   return (
     <div className="welcome-container">
@@ -12,6 +15,10 @@ export default function WelcomePage() {
             Deep technical explorations into microservices, Kubernetes, GitOps, and platform engineering.
             Real production stories, architecture decisions, and lessons learned.
           </p>
+
+          <div style={{ marginTop: '32px', marginBottom: '32px', display: 'flex', justifyContent: 'center' }}>
+            <Search posts={posts} />
+          </div>
 
           <div className="welcome-cta-group">
             <a href="/posts" className="welcome-btn welcome-btn-primary">

@@ -6,6 +6,9 @@ import '../styles/architecture.css'
 import '../styles/timeline.css'
 import '../styles/category.css'
 import '../styles/post.css'
+import '../styles/navigation.css'
+import '../styles/search.css'
+import '../styles/mobile.css'
 import ReadingProgress from '../components/ReadingProgress'
 
 export default function App({ Component, pageProps }) {
