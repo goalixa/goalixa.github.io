@@ -97,7 +97,7 @@ export default function AboutPage() {
             </div>
             <div className="about-skill-category">
               <h4 className="about-skill-title">Storage</h4>
-              <p className="about-skill-items">Ceph storage systems</p>
+              <p className="about-skill-items">Longhorn</p>
             </div>
             <div className="about-skill-category">
               <h4 className="about-skill-title">Languages</h4>
@@ -113,7 +113,11 @@ export default function AboutPage() {
             </div>
             <div className="about-skill-category">
               <h4 className="about-skill-title">CI/CD & GitOps</h4>
-              <p className="about-skill-items">ArgoCD, GitHub Actions</p>
+              <p className="about-skill-items">ArgoCD, GitHub Actions, GitLab CI</p>
+            </div>
+            <div className="about-skill-category">
+              <h4 className="about-skill-title">AI</h4>
+              <p className="about-skill-items">Automation With AI, Development With AI, Orchestration with AI</p>
             </div>
           </div>
         </div>
@@ -150,21 +154,21 @@ export default function AboutPage() {
         <div className="about-section">
           <h2 className="about-section-title">Featured Work</h2>
           <div className="about-featured">
-            <a href="/sre/migrating-from-k3s-to-kubeadm" className="about-featured-card">
+            <a href="/sre/migrating-from-k3s-to-kubeadm/" className="about-featured-card">
               <h3 className="about-featured-title">From k3s to kubeadm: My Kubernetes Migration Journey</h3>
               <p className="about-featured-desc">
                 Every infrastructure decision is a trade-off. This documents why I migrated and the practical strategy for the transition.
               </p>
               <span className="about-featured-link">Read more →</span>
             </a>
-            <a href="/software-engineering/latency-taught-me-better-software-engineering" className="about-featured-card">
+            <a href="/software-engineering/latency-taught-me-better-software-engineering/" className="about-featured-card">
               <h3 className="about-featured-title">Latency Taught Me Better Software Engineering</h3>
               <p className="about-featured-desc">
                 The mindset shift when performance moved from a dashboard metric to something I could feel directly.
               </p>
               <span className="about-featured-link">Read more →</span>
             </a>
-            <a href="/posts/incident-reports/pwa-path-latency-incident" className="about-featured-card">
+            <a href="/posts/incident-reports/pwa-path-latency-incident/" className="about-featured-card">
               <h3 className="about-featured-title">PWA Path Latency Incident Report</h3>
               <p className="about-featured-desc">
                 A production incident, full timeline, root cause analysis, and lessons learned.

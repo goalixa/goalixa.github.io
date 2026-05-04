@@ -1,4 +1,4 @@
-export default function PostMeta({ date, category, author = "Amirreza Rezaie", readTime }) {
+export default function PostMeta({ date, category, author = "Amirreza Rezaie", readTime, hideAvatar = true }) {
   return (
     <div className="post-meta-header">
       <div className="post-meta-row">
@@ -21,14 +21,16 @@ export default function PostMeta({ date, category, author = "Amirreza Rezaie", r
           </span>
         )}
       </div>
-      <div className="post-meta-author">
-        <img
-          src="/assets/amirreza_rezaie.jpg"
-          alt={author}
-          className="post-meta-avatar"
-        />
-        <span className="post-meta-author-name">{author}</span>
-      </div>
+      {!hideAvatar && (
+        <div className="post-meta-author">
+          <img
+            src="/assets/amirreza_rezaie.jpg"
+            alt={author}
+            className="post-meta-avatar"
+          />
+          <span className="post-meta-author-name">{author}</span>
+        </div>
+      )}
     </div>
   )
 }

@@ -16,35 +16,35 @@ export default function AllPostsPage() {
           <h2 className="posts-section-title">Browse by Category</h2>
 
           <div className="posts-categories">
-            <a href="/posts/goalixa-story" className="posts-category">
+            <a href="/posts/goalixa-story/" className="posts-category">
               <div className="posts-category-icon">Story</div>
               <h3 className="posts-category-title">Goalixa Story</h3>
               <p className="posts-category-desc">The personal journey of building a productivity platform</p>
               <div className="posts-category-count">3 posts</div>
             </a>
 
-            <a href="/posts/gitops" className="posts-category">
+            <a href="/posts/gitops/" className="posts-category">
               <div className="posts-category-icon">GitOps</div>
               <h3 className="posts-category-title">GitOps</h3>
               <p className="posts-category-desc">ArgoCD, deployment automation, and infrastructure as code</p>
               <div className="posts-category-count">2 posts</div>
             </a>
 
-            <a href="/posts/incident-reports" className="posts-category">
+            <a href="/posts/incident-reports/" className="posts-category">
               <div className="posts-category-icon">Alert</div>
               <h3 className="posts-category-title">Incident Reports</h3>
               <p className="posts-category-desc">Production incidents, root cause analysis, and post-mortems</p>
               <div className="posts-category-count">1 post</div>
             </a>
 
-            <a href="/posts/ai" className="posts-category">
+            <a href="/posts/ai/" className="posts-category">
               <div className="posts-category-icon">AI</div>
               <h3 className="posts-category-title">AI & Automation</h3>
               <p className="posts-category-desc">CrewAI, LangChain, and intelligent DevOps assistants</p>
               <div className="posts-category-count">1 post</div>
             </a>
 
-            <a href="/posts/monthly-recaps" className="posts-category">
+            <a href="/posts/monthly-recaps/" className="posts-category">
               <div className="posts-category-icon">Recap</div>
               <h3 className="posts-category-title">Monthly Recaps</h3>
               <p className="posts-category-desc">Monthly progress updates and reflections</p>
@@ -58,7 +58,7 @@ export default function AllPostsPage() {
           <h2 className="posts-section-title">Recent Posts</h2>
 
           <div className="posts-list">
-            <a href="/posts/ai/syntra-architecture" className="posts-card">
+            <a href="/posts/ai/syntra-architecture/" className="posts-card">
               <div className="posts-card-meta">
                 <span className="posts-card-tag">AI</span>
                 <span className="posts-card-date">April 2026</span>
@@ -71,7 +71,7 @@ export default function AllPostsPage() {
               </p>
             </a>
 
-            <a href="/posts/gitops/argocd-applications-sync-strategy" className="posts-card">
+            <a href="/posts/gitops/argocd-applications-sync-strategy/" className="posts-card">
               <div className="posts-card-meta">
                 <span className="posts-card-tag">GitOps</span>
                 <span className="posts-card-date">March 2026</span>
@@ -84,7 +84,7 @@ export default function AllPostsPage() {
               </p>
             </a>
 
-            <a href="/posts/gitops/argocd-first-step" className="posts-card">
+            <a href="/posts/gitops/argocd-first-step/" className="posts-card">
               <div className="posts-card-meta">
                 <span className="posts-card-tag">GitOps</span>
                 <span className="posts-card-date">February 2026</span>
@@ -97,7 +97,7 @@ export default function AllPostsPage() {
               </p>
             </a>
 
-            <a href="/posts/incident-reports/pwa-path-latency-incident" className="posts-card">
+            <a href="/posts/incident-reports/pwa-path-latency-incident/" className="posts-card">
               <div className="posts-card-meta">
                 <span className="posts-card-tag">Incident</span>
                 <span className="posts-card-date">February 2026</span>
@@ -110,7 +110,7 @@ export default function AllPostsPage() {
               </p>
             </a>
 
-            <a href="/posts/goalixa-story/learning-in-wartime-kubernetes-plan" className="posts-card">
+            <a href="/posts/goalixa-story/learning-in-wartime-kubernetes-plan/" className="posts-card">
               <div className="posts-card-meta">
                 <span className="posts-card-tag">Story</span>
                 <span className="posts-card-date">February 2026</span>
@@ -123,7 +123,7 @@ export default function AllPostsPage() {
               </p>
             </a>
 
-            <a href="/posts/goalixa-story/survive-in-war-time" className="posts-card">
+            <a href="/posts/goalixa-story/survive-in-war-time/" className="posts-card">
               <div className="posts-card-meta">
                 <span className="posts-card-tag">Story</span>
                 <span className="posts-card-date">February 2026</span>
@@ -143,19 +143,19 @@ export default function AllPostsPage() {
           <h2 className="posts-section-title">More Topics</h2>
 
           <div className="posts-topics">
-            <a href="/sre" className="posts-topic">
+            <a href="/sre/" className="posts-topic">
               <div className="posts-topic-icon">SRE</div>
               <div className="posts-topic-title">Site Reliability</div>
             </a>
-            <a href="/devops" className="posts-topic">
+            <a href="/devops/" className="posts-topic">
               <div className="posts-topic-icon">Ops</div>
               <div className="posts-topic-title">DevOps</div>
             </a>
-            <a href="/platform" className="posts-topic">
+            <a href="/platform/" className="posts-topic">
               <div className="posts-topic-icon">Arch</div>
               <div className="posts-topic-title">Platform</div>
             </a>
-            <a href="/software-engineering" className="posts-topic">
+            <a href="/software-engineering/" className="posts-topic">
               <div className="posts-topic-icon">Dev</div>
               <div className="posts-topic-title">Engineering</div>
             </a>

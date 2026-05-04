@@ -1,0 +1,224 @@
+/* Mermaid Diagram Styles */
+
+/* Container for mermaid diagrams */
+.mermaid-container,
+pre:has(.mermaid),
+.nextra-content pre:has(code.language-mermaid) {
+  background: transparent !important;
+  border: none !important;
+  padding: 2rem 0 !important;
+  margin: 2rem 0 !important;
+}
+
+/* SVG styling for mermaid diagrams */
+.mermaid svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Light mode mermaid styles */
+:root {
+  --mermaid-node-bg: #ffffff;
+  --mermaid-node-border: #e5e7eb;
+  --mermaid-node-text: #111827;
+  --mermaid-edge: #6b7280;
+  --mermaid-edge-label-bg: #f9fafb;
+  --mermaid-primary: #3b82f6;
+  --mermaid-secondary: #8b5cf6;
+  --mermaid-accent: #10b981;
+}
+
+/* Dark mode mermaid styles */
+.dark {
+  --mermaid-node-bg: #1f2937;
+  --mermaid-node-border: #374151;
+  --mermaid-node-text: #f9fafb;
+  --mermaid-edge: #9ca3af;
+  --mermaid-edge-label-bg: #111827;
+  --mermaid-primary: #60a5fa;
+  --mermaid-secondary: #a78bfa;
+  --mermaid-accent: #34d399;
+}
+
+/* Sequence diagram styling */
+.mermaid .actor {
+  fill: var(--mermaid-node-bg);
+  stroke: var(--mermaid-node-border);
+}
+
+.mermaid .actor-line {
+  stroke: var(--mermaid-edge);
+}
+
+.mermaid .messageLine0,
+.mermaid .messageLine1 {
+  stroke: var(--mermaid-edge);
+}
+
+.mermaid .messageText {
+  fill: var(--mermaid-node-text);
+  stroke: none;
+}
+
+.mermaid .labelBox {
+  fill: var(--mermaid-edge-label-bg);
+  stroke: var(--mermaid-node-border);
+}
+
+.mermaid .labelText {
+  fill: var(--mermaid-node-text);
+  stroke: none;
+}
+
+.mermaid .loopText,
+.mermaid .loopLine,
+.mermaid .note {
+  fill: var(--mermaid-edge-label-bg);
+  stroke: var(--mermaid-node-border);
+}
+
+.mermaid .noteText {
+  fill: var(--mermaid-node-text);
+}
+
+/* Flowchart/Graph styling */
+.mermaid .node rect,
+.mermaid .node circle,
+.mermaid .node ellipse,
+.mermaid .node polygon {
+  fill: var(--mermaid-node-bg);
+  stroke: var(--mermaid-primary);
+  stroke-width: 2px;
+}
+
+.mermaid .node .label {
+  color: var(--mermaid-node-text);
+  fill: var(--mermaid-node-text);
+}
+
+.mermaid .edgePath .path {
+  stroke: var(--mermaid-edge);
+  stroke-width: 2px;
+}
+
+.mermaid .edgeLabel {
+  background-color: var(--mermaid-edge-label-bg);
+  color: var(--mermaid-node-text);
+  fill: var(--mermaid-node-text);
+}
+
+/* Cluster/subgraph styling */
+.mermaid .cluster rect {
+  fill: var(--mermaid-edge-label-bg);
+  stroke: var(--mermaid-node-border);
+  stroke-width: 1px;
+  rx: 4px;
+}
+
+.mermaid .cluster .label {
+  color: var(--mermaid-node-text);
+  fill: var(--mermaid-node-text);
+  font-weight: 600;
+}
+
+/* Mindmap styling */
+.mermaid .mindmap-node {
+  fill: var(--mermaid-node-bg);
+  stroke: var(--mermaid-primary);
+}
+
+.mermaid .mindmap-node text {
+  fill: var(--mermaid-node-text);
+}
+
+.mermaid .mindmap-edge {
+  stroke: var(--mermaid-edge);
+}
+
+/* Improved readability */
+.mermaid text {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+}
+
+.mermaid .messageText,
+.mermaid .noteText,
+.mermaid .labelText {
+  font-size: 13px;
+}
+
+/* Arrow markers */
+.mermaid marker {
+  fill: var(--mermaid-edge);
+  stroke: var(--mermaid-edge);
+}
+
+/* Responsive sizing */
+@media (max-width: 768px) {
+  .mermaid svg {
+    max-width: 100%;
+  }
+
+  .mermaid text {
+    font-size: 12px;
+  }
+
+  .mermaid .messageText,
+  .mermaid .noteText,
+  .mermaid .labelText {
+    font-size: 11px;
+  }
+}
+
+/* Hover effects for interactive diagrams */
+.mermaid .node:hover rect,
+.mermaid .node:hover circle,
+.mermaid .node:hover ellipse,
+.mermaid .node:hover polygon {
+  stroke: var(--mermaid-secondary);
+  stroke-width: 3px;
+  filter: brightness(1.1);
+}
+
+/* Animation for diagram rendering */
+.mermaid {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Ensure diagrams don't overflow */
+.mermaid-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Custom scrollbar for diagram containers */
+.mermaid-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.mermaid-container::-webkit-scrollbar-track {
+  background: var(--mermaid-edge-label-bg);
+  border-radius: 4px;
+}
+
+.mermaid-container::-webkit-scrollbar-thumb {
+  background: var(--mermaid-edge);
+  border-radius: 4px;
+}
+
+.mermaid-container::-webkit-scrollbar-thumb:hover {
+  background: var(--mermaid-primary);
+}

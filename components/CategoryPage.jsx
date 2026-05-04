@@ -5,7 +5,7 @@ export default function CategoryPage({ title, description, icon, children }) {
         {/* Header */}
         <div className="category-header">
           {icon && <div className="category-icon">{icon}</div>}
-          <h1 className="category-title">{title}</h1>
+          {title && <h1 className="category-title">{title}</h1>}
           <p className="category-description">{description}</p>
         </div>
 

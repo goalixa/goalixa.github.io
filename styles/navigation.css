@@ -338,3 +338,228 @@
     padding: 16px;
   }
 }
+
+/* Table of Contents (TOC) */
+.toc {
+  position: fixed;
+  top: 100px;
+  right: max(24px, calc((100vw - 1400px) / 2));
+  width: 240px;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+  background: var(--welcome-card-bg, #ffffff);
+  border: 1px solid var(--welcome-border, #e5e7eb);
+  border-radius: 12px;
+  padding: 16px;
+  z-index: 50;
+}
+
+.dark .toc {
+  background: var(--welcome-card-bg, #1a1f2e);
+  border-color: var(--welcome-border, #1f2937);
+}
+
+.toc-header {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--welcome-border, #e5e7eb);
+}
+
+.dark .toc-header {
+  border-color: var(--welcome-border, #1f2937);
+}
+
+.toc-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--welcome-text, #1a1a1a);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dark .toc-title {
+  color: var(--welcome-text, #f9fafb);
+}
+
+.toc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.toc-item {
+  position: relative;
+}
+
+.toc-link {
+  display: block;
+  padding: 8px 12px;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--welcome-text-muted, #6b7280);
+  text-align: left;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  border-left: 2px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.dark .toc-link {
+  color: var(--welcome-text-muted, #9ca3af);
+}
+
+.toc-link:hover {
+  color: var(--welcome-accent, #2563eb);
+  background: var(--welcome-card-hover, #f9fafb);
+}
+
+.dark .toc-link:hover {
+  color: var(--welcome-accent, #3b82f6);
+  background: var(--welcome-card-hover, #252b3b);
+}
+
+.toc-item-active .toc-link {
+  color: var(--welcome-accent, #2563eb);
+  background: var(--welcome-card-hover, #f9fafb);
+  border-left-color: var(--welcome-accent, #2563eb);
+  font-weight: 500;
+}
+
+.dark .toc-item-active .toc-link {
+  color: var(--welcome-accent, #3b82f6);
+  background: var(--welcome-card-hover, #252b3b);
+  border-left-color: var(--welcome-accent, #3b82f6);
+}
+
+/* Indent h3 items */
+.toc-item-h3 .toc-link {
+  padding-left: 24px;
+  font-size: 0.8125rem;
+}
+
+/* Mobile TOC Toggle Button */
+.toc-mobile-toggle {
+  display: none;
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--welcome-card-bg, #ffffff);
+  border: 1px solid var(--welcome-border, #e5e7eb);
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--welcome-text, #1a1a1a);
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  transition: all 0.2s ease;
+}
+
+.dark .toc-mobile-toggle {
+  background: var(--welcome-card-bg, #1a1f2e);
+  border-color: var(--welcome-border, #1f2937);
+  color: var(--welcome-text, #f9fafb);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.toc-mobile-toggle:hover {
+  border-color: var(--welcome-accent, #2563eb);
+}
+
+.dark .toc-mobile-toggle:hover {
+  border-color: var(--welcome-accent, #3b82f6);
+}
+
+.toc-mobile-toggle svg {
+  flex-shrink: 0;
+}
+
+/* Responsive - Mobile TOC */
+@media (max-width: 1200px) {
+  /* Hide desktop TOC, show mobile toggle */
+  .toc {
+    position: fixed;
+    top: auto;
+    bottom: 80px;
+    right: 24px;
+    left: 24px;
+    width: auto;
+    max-width: 400px;
+    margin: 0 auto;
+    max-height: 60vh;
+    transform: translateY(calc(100% + 100px));
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+
+  .toc-open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .toc-mobile-toggle {
+    display: flex;
+  }
+}
+
+@media (max-width: 768px) {
+  .toc {
+    left: 16px;
+    right: 16px;
+    bottom: 70px;
+  }
+
+  .toc-mobile-toggle {
+    bottom: 16px;
+    right: 16px;
+    padding: 10px 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .toc {
+    max-height: 50vh;
+  }
+
+  .toc-mobile-toggle span {
+    display: none;
+  }
+}
+
+/* Scrollbar styling for TOC */
+.toc::-webkit-scrollbar {
+  width: 6px;
+}
+
+.toc::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.toc::-webkit-scrollbar-thumb {
+  background: var(--welcome-border, #e5e7eb);
+  border-radius: 3px;
+}
+
+.dark .toc::-webkit-scrollbar-thumb {
+  background: var(--welcome-border, #1f2937);
+}
+
+.toc::-webkit-scrollbar-thumb:hover {
+  background: var(--welcome-text-muted, #6b7280);
+}
+
+.dark .toc::-webkit-scrollbar-thumb:hover {
+  background: var(--welcome-text-muted, #9ca3af);
+}

@@ -21,14 +21,29 @@ export default function WelcomePage() {
           </div>
 
           <div className="welcome-cta-group">
-            <a href="/posts" className="welcome-btn welcome-btn-primary">
+            <a href="/posts/" className="welcome-btn welcome-btn-primary">
               <span>Read Articles</span>
               <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
                 <path d="M4 10H16M16 10L10 4M16 10L10 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </a>
-            <a href="/journey" className="welcome-btn welcome-btn-secondary">
+            <a href="/journey/" className="welcome-btn welcome-btn-secondary">
               <span>My Journey</span>
+            </a>
+          </div>
+
+          <div className="microservices-cta">
+            <span className="microservices-label">Platform Architecture</span>
+            <h2 className="microservices-title">Explore Goalixa Microservices</h2>
+            <p className="microservices-desc">
+              Dive deep into the production-grade microservices architecture powering Goalixa.
+              Interactive visualizations, technical specs, and real-world implementation patterns.
+            </p>
+            <a href="/docs/services/" className="microservices-btn">
+              <span>View Architecture</span>
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                <path d="M4 10H16M16 10L10 4M16 10L10 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
             </a>
           </div>
 
@@ -54,42 +69,42 @@ export default function WelcomePage() {
           <h2 className="welcome-section-title">Explore Topics</h2>
 
           <div className="welcome-category-grid">
-            <a href="/sre" className="welcome-category-card">
+            <a href="/sre/" className="welcome-category-card">
               <div className="welcome-category-icon">K8s</div>
               <h3 className="welcome-category-title">Site Reliability Engineering</h3>
               <p className="welcome-category-desc">Kubernetes migrations, cluster management, production reliability</p>
               <div className="welcome-category-count">4 articles →</div>
             </a>
 
-            <a href="/devops" className="welcome-category-card">
+            <a href="/devops/" className="welcome-category-card">
               <div className="welcome-category-icon">CI</div>
               <h3 className="welcome-category-title">DevOps</h3>
               <p className="welcome-category-desc">Monitoring, automation, infrastructure operations</p>
               <div className="welcome-category-count">3 articles →</div>
             </a>
 
-            <a href="/platform" className="welcome-category-card">
+            <a href="/platform/" className="welcome-category-card">
               <div className="welcome-category-icon">Git</div>
               <h3 className="welcome-category-title">Platform Engineering</h3>
               <p className="welcome-category-desc">Microservices, API design, system architecture</p>
               <div className="welcome-category-count">5 articles →</div>
             </a>
 
-            <a href="/posts/ai" className="welcome-category-card">
+            <a href="/posts/ai/" className="welcome-category-card">
               <div className="welcome-category-icon">AI</div>
               <h3 className="welcome-category-title">AI & Automation</h3>
               <p className="welcome-category-desc">CrewAI, LangChain, intelligent DevOps assistants</p>
-              <div className="welcome-category-count">2 articles →</div>
+              <div class="welcome-category-count">2 articles →</div>
             </a>
 
-            <a href="/posts/gitops" className="welcome-category-card">
+            <a href="/posts/gitops/" className="welcome-category-card">
               <div className="welcome-category-icon">Argo</div>
               <h3 className="welcome-category-title">GitOps</h3>
               <p className="welcome-category-desc">ArgoCD workflows, deployment strategies, automation</p>
               <div className="welcome-category-count">3 articles →</div>
             </a>
 
-            <a href="/posts/incident-reports" className="welcome-category-card">
+            <a href="/posts/incident-reports/" className="welcome-category-card">
               <div className="welcome-category-icon">Log</div>
               <h3 className="welcome-category-title">Incident Reports</h3>
               <p className="welcome-category-desc">Production incidents, post-mortems, lessons learned</p>
@@ -102,7 +117,7 @@ export default function WelcomePage() {
           <h2 className="welcome-section-title">Recent Posts</h2>
 
           <div className="welcome-featured-grid">
-            <a href="/posts/monthly-recaps/march-2026" className="welcome-featured-card">
+            <a href="/posts/monthly-recaps/march-2026/" className="welcome-featured-card">
               <div className="welcome-featured-meta">
                 <span className="welcome-featured-tag">Monthly Recap</span>
                 <span>March 2026</span>
@@ -116,7 +131,7 @@ export default function WelcomePage() {
               </span>
             </a>
 
-            <a href="/sre/migrating-from-k3s-to-kubeadm" className="welcome-featured-card">
+            <a href="/sre/migrating-from-k3s-to-kubeadm/" className="welcome-featured-card">
               <div className="welcome-featured-meta">
                 <span className="welcome-featured-tag">SRE</span>
                 <span>Recent</span>
@@ -130,7 +145,7 @@ export default function WelcomePage() {
               </span>
             </a>
 
-            <a href="/devops/monitoring-stack-prometheus-grafana-alertmanager" className="welcome-featured-card">
+            <a href="/devops/monitoring-stack-prometheus-grafana-alertmanager/" className="welcome-featured-card">
               <div className="welcome-featured-meta">
                 <span className="welcome-featured-tag">DevOps</span>
                 <span>Popular</span>
@@ -171,15 +186,15 @@ export default function WelcomePage() {
           </div>
 
           <div className="welcome-nav-cards">
-            <a href="/architecture" className="welcome-nav-card">
+            <a href="/architecture/" className="welcome-nav-card">
               <div className="welcome-nav-number">01</div>
               <div className="welcome-nav-title">Architecture</div>
             </a>
-            <a href="/timeline" className="welcome-nav-card">
+            <a href="/timeline/" className="welcome-nav-card">
               <div className="welcome-nav-number">02</div>
               <div className="welcome-nav-title">Timeline</div>
             </a>
-            <a href="/about" className="welcome-nav-card">
+            <a href="/about/" className="welcome-nav-card">
               <div className="welcome-nav-number">03</div>
               <div className="welcome-nav-title">About</div>
             </a>

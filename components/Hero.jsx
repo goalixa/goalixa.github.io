@@ -16,10 +16,10 @@ export default function Hero() {
           Kubernetes, GitOps, and modern software engineering practices.
         </p>
         <div className="landing-cta">
-          <a href="/posts" className="btn-primary">
+          <a href="/posts/" className="btn-primary">
             Explore Posts
           </a>
-          <a href="/journey" className="btn-secondary">
+          <a href="/journey/" className="btn-secondary">
             Read the Journey
           </a>
         </div>

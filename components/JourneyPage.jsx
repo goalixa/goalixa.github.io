@@ -35,10 +35,10 @@ export default function JourneyPage() {
             </div>
             <div className="journey-links">
               <h4>Key Posts</h4>
-              <a href="/posts/goalixa-story/survive-in-war-time" className="journey-link">
+              <a href="/posts/goalixa-story/survive-in-war-time/" className="journey-link">
                 Survive in War Time →
               </a>
-              <a href="/platform/why-goalixa-is-ai-developed" className="journey-link">
+              <a href="/platform/why-goalixa-is-ai-developed/" className="journey-link">
                 Why Goalixa Is AI-Developed →
               </a>
             </div>
@@ -75,10 +75,10 @@ export default function JourneyPage() {
             </div>
             <div className="journey-links">
               <h4>Key Posts</h4>
-              <a href="/posts/goalixa-story/survive-in-war-time" className="journey-link">
+              <a href="/posts/goalixa-story/survive-in-war-time/" className="journey-link">
                 Survive in War Time →
               </a>
-              <a href="/posts/goalixa-story/learning-in-wartime-kubernetes-plan" className="journey-link">
+              <a href="/posts/goalixa-story/learning-in-wartime-kubernetes-plan/" className="journey-link">
                 Learning in Wartime: Preparing Infrastructure →
               </a>
             </div>
@@ -113,10 +113,10 @@ export default function JourneyPage() {
             </div>
             <div className="journey-links">
               <h4>Key Posts</h4>
-              <a href="/platform/migrate-monolithic-to-microservice" className="journey-link">
+              <a href="/platform/migrate-monolithic-to-microservice/" className="journey-link">
                 Migrate Monolithic to Microservice →
               </a>
-              <a href="/platform/api-gateway-pwa-microservices" className="journey-link">
+              <a href="/platform/api-gateway-pwa-microservices/" className="journey-link">
                 From Fragmented UIs to One PWA →
               </a>
             </div>
@@ -150,10 +150,10 @@ export default function JourneyPage() {
             </div>
             <div className="journey-links">
               <h4>Key Posts</h4>
-              <a href="/platform/migrate-to-pwa-success-fully" className="journey-link">
+              <a href="/platform/migrate-to-pwa-success-fully/" className="journey-link">
                 Migrate to PWA Successfully →
               </a>
-              <a href="/platform/removing-ui-from-legacy-auth-redirection" className="journey-link">
+              <a href="/platform/removing-ui-from-legacy-auth-redirection/" className="journey-link">
                 Removing UI from Legacy Services →
               </a>
             </div>
@@ -260,7 +260,7 @@ export default function JourneyPage() {
 
         {/* Footer */}
         <div className="journey-footer">
-          <p>Want the technical timeline? See the <a href="/timeline">Timeline page</a> for chronological post listings.</p>
+          <p>Want the technical timeline? See the <a href="/timeline/">Timeline page</a> for chronological post listings.</p>
         </div>
       </div>
     </div>

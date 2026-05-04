@@ -1,5 +1,22 @@
+import Mermaid from './components/Mermaid'
+
 /** @type {import('nextra-theme-docs').ThemeConfig} */
 const themeConfig = {
+  components: {
+    code: (props) => {
+      // Check if this is a mermaid code block
+      const { className, children, ...rest } = props
+
+      if (className === 'language-mermaid') {
+        // Extract the actual code content
+        const code = typeof children === 'string' ? children : String(children)
+        return <Mermaid chart={code} />
+      }
+
+      // Default code rendering
+      return <code className={className} {...rest}>{children}</code>
+    }
+  },
   project: {
     link: 'https://github.com/goalixa',
   },
@@ -11,13 +28,13 @@ const themeConfig = {
   },
   logo: (
     <span style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600 }}>
-      <img src="/assets/goalixa-logo.png" alt="Goalixa" style={{ height: '28px', width: 'auto' }} />
+      <img src="/assets/goalixa-icon-192.png" alt="Goalixa" style={{ height: '28px', width: 'auto' }} />
       <span>Engineering Blog</span>
     </span>
   ),
   head: (
     <>
-      <link rel="icon" href="/assets/goalixa-logo.png" type="image/png" />
+      <link rel="icon" href="/assets/goalixa-icon-192.png" type="image/png" />
       <meta name="description" content="Amirreza Rezaie - Site Reliability Engineer at Snapp. Building reliable systems, learning in public." />
       <meta name="author" content="Amirreza Rezaie" />
       <meta property="og:title" content="Amirreza Rezaie - Engineering Blog" />
