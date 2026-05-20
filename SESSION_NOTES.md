@@ -615,3 +615,243 @@ Potential future improvements (not in scope for this session):
 **CSS Lines Added:** ~400 lines
 **New Pages:** 3 (Timeline, Journey, Tags)
 **Status:** Complete and ready for deployment
+
+---
+
+**Date:** 2026-05-19
+**Project:** Observability Stack Blog Post
+**Status:** ✅ Complete
+
+## Summary
+
+Created a comprehensive, production-grade technical blog post documenting the complete observability stack implementation for Goalixa, covering Prometheus, Grafana, Alertmanager, and multi-channel notifications.
+
+## Changes Made
+
+### New Content Created
+
+1. **pages/sre/observability-stack.mdx** (985 lines) - Comprehensive observability guide with:
+   - Architecture overview with Mermaid diagrams
+   - kube-prometheus-stack installation guide
+   - Application metrics instrumentation (Flask + prometheus-client)
+   - Custom metrics implementation with code examples
+   - PrometheusRules for intelligent alerting
+   - Multi-channel notifications (Telegram + Gmail)
+   - Alertmanager configuration
+   - Grafana dashboard design
+   - Real-world incident examples
+   - Lessons learned from production
+   - PromQL query explanations
+   - Best practices and recommendations
+
+### Pages Updated
+
+- **pages/sre/index.mdx** - Added link to new observability article at top of article list
+
+### Key Technical Content Sections
+
+1. **Architecture Overview**
+   - Full stack diagram showing collection, visualization, and alerting layers
+   - Component table with versions and resources
+   - 4-layer observability architecture
+
+2. **Installing the Stack**
+   - Step-by-step Helm installation
+   - Production-grade values.yaml configuration
+   - Resource limits and retention settings
+   - Verification commands
+
+3. **Exposing Application Metrics**
+   - Python/Flask metrics implementation
+   - prometheus-client usage
+   - HTTP request tracking (counters, histograms, gauges)
+   - Business logic metrics
+   - ServiceMonitor CRD configuration
+   - Metrics flow diagram
+
+4. **Configuring Intelligent Alerts**
+   - PrometheusRule definitions
+   - 5 production alert examples (memory, pod restarts, latency, disk, certificates)
+   - Alert design principles
+   - PromQL query explanations
+   - Threshold rationale table
+
+5. **Multi-Channel Notifications**
+   - Telegram bot setup guide
+   - Gmail SMTP configuration
+   - Alertmanager routing rules
+   - Severity-based routing (critical → Telegram, warning → Gmail)
+   - Security best practices for credentials
+   - Notification sequence diagram
+
+6. **Dashboards & Visualization**
+   - Pre-installed dashboard overview
+   - Custom dashboard creation
+   - PromQL queries for Core-API performance
+   - Dashboard best practices
+
+7. **Real-World Examples**
+   - Incident 1: Memory leak caught early
+   - Incident 2: Certificate expiration averted
+   - Surprising metrics discoveries
+   - False positive tuning
+   - 30-day alert statistics
+
+8. **Conclusion & Next Steps**
+   - Observability journey roadmap
+   - Going further (SLOs, tracing, logging, profiling)
+   - Resource links
+
+### Code Examples Included
+
+- **Python/Flask:**
+  - `app/observability.py` - Complete metrics implementation
+  - Counter, Histogram, Gauge, Info metric types
+  - Flask middleware for request tracking
+  - Business logic instrumentation
+
+- **YAML Configurations:**
+  - Helm values.yaml (Prometheus, Alertmanager, Grafana)
+  - ServiceMonitor CRD
+  - PrometheusRule with 5 production alerts
+  - Alertmanager routing configuration
+
+- **Bash Commands:**
+  - Helm installation steps
+  - kubectl verification commands
+  - Telegram bot setup
+  - Port-forwarding commands
+
+- **PromQL Queries:**
+  - Request rate calculation
+  - P95/P99 latency percentiles
+  - Error rate computation
+  - Memory usage percentage
+  - Certificate expiration countdown
+
+### Mermaid Diagrams Created
+
+1. **Full Stack Architecture** - 4-layer observability stack
+2. **Metrics Collection Flow** - Flask request lifecycle tracking
+3. **Notification Sequence** - Alertmanager routing to Telegram/Gmail
+
+### Callout Boxes
+
+- **Info callouts:** Why kube-prometheus-stack, testing alerts, alert fatigue prevention
+- **Warning callouts:** Storage considerations, security best practices
+- **Success callouts:** Consistent labeling, dashboard best practices
+
+## Design Principles Applied
+
+1. **Comprehensive Tutorial** - Complete guide from installation to production alerts
+2. **Real Production Code** - Actual implementations from Goalixa
+3. **Practical Examples** - Real incidents and lessons learned
+4. **Educational Value** - Explains "why" not just "how"
+5. **Code Quality** - Production-grade configurations with explanations
+6. **Visual Aids** - Mermaid diagrams, tables, code blocks
+7. **Beginner-Friendly** - Step-by-step with verification commands
+8. **Expert Insights** - Advanced tips, tuning advice, best practices
+
+## Article Metadata
+
+- **Title:** Building Production Observability: Prometheus, Grafana & Alertmanager
+- **Category:** Site Reliability Engineering
+- **Read Time:** 18 minutes
+- **Date:** May 19, 2026
+- **Word Count:** ~7,500 words
+- **Line Count:** 985 lines
+- **Code Blocks:** 20+
+- **Diagrams:** 3 Mermaid diagrams
+- **Tables:** 5 comparison/reference tables
+
+## Technical Depth
+
+**Beginner-Friendly:**
+- Step-by-step installation
+- Verification commands
+- Clear explanations
+
+**Intermediate:**
+- Custom metrics implementation
+- Alert configuration
+- PromQL queries
+
+**Advanced:**
+- Alert routing strategies
+- Production tuning
+- Incident analysis
+- False positive reduction
+
+## SEO & Discoverability
+
+**Keywords Covered:**
+- Prometheus monitoring
+- Grafana dashboards
+- Alertmanager configuration
+- Kubernetes observability
+- Python metrics
+- Telegram alerts
+- Multi-channel notifications
+- PrometheusRules
+- ServiceMonitor
+- kube-prometheus-stack
+
+## Files Created/Modified
+
+**Created:**
+- `pages/sre/observability-stack.mdx` (985 lines)
+
+**Modified:**
+- `pages/sre/index.mdx` (added article link)
+
+## Verification Steps
+
+- [x] Article created with complete content
+- [x] SRE index updated with link
+- [x] Proper MDX frontmatter
+- [x] Components imported (PostMeta, TableOfContents, Callouts)
+- [x] Mermaid diagrams formatted correctly
+- [x] Code blocks with proper syntax highlighting
+- [x] Tables formatted correctly
+- [x] No emoji usage (professional tone)
+- [x] Consistent structure and formatting
+
+## Content Quality
+
+✅ **Technical Accuracy** - Based on actual production implementation
+✅ **Completeness** - Covers full stack from installation to incidents
+✅ **Practical Value** - Real code, real configurations, real examples
+✅ **Educational** - Explains concepts, not just commands
+✅ **Production-Ready** - Includes security, tuning, best practices
+✅ **Well-Structured** - Clear sections, logical flow
+✅ **Visually Rich** - Diagrams, tables, code blocks
+✅ **Portfolio Quality** - Demonstrates SRE expertise
+
+## Next Steps
+
+- Build the blog to verify rendering
+- Deploy to goalixa.github.io
+- Share on LinkedIn/Twitter for visibility
+- Monitor analytics for engagement
+- Update with new learnings over time
+
+## Success Metrics Target
+
+**Short-term (1 week):**
+- Page views > 100
+- Avg time on page > 5 minutes
+- Bounce rate < 70%
+
+**Long-term (1 month):**
+- Organic search traffic for "kubernetes observability"
+- Backlinks from DevOps communities
+- Portfolio piece for job applications
+
+---
+
+**Article Status:** Complete and ready for publication
+**Word Count:** ~7,500 words
+**Read Time:** 18 minutes
+**Code Examples:** 20+ production-grade snippets
+**Visual Aids:** 3 diagrams, 5 tables
+

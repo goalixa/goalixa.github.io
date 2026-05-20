@@ -1,0 +1,535 @@
+---
+title: 'Prometheus: Metrics Collection & Storage'
+description: 'Installing and configuring Prometheus in Kubernetes with persistent storage, ServiceMonitors, and production-grade scraping strategies.'
+---
+
+import PostMeta from '../../components/PostMeta'
+import { CalloutInfo, CalloutWarning, CalloutSuccess } from '../../components/Callout'
+
+# Prometheus: Metrics Collection & Storage
+
+<PostMeta
+  date="May 19, 2026"
+  category="Observability"
+  readTime="12 min"
+/>
+
+Prometheus is the heart of your observability stack - it collects, stores, and queries all your metrics. This guide covers everything from installation to advanced scraping configurations.
+
+## Why Prometheus?
+
+- **Purpose-built for monitoring**: Designed specifically for time-series metrics
+- **Pull-based model**: Services expose `/metrics`, Prometheus scrapes them
+- **Powerful query language**: PromQL for aggregations and analysis
+- **Service discovery**: Automatically discovers targets in Kubernetes
+- **Native Kubernetes integration**: First-class support via Operators
+
+## Production Setup
+
+### Current Configuration
+
+```yaml
+Prometheus Version: v3.11.2
+Retention: 30 days
+Retention Size: 9GB
+Storage: 10Gi Longhorn PVC (single replica)
+Resources:
+  CPU: 500m-1000m
+  Memory: 1Gi-2Gi
+Scrape Interval: 30s
+Scrape Timeout: 10s
+```
+
+### Installation via Helm
+
+The fastest way to get Prometheus running in Kubernetes is using the `kube-prometheus-stack` chart, which includes Prometheus, Alertmanager, Grafana, and exporters in one package.
+
+**Step 1: Add Helm Repository**
+
+```bash
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+```
+
+**Step 2: Create Namespace**
+
+```bash
+kubectl create namespace monitoring
+```
+
+**Step 3: Prepare Production values.yaml**
+
+```yaml
+# values-production.yaml
+prometheus:
+  prometheusSpec:
+    # Resource allocation
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+      requests:
+        cpu: 500m
+        memory: 1Gi
+
+    # Data retention
+    retention: 30d
+    retentionSize: 9GB
+
+    # Persistent storage
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 10Gi
+          storageClassName: longhorn-single-replica
+
+    # Scrape configuration
+    scrapeInterval: 30s
+    scrapeTimeout: 10s
+    evaluationInterval: 30s
+
+    # External URL for ingress
+    externalUrl: https://prometheus.yourdomain.com
+
+    # Service monitor selector (scrape all)
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+
+# Enable ingress
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - prometheus.yourdomain.com
+    tls:
+      - secretName: prometheus-tls
+        hosts:
+          - prometheus.yourdomain.com
+
+# Node Exporter (host metrics)
+prometheus-node-exporter:
+  enabled: true
+
+# kube-state-metrics (Kubernetes resource metrics)
+kube-state-metrics:
+  enabled: true
+
+# Alertmanager configuration
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 2Gi
+          storageClassName: longhorn-single-replica
+
+# Grafana (covered in separate section)
+grafana:
+  enabled: true
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - grafana.yourdomain.com
+    tls:
+      - secretName: monitoring-tls
+        hosts:
+          - grafana.yourdomain.com
+```
+
+<CalloutWarning title="⚠️ Storage Considerations">
+I use **single-replica Longhorn storage** for cost savings. For production systems requiring high availability:
+- Use **2-3 replicas** to survive node failures
+- Consider **remote write** to long-term storage (Thanos, Mimir, or cloud)
+- Set up **backup strategies** for critical metrics
+</CalloutWarning>
+
+**Step 4: Install**
+
+```bash
+helm install monitoring prometheus-community/kube-prometheus-stack \
+  --namespace monitoring \
+  --values values-production.yaml \
+  --version 84.5.0
+```
+
+Installation takes 2-3 minutes and creates ~20 resources.
+
+**Step 5: Verify Installation**
+
+```bash
+# Check all pods are running
+kubectl get pods -n monitoring
+
+# Expected output:
+# NAME                                                     READY   STATUS
+# alertmanager-monitoring-kube-prometheus-alertmanager-0   2/2     Running
+# monitoring-grafana-xxx                                   3/3     Running
+# monitoring-kube-prometheus-operator-xxx                  1/1     Running
+# monitoring-kube-state-metrics-xxx                        1/1     Running
+# monitoring-prometheus-node-exporter-xxx (x4)             1/1     Running
+# prometheus-monitoring-kube-prometheus-prometheus-0       2/2     Running
+
+# Check Prometheus is scraping targets
+kubectl port-forward -n monitoring svc/monitoring-kube-prometheus-prometheus 9090:9090
+# Open: http://localhost:9090/targets
+```
+
+<CalloutSuccess title="✅ What You Get Out of the Box">
+The kube-prometheus-stack includes:
+- **Prometheus**: Metrics collection and storage
+- **Alertmanager**: Alert routing and notifications
+- **Grafana**: Pre-configured dashboards
+- **Node Exporter**: Host-level metrics (CPU, memory, disk, network)
+- **kube-state-metrics**: Kubernetes object metrics
+- **15+ pre-configured PrometheusRules** for Kubernetes monitoring
+- **20+ Grafana dashboards** for cluster visibility
+</CalloutSuccess>
+
+## ServiceMonitors: Scraping Custom Applications
+
+ServiceMonitors are CustomResourceDefinitions (CRDs) that tell Prometheus which services to scrape.
+
+### Example: Scraping Core-API Service
+
+```yaml
+# core-api/helm/templates/servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: core-api
+  namespace: core-api
+  labels:
+    app: core-api
+    prometheus: kube-prometheus
+spec:
+  # Select which service to scrape
+  selector:
+    matchLabels:
+      app: core-api
+
+  # Scrape configuration
+  endpoints:
+    - port: http  # Service port name
+      path: /metrics
+      interval: 30s
+      scrapeTimeout: 10s
+
+  # Which namespace to look in
+  namespaceSelector:
+    matchNames:
+      - core-api
+
+  # Prevent cardinality explosion
+  sampleLimit: 10000
+```
+
+**Key Settings Explained:**
+
+| Setting | Value | Rationale |
+|---------|-------|-----------|
+| `interval` | 30s | Balance between data freshness and storage/load |
+| `scrapeTimeout` | 10s | Fail fast if endpoint is slow |
+| `sampleLimit` | 10000 | Prevent memory issues from high-cardinality metrics |
+| `path` | /metrics | Standard Prometheus endpoint |
+
+### ServiceMonitors in Production
+
+Currently running **18 ServiceMonitors** across the cluster:
+
+```bash
+$ kubectl get servicemonitor -A
+
+NAMESPACE          NAME
+core-api           core-api
+core-api-staging   core-api
+goalixa-auth       auth
+goalixa-bff        bff
+goalixa-landing    landing
+syntra             syntra
+monitoring         monitoring-grafana
+monitoring         monitoring-kube-prometheus-alertmanager
+monitoring         monitoring-kube-prometheus-apiserver
+monitoring         monitoring-kube-prometheus-coredns
+monitoring         monitoring-kube-prometheus-kube-controller-manager
+monitoring         monitoring-kube-prometheus-kube-etcd
+monitoring         monitoring-kube-prometheus-kube-proxy
+monitoring         monitoring-kube-prometheus-kube-scheduler
+monitoring         monitoring-kube-prometheus-kubelet
+monitoring         monitoring-kube-prometheus-operator
+monitoring         monitoring-kube-prometheus-prometheus
+monitoring         monitoring-kube-state-metrics
+monitoring         monitoring-prometheus-node-exporter
+```
+
+<CalloutInfo title="💡 ServiceMonitor Best Practices">
+1. **One ServiceMonitor per service** - Keep configurations isolated
+2. **Use consistent labels** - Makes querying easier (`app`, `component`, `environment`)
+3. **Set sampleLimit** - Protect Prometheus from cardinality bombs
+4. **Match namespace** - Don't scrape cross-namespace unless needed
+5. **Monitor scrape health** - Check `up{job="your-service"}` metric
+</CalloutInfo>
+
+## PromQL Basics
+
+Prometheus Query Language (PromQL) is how you retrieve and analyze metrics.
+
+### Essential Queries for SRE
+
+**1. Check if service is up**
+```promql
+up{job="core-api"}
+# Returns: 1 (up) or 0 (down)
+```
+
+**2. HTTP request rate (requests per second)**
+```promql
+rate(http_requests_total[5m])
+# Rate over last 5 minutes
+```
+
+**3. P95 latency**
+```promql
+histogram_quantile(0.95,
+  rate(http_request_duration_seconds_bucket[5m])
+)
+```
+
+**4. Error rate**
+```promql
+sum(rate(http_requests_total{status_code=~"5.."}[5m]))
+  / sum(rate(http_requests_total[5m]))
+```
+
+**5. Memory usage percentage**
+```promql
+(container_memory_working_set_bytes / container_spec_memory_limit_bytes) * 100
+```
+
+**6. CPU usage percentage**
+```promql
+rate(container_cpu_usage_seconds_total[5m]) * 100
+```
+
+**7. Disk space remaining**
+```promql
+(node_filesystem_avail_bytes / node_filesystem_size_bytes) * 100
+```
+
+**8. Top 10 slowest endpoints**
+```promql
+topk(10,
+  histogram_quantile(0.95,
+    rate(http_request_duration_seconds_bucket[5m])
+  )
+)
+```
+
+### Query Best Practices
+
+1. **Always use rate() for counters** - Counters only go up, rate() gives per-second change
+2. **Choose appropriate time ranges** - `[5m]` for alerts, `[1h]` for dashboards
+3. **Use aggregations wisely** - `sum()`, `avg()`, `max()` reduce cardinality
+4. **Label filtering** - `{namespace="production",status_code="500"}` is more efficient than post-processing
+5. **Test queries in Prometheus UI** - Validate before using in dashboards/alerts
+
+## Retention & Storage
+
+### Understanding Retention
+
+Prometheus stores data in **blocks** - immutable chunks covering 2-hour periods. Retention determines how long blocks are kept.
+
+**Current Configuration:**
+- **Time-based retention**: 30 days (`--storage.tsdb.retention.time=30d`)
+- **Size-based retention**: 9GB (`--storage.tsdb.retention.size=9GB`)
+- Whichever limit is hit first triggers deletion of old blocks
+
+**Storage Math:**
+
+```
+Metrics per scrape: ~200 (per service)
+Services monitored: 18 ServiceMonitors
+Scrape interval: 30s
+Samples per minute: (200 × 18) × 2 = 7,200
+Samples per day: 7,200 × 60 × 24 = 10,368,000
+Samples per 30 days: ~311 million
+
+Average bytes per sample: ~1-2 bytes (TSDB is highly compressed)
+Storage for 30 days: ~311MB - 622MB (actual: ~1-2GB with metadata)
+```
+
+<CalloutInfo title="💡 Storage Sizing Guidelines">
+**Small cluster** (< 100 pods):
+- 10Gi storage, 7-15 day retention
+
+**Medium cluster** (100-500 pods):
+- 50Gi storage, 15-30 day retention
+
+**Large cluster** (500+ pods):
+- 100Gi+ storage, 30-90 day retention
+- Consider remote write to long-term storage
+
+**Rule of thumb**: 1-2GB per million active time series per day
+</CalloutInfo>
+
+## Troubleshooting
+
+### Common Issues
+
+**1. High memory usage**
+
+```bash
+# Check memory usage
+kubectl top pod -n monitoring | grep prometheus
+
+# Solutions:
+# - Reduce retention
+# - Increase memory limits
+# - Reduce scrape frequency
+# - Remove high-cardinality labels
+```
+
+**2. Scrape target down**
+
+```bash
+# Check targets in Prometheus UI
+kubectl port-forward -n monitoring svc/monitoring-kube-prometheus-prometheus 9090:9090
+# Navigate to: Status > Targets
+
+# Debug specific target
+kubectl logs -n <namespace> <pod-name>
+# Check if /metrics endpoint is accessible:
+kubectl exec -it <pod-name> -- curl http://localhost:<port>/metrics
+```
+
+**3. Missing metrics**
+
+```promql
+# Check if metric exists
+up{job="your-service"}
+
+# Check ServiceMonitor is created
+kubectl get servicemonitor -n <namespace>
+
+# Check Prometheus config
+kubectl get prometheus -n monitoring -o yaml | grep serviceMonitor
+```
+
+## Performance Optimization
+
+### 1. Reduce Cardinality
+
+**Bad** - High cardinality (millions of unique combinations):
+```python
+# DON'T DO THIS
+request_count.labels(
+    user_id=user_id,  # Thousands of users
+    request_id=req_id,  # Unique per request
+    ip_address=ip  # Thousands of IPs
+)
+```
+
+**Good** - Low cardinality:
+```python
+# DO THIS
+request_count.labels(
+    method="POST",
+    route="/api/tasks",
+    status_code="200"
+)
+```
+
+### 2. Smart Labeling
+
+**Use labels for:**
+- Service names (`service="core-api"`)
+- Environments (`environment="production"`)
+- HTTP methods (`method="POST"`)
+- Status codes (`status_code="200"`)
+
+**Don't use labels for:**
+- User IDs or emails
+- Request IDs or trace IDs
+- IP addresses
+- Timestamps
+
+### 3. Scrape Optimization
+
+```yaml
+# Adjust based on needs
+scrapeInterval: 30s  # Default - good for most use cases
+scrapeInterval: 15s  # High-frequency monitoring (more expensive)
+scrapeInterval: 60s  # Cost optimization (less granular)
+```
+
+## Security
+
+### 1. Access Control
+
+```yaml
+# NetworkPolicy to restrict access
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: prometheus-access
+  namespace: monitoring
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: monitoring
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: grafana
+```
+
+### 2. TLS for Ingress
+
+Already configured with cert-manager:
+```yaml
+ingress:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  tls:
+    - secretName: prometheus-tls
+      hosts:
+        - prometheus.goalixa.com
+```
+
+### 3. Authentication
+
+For production, add authentication via:
+- **OAuth2 Proxy** (Google/GitHub login)
+- **Basic Auth** (simple username/password)
+- **RBAC** (Kubernetes-native)
+
+## Next Steps
+
+Now that Prometheus is collecting metrics:
+
+1. **[Build Grafana Dashboards](/observability/grafana)** - Visualize your metrics
+2. **[Configure Alertmanager](/observability/alertmanager)** - Get notified when things break
+3. **[Add Application Metrics](/observability/application-metrics)** - Instrument your own code
+
+---
+
+*Prometheus configuration tested in production for 33 days with zero downtime.*

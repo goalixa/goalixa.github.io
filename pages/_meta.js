@@ -26,6 +26,12 @@ export default {
   sre: {
     title: "SRE"
   },
+  observability: {
+    title: "⚡ Observability Stack",
+    theme: {
+      toc: true
+    }
+  },
   devops: {
     title: "DevOps"
   },

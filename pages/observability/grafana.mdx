@@ -1,0 +1,726 @@
+---
+title: 'Grafana: Dashboards & Visualization'
+description: 'Building production dashboards with Grafana - from pre-installed dashboards to custom PromQL queries and visualization best practices.'
+---
+
+import PostMeta from '../../components/PostMeta'
+import { CalloutInfo, CalloutWarning, CalloutSuccess } from '../../components/Callout'
+
+# Grafana: Dashboards & Visualization
+
+<PostMeta
+  date="May 19, 2026"
+  category="Observability"
+  readTime="15 min"
+/>
+
+Grafana transforms raw Prometheus metrics into actionable insights. This guide covers everything from exploring pre-installed dashboards to building custom visualizations that help you understand your system's health at a glance.
+
+## Why Grafana?
+
+- **Visual storytelling**: Turn time-series data into intuitive graphs
+- **Pre-built dashboards**: 20+ dashboards included with kube-prometheus-stack
+- **PromQL integration**: Native Prometheus query support
+- **Alerting**: Visual alerts with annotations and thresholds
+- **Sharing**: Export dashboards as JSON, share via URLs
+
+## Production Setup
+
+### Current Configuration
+
+```yaml
+URL: Custom domain with TLS
+Version: Latest (bundled with kube-prometheus-stack)
+Ingress: nginx with Let's Encrypt TLS
+Storage: ConfigMaps for dashboards
+Data Source: Prometheus (auto-configured)
+Pre-installed Dashboards: 20+
+```
+
+### Accessing Grafana
+
+**Via Ingress (Production)**:
+```bash
+# Configure your own domain with TLS
+https://monitoring.yourdomain.com
+```
+
+**Via Port-Forward (Development)**:
+```bash
+# Get admin password
+kubectl get secret -n monitoring monitoring-grafana \
+  -o jsonpath="{.data.admin-password}" | base64 -d && echo
+
+# Port forward
+kubectl port-forward -n monitoring svc/monitoring-grafana 3000:80
+
+# Open browser
+http://localhost:3000
+# Login: admin / <password-from-above>
+```
+
+<CalloutWarning title="⚠️ Change Default Password">
+After first login, immediately change the admin password:
+1. Click on profile icon (bottom left)
+2. Profile → Change Password
+3. Use a strong password (20+ characters)
+4. Store in password manager
+</CalloutWarning>
+
+## Pre-installed Dashboards
+
+The kube-prometheus-stack includes **20+ production-ready dashboards** organized by category.
+
+### Infrastructure Dashboards
+
+**1. Kubernetes / Compute Resources / Cluster**
+- **Purpose**: Overall cluster health and resource usage
+- **Key Metrics**:
+  - Total CPU usage across all nodes
+  - Total memory usage across all nodes
+  - Pod count and capacity
+  - Network I/O cluster-wide
+- **When to use**: Daily cluster health check, capacity planning
+
+**2. Kubernetes / Compute Resources / Namespace (Pods)**
+- **Purpose**: Per-namespace resource consumption
+- **Key Metrics**:
+  - CPU usage by pod
+  - Memory usage by pod
+  - Network traffic by pod
+  - Pod restart counts
+- **When to use**: Identifying resource-hungry services, debugging OOM kills
+
+**3. Kubernetes / Compute Resources / Node (Pods)**
+- **Purpose**: Per-node resource distribution
+- **Key Metrics**:
+  - Pods per node
+  - CPU/memory per node
+  - Disk usage per node
+  - Network traffic per node
+- **When to use**: Node balancing, identifying noisy neighbors
+
+**4. Node Exporter / Nodes**
+- **Purpose**: Detailed host-level metrics
+- **Key Metrics**:
+  - CPU usage (user, system, iowait)
+  - Memory (used, cached, buffers)
+  - Disk I/O (reads/writes per second)
+  - Network bandwidth (in/out)
+  - Filesystem usage
+  - System load (1m, 5m, 15m)
+- **When to use**: Deep-dive hardware troubleshooting
+
+### Storage Dashboards
+
+**5. Kubernetes / Persistent Volumes**
+- **Purpose**: Storage usage and performance
+- **Key Metrics**:
+  - PVC usage percentage
+  - Available space per volume
+  - I/O operations
+  - Longhorn/storage backend health
+- **When to use**: Preventing disk full incidents, storage planning
+
+### Application Dashboards
+
+**6. Alertmanager / Overview**
+- **Purpose**: Alert status and firing alerts
+- **Key Metrics**:
+  - Active alerts count
+  - Alert firing rate
+  - Alerts by severity
+  - Silenced alerts
+- **When to use**: Monitoring alert health, debugging alert routing
+
+**7. Prometheus / Overview**
+- **Purpose**: Prometheus health and performance
+- **Key Metrics**:
+  - Scrape target health (up/down)
+  - Scrape duration
+  - Time series count
+  - Storage usage
+  - Query performance
+- **When to use**: Ensuring Prometheus itself is healthy
+
+<CalloutSuccess title="✅ Quick Start with Dashboards">
+**For daily operations, bookmark these 3 dashboards:**
+1. **Kubernetes / Compute Resources / Cluster** - Overall health
+2. **Node Exporter / Nodes** - Hardware metrics
+3. **Prometheus / Overview** - Monitoring system health
+
+These cover 80% of day-to-day SRE needs.
+</CalloutSuccess>
+
+## Creating Custom Dashboards
+
+Pre-installed dashboards are great, but custom dashboards tailored to your services provide the most value.
+
+### Example: Core-API Performance Dashboard
+
+Let's build a dashboard for monitoring the Core-API service.
+
+**Step 1: Create New Dashboard**
+
+1. Click **+** icon in sidebar → **Dashboard**
+2. Click **Add visualization**
+3. Select **Prometheus** data source
+
+**Step 2: Add Request Rate Panel**
+
+```promql
+# Query
+sum(rate(goalixa_http_requests_total{job="core-api"}[5m])) by (route)
+
+# Panel Settings
+Title: Request Rate by Route
+Visualization: Time series (line graph)
+Legend: {{ route }}
+Y-axis: requests/second
+Unit: ops/sec
+```
+
+**Step 3: Add P95 Latency Panel**
+
+```promql
+# Query
+histogram_quantile(0.95,
+  sum(rate(goalixa_http_request_duration_seconds_bucket{job="core-api"}[5m]))
+  by (route, le)
+)
+
+# Panel Settings
+Title: P95 Latency by Route
+Visualization: Time series
+Legend: {{ route }}
+Y-axis: seconds
+Unit: s
+Thresholds:
+  - Green: < 0.5s
+  - Yellow: 0.5s - 1s
+  - Red: > 1s
+```
+
+**Step 4: Add Error Rate Panel**
+
+```promql
+# Query
+sum(rate(goalixa_http_requests_total{job="core-api",status_code=~"5.."}[5m]))
+  /
+sum(rate(goalixa_http_requests_total{job="core-api"}[5m]))
+  * 100
+
+# Panel Settings
+Title: Error Rate
+Visualization: Stat (big number)
+Unit: percent (0-100)
+Thresholds:
+  - Green: < 1%
+  - Yellow: 1% - 5%
+  - Red: > 5%
+Decimals: 2
+```
+
+**Step 5: Add Active Requests Gauge**
+
+```promql
+# Query
+goalixa_http_active_requests{job="core-api"}
+
+# Panel Settings
+Title: Active Requests
+Visualization: Gauge
+Min: 0
+Max: 100
+Thresholds:
+  - Green: 0-50
+  - Yellow: 50-80
+  - Red: 80-100
+```
+
+**Step 6: Add Top Slowest Routes Table**
+
+```promql
+# Query
+topk(10,
+  histogram_quantile(0.95,
+    sum(rate(goalixa_http_request_duration_seconds_bucket{job="core-api"}[5m]))
+    by (route, le)
+  )
+)
+
+# Panel Settings
+Title: Top 10 Slowest Routes (P95)
+Visualization: Table
+Columns:
+  - Route (label)
+  - Latency (value, unit: seconds)
+Sort: Latency (descending)
+```
+
+**Step 7: Organize Layout**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│ Core-API Performance Dashboard                           │
+├──────────────┬──────────────┬────────────────────────────┤
+│ Request Rate │ P95 Latency  │ Error Rate   Active Req   │
+│  (graph)     │  (graph)     │  (stat)      (gauge)       │
+├──────────────┴──────────────┴────────────────────────────┤
+│ Request Rate by Route (graph - 12 columns)              │
+├──────────────────────────────────────────────────────────┤
+│ Latency Heatmap by Route (heatmap - 12 columns)         │
+├──────────────────────────────────────────────────────────┤
+│ Top 10 Slowest Routes (table - 12 columns)              │
+└──────────────────────────────────────────────────────────┘
+```
+
+**Step 8: Save Dashboard**
+
+1. Click **Save** icon (disk)
+2. Name: `Core-API Performance`
+3. Folder: `Application Dashboards`
+4. Tags: `core-api`, `application`, `performance`
+5. Click **Save**
+
+<CalloutInfo title="💡 Dashboard Best Practices">
+**Do:**
+- Group related metrics together (RED: Rate, Errors, Duration)
+- Use consistent time ranges across panels
+- Add threshold lines for SLO targets
+- Include legends for multi-series graphs
+- Use appropriate visualization types (graphs for trends, stats for current values)
+
+**Don't:**
+- Overcrowd dashboards (max 10-12 panels)
+- Mix unrelated metrics
+- Use default panel titles ("Panel Title")
+- Forget to set units (seconds, bytes, percent)
+- Use pie charts for time-series data
+</CalloutInfo>
+
+## Essential PromQL Queries for Dashboards
+
+### RED Metrics (Rate, Errors, Duration)
+
+**Request Rate**:
+```promql
+# Requests per second
+sum(rate(http_requests_total[5m])) by (service)
+
+# By method and route
+sum(rate(http_requests_total[5m])) by (method, route)
+```
+
+**Error Rate**:
+```promql
+# Percentage of 5xx errors
+sum(rate(http_requests_total{status_code=~"5.."}[5m]))
+  / sum(rate(http_requests_total[5m])) * 100
+
+# By service
+sum(rate(http_requests_total{status_code=~"5.."}[5m])) by (service)
+  / sum(rate(http_requests_total[5m])) by (service) * 100
+```
+
+**Duration (Latency)**:
+```promql
+# P50, P95, P99 latencies
+histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))
+histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))
+histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))
+```
+
+### Resource Utilization
+
+**CPU Usage**:
+```promql
+# Container CPU usage percentage
+rate(container_cpu_usage_seconds_total{container!=""}[5m]) * 100
+
+# By namespace
+sum(rate(container_cpu_usage_seconds_total{namespace="core-api"}[5m])) by (pod) * 100
+```
+
+**Memory Usage**:
+```promql
+# Container memory usage percentage
+(container_memory_working_set_bytes{container!=""}
+  / container_spec_memory_limit_bytes) * 100
+
+# By pod
+sum(container_memory_working_set_bytes{namespace="core-api"}) by (pod)
+  / sum(container_spec_memory_limit_bytes{namespace="core-api"}) by (pod) * 100
+```
+
+**Disk Usage**:
+```promql
+# Filesystem usage percentage
+(1 - (node_filesystem_avail_bytes / node_filesystem_size_bytes)) * 100
+
+# Specific mount point
+(1 - (node_filesystem_avail_bytes{mountpoint="/"}
+  / node_filesystem_size_bytes{mountpoint="/"})) * 100
+```
+
+### Business Metrics
+
+**Task Operations**:
+```promql
+# Task creation rate
+rate(goalixa_task_operations_total{operation="create"}[5m])
+
+# Task success rate
+sum(rate(goalixa_task_operations_total{status="success"}[5m]))
+  / sum(rate(goalixa_task_operations_total[5m])) * 100
+```
+
+**Database Query Performance**:
+```promql
+# P95 query duration by table
+histogram_quantile(0.95,
+  sum(rate(goalixa_db_query_duration_seconds_bucket[5m]))
+  by (table, le)
+)
+
+# Slow queries (> 1s)
+count(goalixa_db_query_duration_seconds_bucket{le="1.0"} > 0)
+```
+
+## Visualization Types
+
+Choose the right visualization for your data:
+
+### Time Series (Line Graph)
+**Best for**: Trends over time, comparing multiple series
+```promql
+# Example: Request rate comparison
+sum(rate(http_requests_total[5m])) by (service)
+```
+
+### Gauge
+**Best for**: Current value with thresholds (0-100%)
+```promql
+# Example: CPU usage
+rate(container_cpu_usage_seconds_total[5m]) * 100
+```
+
+### Stat (Big Number)
+**Best for**: Single important metric
+```promql
+# Example: Error rate
+sum(rate(http_requests_total{status_code=~"5.."}[5m]))
+  / sum(rate(http_requests_total[5m])) * 100
+```
+
+### Bar Chart
+**Best for**: Comparing discrete values
+```promql
+# Example: Requests per service
+sum(rate(http_requests_total[5m])) by (service)
+```
+
+### Heatmap
+**Best for**: Distribution over time (latency percentiles)
+```promql
+# Example: Latency distribution
+sum(rate(http_request_duration_seconds_bucket[5m])) by (le)
+```
+
+### Table
+**Best for**: Multiple metrics per entity
+```promql
+# Example: Service health overview
+up{job=~"core-api|auth|bff"}
+```
+
+<CalloutWarning title="⚠️ Avoid Pie Charts">
+Pie charts are rarely appropriate for time-series data. They show static proportions but hide trends over time. Use **stacked area graphs** instead to show both composition and trends.
+</CalloutWarning>
+
+## Variables & Templating
+
+Variables make dashboards dynamic and reusable.
+
+### Example: Namespace Selector
+
+**Step 1: Create Variable**
+
+1. Dashboard settings → Variables → Add variable
+2. Name: `namespace`
+3. Type: Query
+4. Data source: Prometheus
+5. Query: `label_values(kube_pod_info, namespace)`
+6. Multi-value: Yes
+7. Include All: Yes
+
+**Step 2: Use Variable in Queries**
+
+```promql
+# Before (hardcoded)
+sum(rate(http_requests_total{namespace="core-api"}[5m]))
+
+# After (dynamic)
+sum(rate(http_requests_total{namespace=~"$namespace"}[5m]))
+```
+
+**Step 3: Display in Title**
+
+```
+Title: Request Rate - $namespace
+```
+
+### Common Variable Patterns
+
+**Service Selector**:
+```promql
+label_values(up, job)
+```
+
+**Pod Selector**:
+```promql
+label_values(kube_pod_info{namespace=~"$namespace"}, pod)
+```
+
+**Time Range Selector**:
+```
+Type: Interval
+Values: 5m,15m,30m,1h,6h,24h
+```
+
+## Annotations
+
+Annotations mark events on graphs (deployments, incidents, releases).
+
+### Example: Deployment Annotations
+
+**Query**:
+```promql
+changes(kube_deployment_status_observed_generation[5m]) > 0
+```
+
+**Settings**:
+- Name: Deployments
+- Data source: Prometheus
+- Color: Blue
+- Tags: deployment
+
+This adds vertical lines on graphs whenever a deployment occurs, making it easy to correlate deployments with metric changes.
+
+## Alerting in Grafana
+
+While Alertmanager handles most alerting, Grafana can also generate alerts.
+
+### When to Use Grafana Alerts
+
+- **Dashboard-specific alerts**: Visual alerts tied to specific panels
+- **Threshold-based alerts**: Simple "value > X" alerts
+- **Notification testing**: Quick alert testing without modifying Prometheus
+
+### When to Use Alertmanager
+
+- **Production alerts**: All production alerts should use Alertmanager
+- **Complex routing**: Multi-channel routing (Telegram, Email)
+- **Alert grouping**: Grouping related alerts
+- **Inhibition rules**: Suppressing redundant alerts
+
+<CalloutSuccess title="✅ Best Practice: Use Alertmanager for Production">
+Grafana alerts are great for experimentation and dashboard-specific notifications, but **all production alerts should be defined as PrometheusRules** and routed through Alertmanager for consistency and reliability.
+</CalloutSuccess>
+
+## Dashboard Organization
+
+### Folder Structure
+
+```
+Dashboards/
+├── Infrastructure/
+│   ├── Kubernetes Cluster Overview
+│   ├── Node Metrics
+│   └── Storage Metrics
+├── Application/
+│   ├── Core-API Performance
+│   ├── Auth Service Metrics
+│   └── BFF Performance
+├── Alerting/
+│   ├── Alertmanager Overview
+│   └── Prometheus Health
+└── Business/
+    ├── Task Operations
+    └── User Activity
+```
+
+### Dashboard Naming
+
+**Good** (descriptive, consistent):
+- `Core-API Performance`
+- `Node Exporter - Host Metrics`
+- `Kubernetes - Cluster Overview`
+
+**Bad** (vague, inconsistent):
+- `API Dashboard`
+- `Metrics`
+- `Dashboard 1`
+
+### Tags
+
+Use tags for filtering:
+- `infrastructure`, `application`, `business`
+- Service names: `core-api`, `auth`, `bff`
+- Environment: `production`, `staging`
+
+## Exporting & Sharing Dashboards
+
+### Export as JSON
+
+```bash
+# Via Grafana UI
+Dashboard Settings → JSON Model → Copy to clipboard
+
+# Via API
+curl -H "Authorization: Bearer $GRAFANA_API_KEY" \
+  https://your-grafana-url/api/dashboards/uid/<dashboard-uid> \
+  > dashboard.json
+```
+
+### Import Dashboard
+
+```bash
+# Via Grafana UI
++ icon → Import → Upload JSON file
+
+# Via API
+curl -X POST -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $GRAFANA_API_KEY" \
+  -d @dashboard.json \
+  https://your-grafana-url/api/dashboards/db
+```
+
+### Share via URL
+
+```bash
+# Create snapshot (temporary, anonymous access)
+Dashboard → Share → Snapshot → Publish to snapshots.raintank.io
+
+# Direct link (requires authentication)
+https://your-grafana-url/d/<dashboard-uid>/<dashboard-name>
+```
+
+## Performance Optimization
+
+### Query Optimization
+
+**Slow** (high cardinality):
+```promql
+sum(rate(http_requests_total[5m])) by (method, route, status_code, user_id, ip_address)
+```
+
+**Fast** (low cardinality):
+```promql
+sum(rate(http_requests_total[5m])) by (method, route, status_code)
+```
+
+### Caching
+
+Grafana caches query results. Adjust cache TTL:
+
+```yaml
+# grafana.ini
+[caching]
+enabled = true
+
+[dataproxy]
+timeout = 30
+```
+
+### Time Range Recommendations
+
+| Dashboard Type | Recommended Range | Refresh Rate |
+|----------------|-------------------|--------------|
+| Real-time monitoring | Last 15 minutes | 5s - 10s |
+| Incident investigation | Last 1-6 hours | 30s |
+| Daily health check | Last 24 hours | 1m |
+| Capacity planning | Last 7-30 days | 5m |
+
+## Troubleshooting
+
+### Dashboard Not Loading
+
+```bash
+# Check Grafana logs
+kubectl logs -n monitoring deployment/monitoring-grafana
+
+# Check Prometheus connection
+# In Grafana: Configuration → Data Sources → Prometheus → Test
+```
+
+### No Data in Panels
+
+```promql
+# Test query directly in Prometheus
+kubectl port-forward -n monitoring svc/monitoring-kube-prometheus-prometheus 9090:9090
+
+# Verify metrics exist
+up{job="your-service"}
+```
+
+### Slow Dashboard
+
+1. Reduce time range
+2. Simplify queries (remove unnecessary labels)
+3. Reduce refresh rate
+4. Remove unused panels
+5. Check Prometheus query performance
+
+## Real-World Dashboard Examples
+
+### 1. Service Health Dashboard
+
+**Purpose**: Quick health check for all services
+
+**Panels**:
+- Uptime (gauge per service)
+- Request rate (time series, all services)
+- Error rate (stat, aggregated)
+- P95 latency (bar chart, per service)
+
+**Time range**: Last 1 hour, refresh every 30s
+
+### 2. Incident Investigation Dashboard
+
+**Purpose**: Deep-dive during incidents
+
+**Panels**:
+- Request rate (5m, 15m, 1h comparisons)
+- Error breakdown by status code
+- Latency percentiles (P50, P90, P95, P99)
+- Recent log errors (if Loki integrated)
+- Resource usage spike detection
+
+**Time range**: Last 6 hours, refresh every 10s
+
+### 3. Capacity Planning Dashboard
+
+**Purpose**: Long-term trend analysis
+
+**Panels**:
+- CPU usage trend (30 days)
+- Memory growth rate
+- Disk usage forecast
+- Request volume trend
+- Database connection pool usage
+
+**Time range**: Last 30 days, refresh every 5m
+
+## Next Steps
+
+Now that you understand Grafana dashboards:
+
+1. **[Configure Alertmanager](/observability/alertmanager)** - Set up proactive alerts
+2. **[Add Application Metrics](/observability/application-metrics)** - Instrument your services
+3. **Explore pre-installed dashboards** - Learn from existing examples
+4. **Build your first custom dashboard** - Start with RED metrics
+
+---
+
+*Grafana dashboards guide Goalixa's daily operations - from incident response to capacity planning.*
