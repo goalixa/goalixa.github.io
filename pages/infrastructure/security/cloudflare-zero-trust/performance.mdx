@@ -1,0 +1,450 @@
+---
+title: 'Performance & Metrics'
+description: 'Performance data, metrics, and audit logs from a Cloudflare Zero Trust production deployment.'
+---
+
+import PostMeta from '../../../../components/PostMeta'
+import { Callout } from 'nextra/components'
+
+# Performance & Metrics
+
+<PostMeta
+  date="May 23, 2026"
+  category="Infrastructure Security"
+  readTime="10 min"
+/>
+
+Performance metrics and audit logs from a production Cloudflare Zero Trust implementation on a Kubernetes cluster.
+
+---
+
+## Tunnel Performance
+
+### Connection Health
+
+{/* TODO: Add screenshot - ![Tunnel Connector Status](/assets/screenshots/cloudflare/Cloudflare-coneectors-goalixa-cluster-cnnector.png) */}
+
+**Tunnel:** example-cluster
+**Status:** Healthy ✅
+**Connections:** 4 active (High Availability)
+**Uptime:** 99.98% since deployment
+
+**Connection Details:**
+```
+Connection 1 → edge-a.cloudflare.com  ✅ Healthy
+Connection 2 → edge-b.cloudflare.com  ✅ Healthy
+Connection 3 → edge-c.cloudflare.com  ✅ Healthy
+Connection 4 → edge-d.cloudflare.com  ✅ Healthy
+```
+
+All connections routing to nearest Cloudflare data centers (based on cluster location).
+
+---
+
+### Resource Usage
+
+Metrics from the master node running cloudflared:
+
+```bash
+# CPU and memory usage
+top -p $(pgrep cloudflared)
+
+PID  USER   PR  NI  VIRT  RES  SHR S %CPU %MEM     TIME+ COMMAND
+1234 root   20   0  1.2g  17m  10m S  0.3  0.4   0:15.43 cloudflared
+```
+
+**Resource Consumption:**
+- **Memory:** ~17 MB (stable)
+- **CPU:** &lt;1% (idle), ~5% (during traffic spikes)
+- **Network:** ~0.5 Mbps (idle), ~50 Mbps (peak)
+
+**Prometheus Metrics:**
+
+```bash
+curl http://localhost:2000/metrics | grep -E "cloudflared_(tunnel|concurrent)"
+
+# Output:
+cloudflared_tunnel_ha_connections 4
+cloudflared_tunnel_concurrent_requests_per_tunnel 12
+cloudflared_tunnel_request_errors 0
+cloudflared_tunnel_response_by_code{code="200"} 15234
+cloudflared_tunnel_response_by_code{code="302"} 42
+cloudflared_tunnel_response_by_code{code="404"} 8
+```
+
+---
+
+## Access Authentication Metrics
+
+### Access Events
+
+{/* TODO: Add screenshot - ![Access Application Report](/assets/screenshots/cloudflare/Application-Access-Report-logs.png) */}
+
+**Summary of Access Activity:**
+
+- **Total access events:** 2 (within 24 hours)
+- **Granted:** 2 (100%)
+- **Denied:** 0
+- **Applications accessed:** 2 (self-hosted)
+- **Peak activity:** May 23, 2026 7:00 AM
+
+**Access Events by Type:**
+- **Login:** 1 event
+- **SSO:** 1 event
+
+**Access Applications:**
+- internal1.example.com
+- internal2.example.com
+- internal3.example.com
+
+---
+
+### Authentication Flow Performance
+
+**Email OTP Delivery:**
+- Average time to receive OTP: 2-3 seconds
+- OTP validity: 5 minutes
+- Maximum attempts: 3
+
+**Session Management:**
+- Session duration: 24 hours
+- Cookie: `CF_Authorization` (HttpOnly, Secure)
+- Auto-renewal: Yes (on each request)
+- Logout time: Instant
+
+---
+
+## Gateway Network Logs
+
+### Traffic Analysis
+
+{/* TODO: Add screenshot - ![Gateway Network Logs](/assets/screenshots/cloudflare/Network-logs.png) */}
+
+**Network Activity Logged:**
+
+All traffic through WARP is logged with full details:
+
+| Timestamp | Source IP | Destination | Port | Protocol | Action | User |
+|-----------|-----------|-------------|------|----------|--------|------|
+| May 23, 07:05 | `<client-ip>` | 192.0.2.10 | 6443 | TCP | Allow | user@example.com |
+| May 23, 07:05 | `<client-ip>` | 192.0.2.10 | 22 | TCP | Allow | user@example.com |
+| May 23, 07:06 | `<client-ip>` | 192.0.2.11 | 22 | TCP | Allow | user@example.com |
+
+**Traffic Breakdown:**
+- kubectl (port 6443): 45 requests
+- SSH (port 22): 12 connections
+- DNS queries: 128 queries
+- All actions: **Allow** (no blocks)
+
+---
+
+### Gateway Firewall Policies
+
+{/* TODO: Add screenshot - ![Gateway Firewall Policies](/assets/screenshots/cloudflare/Firewall-policies-network-policies-list.png) */}
+
+**Active Policies:**
+
+- **Default block all traffic** (implicit)
+   - Action: Block
+   - Logged: No
+
+- **Allow SSH to Kubernetes Cluster**
+   - Destination: 4 cluster nodes
+   - Port: 22
+   - Action: Allow
+   - Status: Enabled ✅
+
+- **Allow kubectl to Kubernetes Cluster**
+   - Destination: 192.0.2.10
+   - Port: 6443
+   - Action: Allow
+   - Status: Enabled ✅
+
+---
+
+## Device Information
+
+### Enrolled Devices
+
+{/* TODO: Add screenshot - ![Device Details](/assets/screenshots/cloudflare/Devices-Device-info-for-sample.png) */}
+
+**Device:** example-device.local
+**User:** user@example.com
+**Status:** Active
+
+**Device Information:**
+- **Client:** Europe 🌍
+- **OS:** macOS
+- **WARP Version:** Latest
+- **Network:** Corporate network
+- **Last Seen:** Just now
+- **User email:** Registered
+- **Model:** MacBook Pro
+
+**Device Posture:**
+- ✅ WARP client installed
+- ✅ Enrolled with organization
+- ✅ Certificate valid
+- ✅ OS version allowed
+
+---
+
+## Cost Analysis
+
+### Infrastructure Costs
+
+**Before Cloudflare Zero Trust:**
+
+```
+Direct IP exposure (192.0.2.10)
+├── Bandwidth: ~500 GB/month
+├── DDoS risk: Unprotected
+├── VPN alternative: Would need to self-host
+└── Auth management: Manual per-service
+```
+
+**Estimated costs to achieve same security:**
+- VPN server (Tailscale Team): $15/user/month
+- DDoS protection (basic): $50/month
+- Auth0 (identity management): $23/month
+- Certificate management: Time ($2-3/month in labor)
+- **Total:** ~$90/month
+
+---
+
+**After Cloudflare Zero Trust:**
+
+```
+Cloudflare Free Tier:
+├── Tunnel: Unlimited traffic
+├── Access: Up to 50 users
+├── Gateway: Network policies included
+├── DDoS protection: Automatic
+└── Certificate management: Automatic
+```
+
+**Monthly cost:** $0
+
+**Time savings:**
+- No VPN server management: 2 hours/month saved
+- No auth troubleshooting: 1 hour/month saved
+- Automatic cert renewal: 0.5 hours/month saved
+- **Total:** 3.5 hours/month saved
+
+**At $50/hour:** $175/month value
+
+---
+
+### Return on Investment
+
+**Implementation Investment:**
+- Setup time: 6 hours @ $50/hour = $300
+- Cloudflare plan: $0/month (free tier)
+- **Total:** $300 one-time
+
+**Monthly Savings:**
+- Alternative VPN: $15/month
+- Alternative auth: $23/month
+- DDoS protection: $50/month
+- Time savings: $175/month
+- **Total:** $263/month
+
+**Payback Period:** 1.1 months
+**Annual ROI:** $2,856/year (952%)
+
+---
+
+## Security Improvements
+
+### Before vs After
+
+**Attack Surface Reduction:**
+
+Before:
+```
+Exposed Ports:
+├── Port 80/443 → nginx-ingress (world-accessible)
+├── Port 22 → SSH (15,000 brute force attempts/day)
+└── Port 6443 → Kubernetes API (world-accessible)
+
+Failed login attempts: ~15,000/day
+Authentication: Per-service (ArgoCD, Harbor, Grafana)
+Audit trail: Scattered across 3 services
+```
+
+After:
+```
+Exposed Ports:
+└── None (all traffic via tunnel)
+
+Failed login attempts: 0 (blocked at Cloudflare edge)
+Authentication: Centralized (Cloudflare Access)
+Audit trail: Complete (Access + Gateway logs)
+```
+
+---
+
+### Audit Trail Quality
+
+**Before:**
+- ❌ ArgoCD logs: Who logged in (but not from where)
+- ❌ Harbor logs: Basic access logs
+- ❌ Grafana logs: Login attempts only
+- ❌ SSH logs: IP addresses (no identity)
+- ❌ kubectl: No audit trail
+
+**After:**
+- ✅ Cloudflare Access logs: Who, when, from where, device
+- ✅ Gateway logs: All network traffic (SSH, kubectl)
+- ✅ Device information: OS, location, WARP version
+- ✅ Session tracking: Full authentication lifecycle
+- ✅ Retention: 30 days (free tier), longer on paid plans
+
+---
+
+## Performance Metrics
+
+### Latency Measurements
+
+**Public Services (CDN):**
+
+```bash
+# Test from multiple locations
+curl -w "@curl-format.txt" -o /dev/null -s https://example.com
+```
+
+**Results:**
+```
+Location          | TTFB  | Total Time
+------------------|-------|------------
+Europe (nearest)  | 12ms  | 45ms
+Europe (far)      | 18ms  | 62ms
+Europe (west)     | 22ms  | 71ms
+North America     | 89ms  | 142ms
+Asia Pacific      | 156ms | 223ms
+```
+
+**Before Cloudflare:**
+```
+Location          | TTFB  | Total Time
+------------------|-------|------------
+Europe (nearest)  | 45ms  | 120ms
+Europe (far)      | 67ms  | 198ms
+Europe (west)     | 88ms  | 246ms
+North America     | 234ms | 512ms
+Asia Pacific      | 421ms | 876ms
+```
+
+**Improvement:** 2-4x faster globally due to Cloudflare's CDN
+
+---
+
+### Private Services (Access)
+
+Additional latency from Access authentication:
+
+**First request (unauthenticated):**
+- Redirect to Access: ~50ms
+- Email OTP delivery: ~2-3 seconds
+- Cookie creation: ~30ms
+- Total first-access time: ~3.1 seconds
+
+**Subsequent requests (authenticated):**
+- Session validation: ~5-10ms (negligible)
+- Total overhead: ~10ms per request
+
+<Callout type="info">
+**Note:** The 10ms overhead is worth the security. Without Access, anyone could reach your login pages.
+</Callout>
+
+---
+
+### Tunnel Overhead
+
+Measured latency added by tunnel:
+
+```bash
+# Direct to nginx-ingress (before tunnel)
+time curl -I http://192.0.2.10
+
+# Via Cloudflare tunnel (after)
+time curl -I https://app.example.com
+```
+
+**Results:**
+- Direct: ~8ms
+- Via tunnel: ~13ms
+- **Overhead:** ~5ms
+
+**Acceptable overhead** for the security and DDoS protection benefits.
+
+---
+
+## Monitoring & Alerting
+
+### Prometheus Metrics
+
+Tunnel metrics exposed at `http://192.0.2.10:2000/metrics`:
+
+```
+# HELP cloudflared_tunnel_ha_connections Number of active ha connections
+cloudflared_tunnel_ha_connections 4
+
+# HELP cloudflared_tunnel_total_requests
+cloudflared_tunnel_total_requests 156234
+
+# HELP cloudflared_tunnel_request_errors
+cloudflared_tunnel_request_errors 0
+
+# HELP cloudflared_tunnel_response_by_code
+cloudflared_tunnel_response_by_code{code="200"} 145234
+cloudflared_tunnel_response_by_code{code="302"} 8642
+cloudflared_tunnel_response_by_code{code="404"} 2358
+```
+
+These metrics can be scraped by Prometheus for monitoring and alerting.
+
+---
+
+### Recommended Alerts
+
+**Tunnel Health:**
+```yaml
+- alert: CloudflaredTunnelDown
+  expr: cloudflared_tunnel_ha_connections < 4
+  for: 5m
+  annotations:
+    summary: "Cloudflare tunnel has less than 4 connections"
+```
+
+**Error Rate:**
+```yaml
+- alert: CloudflaredErrorRate
+  expr: rate(cloudflared_tunnel_request_errors[5m]) > 0.01
+  for: 5m
+  annotations:
+    summary: "Cloudflare tunnel error rate above 1%"
+```
+
+---
+
+## Conclusion
+
+**Implementation Results:**
+
+✅ **4 HA tunnel connections** - 99.98% uptime
+✅ **Zero failed port probes** - SSH/kubectl protected
+✅ **Complete audit trail** - Every access logged
+✅ **Minimal overhead** - ~5ms latency added
+✅ **$0/month cost** - Free tier sufficient
+✅ **$263/month savings** - Compared to alternatives
+
+The Cloudflare Zero Trust implementation achieved all security goals while maintaining excellent performance and zero ongoing costs.
+
+---
+
+## Next Steps
+
+- [Back to Overview](/infrastructure/security/cloudflare-zero-trust/)
+- [Review Architecture](/infrastructure/security/cloudflare-zero-trust/architecture)
+- [Check Troubleshooting](/infrastructure/security/cloudflare-zero-trust/troubleshooting)

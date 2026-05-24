@@ -1,0 +1,82 @@
+---
+title: 'Goalixa Services'
+description: 'Complete overview of the Goalixa platform microservices - PWA, BFF, Core API, Auth, and AI orchestration.'
+---
+
+import PostMeta from '../../components/PostMeta'
+
+# Goalixa Services
+
+<PostMeta
+  date="May 23, 2026"
+  category="Platform"
+  readTime="5 min"
+/>
+
+Production-grade microservices platform built with Python, FastAPI, Flask, and Kubernetes. Each service is independently deployable with complete observability.
+
+---
+
+## Core Services
+
+### [PWA Frontend](/services/goalixa-pwa)
+Progressive Web Application with offline support and custom routing
+
+**Tech:** Vanilla JavaScript, Service Workers, Nginx
+**URL:** https://app.goalixa.com
+
+### [BFF - API Gateway](/services/goalixa-bff)
+Backend for Frontend - unified entry point for all services
+
+**Tech:** FastAPI (async), HTTPX, Redis
+**Features:** Request aggregation, auth proxy, caching
+
+### [Core API](/services/core-api)
+Business logic - tasks, projects, goals, habits, time tracking
+
+**Tech:** Flask, PostgreSQL, Prometheus
+**Architecture:** 3-layer (presentation → service → repository)
+
+### [Auth Service](/services/goalixa-auth)
+Dual-token JWT authentication with OAuth
+
+**Tech:** Flask, SQLAlchemy, Authlib
+**Security:** 15-min access tokens, 7-day refresh tokens
+
+### [Landing Page](/services/goalixa-landing)
+Static marketing page for product presentation
+
+**Tech:** HTML/CSS/JS, Nginx
+**URL:** https://goalixa.com
+
+---
+
+## AI & Automation
+
+### [Syntra](/services/syntra)
+AI DevOps orchestration with CrewAI
+
+**Tech:** FastAPI, CrewAI, LangChain, Claude AI
+**Use Cases:** Automated deployments, incident response
+
+---
+
+## Architecture
+
+```
+Landing (Static)  ──┐
+PWA (Vanilla JS)  ──┤
+                    ├── nginx-ingress
+                    │
+                    ├── BFF (FastAPI) ─┬── Auth (Flask)
+                    │                  └── Core API (Flask)
+                    │
+                    └── PostgreSQL
+```
+
+**Deployment:**
+- Docker containers
+- Kubernetes orchestration (4-node cluster)
+- ArgoCD GitOps
+- Harbor private registry
+- Prometheus monitoring

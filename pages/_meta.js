@@ -21,37 +21,36 @@ export default {
   },
   "---1": {
     type: "separator",
-    title: "Blog Categories"
+    title: "Platform"
   },
-  sre: {
-    title: "SRE"
+  services: {
+    title: "🎯 Services",
+    theme: {
+      toc: true,
+      breadcrumb: true
+    }
   },
-  observability: {
-    title: "⚡ Observability Stack",
+  "---2": {
+    type: "separator",
+    title: "Technical Content"
+  },
+  infrastructure: {
+    title: "🏗️ Infrastructure",
+    theme: {
+      toc: true,
+      breadcrumb: true
+    }
+  },
+  platform: {
+    title: "⚙️ Platform",
     theme: {
       toc: true
     }
   },
-  devops: {
-    title: "DevOps"
-  },
   "software-engineering": {
-    title: "Software Engineering"
+    title: "💻 Software",
+    theme: {
+      toc: true
+    }
   },
-  platform: {
-    title: "Platform Engineering"
-  },
-  "cloud-engineering": {
-    title: "Cloud Engineering"
-  },
-  "---2": {
-    type: "separator",
-    title: "Content"
-  },
-  posts: {
-    title: "All Posts"
-  },
-  docs: {
-    title: "Documentation"
-  }
 }

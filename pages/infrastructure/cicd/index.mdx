@@ -1,0 +1,90 @@
+---
+title: 'CI/CD & GitOps'
+description: 'Continuous integration, deployment pipelines, and GitOps workflows for reliable software delivery.'
+---
+
+import PostMeta from '../../../components/PostMeta'
+
+# CI/CD & GitOps
+
+<PostMeta
+  date="May 23, 2026"
+  category="Infrastructure"
+  readTime="2 min"
+/>
+
+Continuous integration and deployment practices using GitOps principles, ArgoCD, and Kubernetes-native tools.
+
+---
+
+## Articles
+
+### [Monitoring Stack](/infrastructure/cicd/monitoring-stack-prometheus-grafana-alertmanager)
+
+Complete monitoring stack deployment with Prometheus, Grafana, and Alertmanager.
+
+**What you'll learn:**
+- Setting up Prometheus for metrics collection
+- Configuring Grafana for visualization
+- Alertmanager for alert routing
+- Integration with Kubernetes
+
+---
+
+### [Staging with Kustomize](/infrastructure/cicd/why-staging-with-kustomize)
+
+Environment-specific configurations using Kustomize overlays.
+
+**What you'll learn:**
+- Kustomize basics and best practices
+- Creating staging overlays
+- Managing environment-specific configs
+- Integration with ArgoCD
+
+---
+
+## CI/CD Practices
+
+Our deployment workflow follows GitOps principles:
+
+**Pipeline:**
+```
+Git Push → GitHub Actions → Build & Test → Build Image
+  → Push to Harbor → Update Manifests → ArgoCD Sync → Deploy to K8s
+```
+
+**Key Tools:**
+- **GitOps**: Git as single source of truth
+- **ArgoCD**: Declarative continuous delivery
+- **Helm**: Package management and templating
+- **Kustomize**: Configuration management without templates
+- **GitHub Actions**: CI pipeline automation
+- **Harbor**: Private container registry
+
+**Testing Strategy:**
+- Unit tests on every commit
+- Integration tests before merge
+- E2E tests on staging
+- Automated rollback on failure
+
+---
+
+## Deployment Strategies
+
+- **Rolling Updates**: Zero-downtime deployments
+- **Blue-Green**: Instant rollback capability
+- **Canary**: Progressive traffic shifting
+- **GitOps**: Declarative, auditable, version-controlled
+
+---
+
+## Monitoring & Observability
+
+Every deployment is monitored with:
+- Prometheus metrics
+- Grafana dashboards
+- Alertmanager notifications
+- ArgoCD health checks
+- Application logs
+
+[Learn more about observability →](/infrastructure/observability)

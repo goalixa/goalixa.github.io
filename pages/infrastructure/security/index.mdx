@@ -1,0 +1,75 @@
+---
+title: 'Infrastructure Security'
+description: 'Zero-trust security, access control, and infrastructure hardening for production systems.'
+---
+
+import PostMeta from '../../../components/PostMeta'
+import { Callout } from 'nextra/components'
+
+# Infrastructure Security
+
+<PostMeta
+  date="May 23, 2026"
+  category="Infrastructure"
+  readTime="2 min"
+/>
+
+Production security implementations focusing on zero-trust architecture, minimal attack surface, and defense in depth.
+
+---
+
+## Featured Implementation
+
+### [Cloudflare Zero Trust](/infrastructure/security/cloudflare-zero-trust)
+
+A complete production implementation that solved four critical problems:
+
+1. **Traffic Separation**: Public CDN vs. private tool access
+2. **Identity-Based Access**: Email OTP/SSO for management tools
+3. **Infrastructure Access**: WARP-only SSH and kubectl (no open ports)
+4. **DDoS Protection**: Automatic protection at Cloudflare edge
+
+<Callout type="info">
+**Results:** 90% faster global load times, 82% bandwidth reduction, 100% elimination of SSH brute force attempts, $8,046/year cost savings
+</Callout>
+
+**Complete 7-part guide:**
+
+1. [Overview](/infrastructure/security/cloudflare-zero-trust) - Why and what we're solving
+2. [Phase 1: Tunnel Setup](/infrastructure/security/cloudflare-zero-trust/setup) - Cloudflared installation and configuration
+3. [Phase 2: Public Services](/infrastructure/security/cloudflare-zero-trust/public-services) - CDN and caching
+4. [Phase 3: Private Services](/infrastructure/security/cloudflare-zero-trust/private-services) - Access control for management tools
+5. [Phase 4: Infrastructure Access](/infrastructure/security/cloudflare-zero-trust/infrastructure-access) - WARP for SSH/kubectl
+6. [Troubleshooting](/infrastructure/security/cloudflare-zero-trust/troubleshooting) - Common issues and solutions
+7. [Performance & Metrics](/infrastructure/security/cloudflare-zero-trust/performance) - Real-world results and ROI
+
+---
+
+## Security Principles
+
+- **Zero Trust**: Never trust, always verify - no network perimeter
+- **Minimal Attack Surface**: Close all unnecessary ports
+- **Defense in Depth**: Multiple layers of security controls
+- **Least Privilege**: Grant minimum required access
+- **Audit Everything**: Complete logging and monitoring
+- **Automation**: Security controls as code
+
+---
+
+## Before & After
+
+**Before Zero Trust:**
+```
+SSH ports: OPEN to internet (15,000 brute force attempts/day)
+kubectl API: OPEN to internet (port 6443)
+Management tools: No authentication
+DDoS protection: None
+```
+
+**After Zero Trust:**
+```
+SSH ports: CLOSED (WARP-only access, 0 brute force attempts)
+kubectl API: CLOSED (WARP-only access)
+Management tools: Email OTP/SSO required
+DDoS protection: Automatic at Cloudflare edge (172 Tbps capacity)
+```

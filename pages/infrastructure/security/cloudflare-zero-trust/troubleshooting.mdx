@@ -1,0 +1,577 @@
+---
+title: 'Troubleshooting Common Issues'
+description: 'Solutions to problems I encountered during Cloudflare Zero Trust implementation, with root causes and fixes.'
+---
+
+import PostMeta from '../../../../components/PostMeta'
+import { Callout } from 'nextra/components'
+
+# Troubleshooting Common Issues
+
+<PostMeta
+  date="May 23, 2026"
+  category="Infrastructure Security"
+  readTime="8 min"
+/>
+
+This page documents all the issues I encountered during my Cloudflare Zero Trust implementation, their root causes, and how I fixed them.
+
+---
+
+## Issue 1: 500 Internal Server Error
+
+### Symptoms
+
+After setting up the tunnel, ArgoCD and Harbor showed 500 Internal Server Error:
+
+```
+curl https://internal1.example.com
+HTTP/2 500
+```
+
+Cloudflared logs showed:
+```
+ERR error="dial tcp [::1]:80: connect: connection refused"
+```
+
+---
+
+### Root Cause
+
+My initial `/etc/cloudflared/config.yml` had:
+
+```yaml
+ingress:
+  - hostname: internal1.example.com
+    service: http://localhost:80  # ❌ WRONG
+```
+
+**Problem:** nginx-ingress LoadBalancer service listens on the **external IP** (192.0.2.10:80), not on localhost!
+
+Checking the nginx-ingress service:
+```bash
+kubectl get svc -n ingress-nginx
+
+NAME                       TYPE           EXTERNAL-IP      PORT(S)
+ingress-nginx-controller   LoadBalancer   192.0.2.10     80:31234/TCP,443:31235/TCP
+```
+
+It's a LoadBalancer type, not ClusterIP or NodePort, so it binds to the external IP only.
+
+---
+
+### Solution
+
+Change config to use the external IP:
+
+```yaml
+ingress:
+  - hostname: internal1.example.com
+    service: http://192.0.2.10:80  # ✅ CORRECT
+    originRequest:
+      noTLSVerify: true
+      connectTimeout: 30s
+      httpHostHeader: internal1.example.com
+```
+
+Then restart:
+```bash
+systemctl restart cloudflared
+```
+
+**Verification:**
+```bash
+curl -I https://internal1.example.com
+# HTTP/2 200  ✅
+```
+
+<Callout type="warning">
+**Important:** Always use the actual IP/port where your ingress controller listens, not assumptions like "localhost"!
+</Callout>
+
+---
+
+## Issue 2: DNS Not Routing Through Cloudflare
+
+### Symptoms
+
+After setting up the tunnel, DNS queries still returned the server's direct IP:
+
+```bash
+dig +short internal1.example.com
+192.0.2.10  # ❌ Direct IP, not Cloudflare
+```
+
+Traffic was bypassing Cloudflare entirely.
+
+---
+
+### Root Cause
+
+I had **A records** pointing directly to my server IP instead of **CNAME records** to the tunnel.
+
+**Wrong DNS configuration:**
+```
+Type: A
+Name: argocd
+Value: 192.0.2.10
+```
+
+This makes traffic go directly to my server, bypassing the tunnel!
+
+---
+
+### Solution
+
+1. **Delete all A records** for:
+   - example.com
+   - app.example.com
+   - internal1.example.com
+   - internal2.example.com
+   - internal3.example.com
+
+2. **Create CNAME records** pointing to tunnel:
+
+| Type | Name | Target | Proxy |
+|------|------|--------|-------|
+| CNAME | argocd | 0cfcc894-5ea2-4a81-996f-72e09488edb4.cfargotunnel.com | ✅ Proxied |
+
+(Repeat for all domains)
+
+**Verification:**
+```bash
+dig +short internal1.example.com
+188.114.96.3   # ✅ Cloudflare IP
+188.114.97.3   # ✅ Cloudflare IP
+```
+
+Now traffic goes through Cloudflare!
+
+<Callout type="error">
+**Critical:** A records bypass the tunnel! Always use CNAME records pointing to your tunnel endpoint.
+</Callout>
+
+---
+
+## Issue 3: Access Login Page Not Showing
+
+### Symptoms
+
+Accessing https://internal1.example.com showed ArgoCD's login page directly, not Cloudflare Access.
+
+---
+
+### Root Cause
+
+I created the Access Application but forgot to add an authentication policy.
+
+**Without a policy:**
+- Application exists but has no rules
+- Cloudflare doesn't know who to allow/deny
+- Traffic passes through unchecked
+
+---
+
+### Solution
+
+1. Go to **Access** → **Applications** → **argocd**
+2. Click **Edit**
+3. Add a policy:
+
+**Policy name:** Admin Access
+
+**Include:**
+- Selector: Emails
+- Value: your@email.com
+
+**Action:** Allow
+
+4. Save
+
+**Verification:**
+
+Visit https://internal1.example.com
+
+Expected: Cloudflare Access login page (not ArgoCD login)
+
+---
+
+## Issue 4: WARP Not Connecting
+
+### Symptoms
+
+WARP client shows "Unable to connect to Zero Trust organization"
+
+---
+
+### Root Cause
+
+WARP client wasn't enrolled with my Zero Trust organization.
+
+---
+
+### Solution
+
+1. Open WARP client
+2. Click **Settings** → **Preferences** → **Account**
+3. Click **Login to Cloudflare Zero Trust**
+4. Enter organization name: `example-org`
+5. Authenticate with email
+6. WARP shows "Connected"
+
+---
+
+## Issue 5: kubectl Not Working When WARP Connected
+
+### Symptoms
+
+```bash
+warp-cli connect
+kubectl get pods
+# Error: Unable to connect to the server
+```
+
+---
+
+### Root Cause
+
+Split tunnel not configured - WARP was routing ALL traffic (including kubectl) through Cloudflare Gateway, but Gateway was blocking it.
+
+---
+
+### Solution
+
+Configure Split Tunnel to **Include mode** with only cluster IPs:
+
+1. Dashboard → **Settings** → **WARP Client** → **Device settings**
+2. Change Split Tunnel to: **Include IPs and domains**
+3. Add cluster IPs:
+   ```
+   192.0.2.10/32
+   5.75.198.10/32
+   91.107.250.5/32
+   65.109.212.122/32
+   ```
+
+4. Create Gateway policy to **Allow** traffic to port 6443
+
+**Verification:**
+```bash
+warp-cli connect
+kubectl get pods
+# Works! ✅
+```
+
+---
+
+## Issue 6: Firewall Lockout
+
+### Symptoms
+
+I attempted to close SSH (port 22) and kubectl (port 6443) at the VM level using iptables:
+
+```bash
+iptables -A INPUT -p tcp --dport 22 -j DROP
+iptables -A INPUT -p tcp --dport 6443 -j DROP
+```
+
+**Result:** Locked out - couldn't SSH even with WARP connected!
+
+---
+
+### Root Cause
+
+I closed the ports before verifying WARP was routing traffic correctly. When WARP wasn't routing properly, I had no way to access the server.
+
+---
+
+### Solution
+
+**Recovery:**
+
+1. Access via Hetzner Console (emergency access)
+2. Flush iptables rules:
+   ```bash
+   iptables -F
+   ```
+3. Re-opened ports
+
+**Lesson learned:**
+
+Don't close ports at the VM level until you've thoroughly tested that WARP is routing correctly. Instead, control access via:
+- **Cloudflare Gateway policies** (allow/deny based on identity)
+- **VM firewall** only as a last resort, after extensive testing
+
+<Callout type="error">
+**⚠️ CRITICAL:** Always have emergency console access before modifying firewall rules. Test WARP routing thoroughly before closing any ports!
+</Callout>
+
+---
+
+## Issue 7: Tunnel Showing 0 Connections
+
+### Symptoms
+
+```bash
+curl http://localhost:2000/metrics | grep cloudflared_tunnel_ha_connections
+cloudflared_tunnel_ha_connections 0
+```
+
+Dashboard shows tunnel as "Down"
+
+---
+
+### Root Cause
+
+Possible causes:
+1. cloudflared service not running
+2. Wrong tunnel credentials
+3. Network connectivity issue
+4. Firewall blocking outbound connections
+
+---
+
+### Solution
+
+**Check service status:**
+```bash
+systemctl status cloudflared
+
+# If not running:
+systemctl start cloudflared
+systemctl enable cloudflared
+```
+
+**Check logs:**
+```bash
+tail -f /var/log/cloudflared.log
+
+# Look for errors like:
+# - "authentication failed" → Wrong credentials
+# - "connection refused" → Network issue
+# - "timeout" → Firewall blocking
+```
+
+**Test connectivity:**
+```bash
+# Can you reach Cloudflare?
+ping region1.v2.argotunnel.com
+
+# Check tunnel is using correct credentials
+cat /root/.cloudflared/*.json
+```
+
+**Restart service:**
+```bash
+systemctl restart cloudflared
+```
+
+Expected: 4 connections within 30 seconds
+
+---
+
+## Issue 8: Session Expired Too Quickly
+
+### Symptoms
+
+Cloudflare Access asking for OTP every few minutes, not respecting 24-hour session.
+
+---
+
+### Root Cause
+
+Browser blocking cookies or session duration not set correctly.
+
+---
+
+### Solution
+
+**Check cookie settings:**
+
+In Access Application:
+- Session Duration: **24 hours** (not minutes)
+- Cookie settings: Ensure not blocked in browser
+
+**Browser check:**
+- DevTools → Application → Cookies → cloudflareaccess.com
+- Look for `CF_Authorization` cookie
+- Verify it's not being deleted
+
+**Privacy browser extensions:**
+
+Disable cookie blockers (Privacy Badger, uBlock Origin) for `*.cloudflareaccess.com`
+
+---
+
+## Issue 9: Gateway Logs Not Showing Traffic
+
+### Symptoms
+
+WARP connected, but no logs appearing in Gateway Network Logs.
+
+---
+
+### Root Cause
+
+Gateway logging not enabled for the policies.
+
+---
+
+### Solution
+
+1. Go to **Gateway** → **Firewall Policies** → **Network**
+2. Edit each policy
+3. Enable: **☑ Logging**
+4. Save
+
+Now traffic appears in **Logs** → **Gateway** → **Network**
+
+---
+
+## Emergency Recovery
+
+If you get locked out of your cluster, here's how to recover:
+
+### Via Console Access (Hetzner, AWS, etc.)
+
+1. Access console from hosting provider dashboard
+2. Login as root
+3. Fix the issue:
+   ```bash
+   # If firewall blocked you:
+   iptables -F
+
+   # If cloudflared is broken:
+   systemctl stop cloudflared
+
+   # If DNS is wrong:
+   # Fix via Cloudflare dashboard (you still have access)
+   ```
+
+### Emergency Access File
+
+I created `/root/EMERGENCY_ACCESS.txt` on the master node with recovery procedures:
+
+```bash
+cat /root/EMERGENCY_ACCESS.txt
+
+# Cloudflare Zero Trust Emergency Access
+# Created: May 23, 2026
+
+## If locked out:
+
+1. Access via Hetzner Console: https://console.hetzner.cloud
+2. Login with SSH keys from another terminal
+3. Stop cloudflared: systemctl stop cloudflared
+4. Re-open ports:
+   iptables -F
+   iptables -P INPUT ACCEPT
+   iptables -P FORWARD ACCEPT
+   iptables -P OUTPUT ACCEPT
+
+## Tunnel details:
+Tunnel ID: 0cfcc894-5ea2-4a81-996f-72e09488edb4
+Config: /etc/cloudflared/config.yml
+Credentials: /root/.cloudflared/*.json
+```
+
+<Callout type="info">
+**Pro tip:** Always document emergency access procedures BEFORE making risky changes!
+</Callout>
+
+---
+
+## Debugging Commands
+
+### Check Tunnel Status
+
+```bash
+# Service status
+systemctl status cloudflared
+
+# Connection count
+curl http://localhost:2000/metrics | grep cloudflared_tunnel_ha_connections
+
+# Recent logs
+tail -100 /var/log/cloudflared.log
+
+# Test tunnel endpoints
+curl -I https://internal1.example.com
+```
+
+---
+
+### Check DNS
+
+```bash
+# DNS resolution
+dig +short internal1.example.com @1.1.1.1
+
+# Expected: Cloudflare IPs (188.114.x.x)
+# NOT your server IP (192.0.2.10)
+
+# Check CNAME
+dig internal1.example.com @1.1.1.1 CNAME
+
+# Should show: *.cfargotunnel.com
+```
+
+---
+
+### Check WARP
+
+```bash
+# WARP status
+warp-cli status
+
+# Expected: Connected
+
+# WARP settings
+warp-cli settings
+
+# Check split tunnel config
+warp-cli settings | grep -A 10 "Include"
+```
+
+---
+
+### Check Access Logs
+
+Dashboard → **Logs** → **Access** → **Access requests**
+
+Look for:
+- Email address
+- Allow/Deny decision
+- Timestamp
+- Application accessed
+
+---
+
+### Check Gateway Logs
+
+Dashboard → **Logs** → **Gateway** → **Network**
+
+Look for:
+- Source IP (your laptop)
+- Destination IP and port
+- Allow/Block action
+- Policy matched
+
+---
+
+## Getting Help
+
+If you encounter issues not listed here:
+
+1. **Check Cloudflare Status:** https://www.cloudflarestatus.com
+2. **Community Forums:** https://community.cloudflare.com
+3. **Documentation:** https://developers.cloudflare.com/cloudflare-one
+4. **Support:** For paid plans, open a ticket
+
+---
+
+## Next Steps
+
+- [Back to Overview](/infrastructure/security/cloudflare-zero-trust/)
+- [Review Setup Guide](/infrastructure/security/cloudflare-zero-trust/setup)
+- [Check Performance](/infrastructure/security/cloudflare-zero-trust/performance)

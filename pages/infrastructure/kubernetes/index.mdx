@@ -1,0 +1,67 @@
+---
+title: 'Kubernetes'
+description: 'Production Kubernetes cluster management, migration strategies, and best practices.'
+---
+
+import PostMeta from '../../../components/PostMeta'
+
+# Kubernetes
+
+<PostMeta
+  date="May 23, 2026"
+  category="Infrastructure"
+  readTime="2 min"
+/>
+
+Production-ready Kubernetes cluster setup, management, and migration guides based on real-world implementations.
+
+---
+
+## Articles
+
+### [K3s to Kubeadm Migration](/infrastructure/kubernetes/migrating-from-k3s-to-kubeadm)
+
+Production cluster migration with zero downtime - complete guide with troubleshooting.
+
+**Topics covered:**
+- Pre-migration planning and backup strategies
+- Step-by-step Kubeadm installation
+- CNI migration (K3s Flannel → Cilium)
+- Storage migration (local-path → Longhorn)
+- Complete troubleshooting guide
+
+---
+
+### [Cluster Migration Strategy](/infrastructure/kubernetes/migrate-to-new-cluster)
+
+Moving workloads to a new cluster safely and efficiently.
+
+**Topics covered:**
+- Cluster preparation and setup
+- Workload migration strategies
+- Data migration approaches
+- Testing and validation
+
+---
+
+## Key Topics
+
+- **Cluster Setup**: Kubeadm installation, node configuration, CNI setup
+- **Migrations**: K3s to Kubeadm, cluster-to-cluster migrations
+- **Networking**: Cilium CNI, network policies, service mesh
+- **Storage**: Longhorn distributed storage, PVC management
+- **Ingress**: nginx-ingress, TLS/SSL, domain routing
+- **High Availability**: Multi-master setup, etcd clustering
+- **Troubleshooting**: Common issues and debugging techniques
+
+---
+
+## Production Learnings
+
+All guides are based on real production implementations on a 4-node Kubernetes cluster running critical workloads. Each article includes:
+
+- ✅ Complete command sequences
+- ✅ Troubleshooting sections
+- ✅ Verification steps
+- ✅ Rollback procedures
+- ✅ Lessons learned

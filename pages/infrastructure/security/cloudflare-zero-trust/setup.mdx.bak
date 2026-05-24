@@ -1,0 +1,726 @@
+---
+title: 'Complete Setup Guide: Step-by-Step Implementation'
+description: 'Detailed guide showing exactly how I configured Cloudflare Zero Trust on my Kubernetes cluster - actual commands, config files, and verification steps.'
+---
+
+import PostMeta from '../../../../components/PostMeta'
+import { Callout } from 'nextra/components'
+import { Steps } from 'nextra/components'
+
+# Complete Setup Guide
+
+<PostMeta
+  date="May 23, 2026"
+  category="Infrastructure Security"
+  readTime="25 min"
+/>
+
+<Callout type="info">
+This guide shows the **exact steps** I took to implement Cloudflare Zero Trust on my 4-node Kubernetes cluster. All commands, configurations, and screenshots are from my actual production deployment.
+</Callout>
+
+---
+
+## My Environment
+
+**Cluster:**
+- Master: 5.75.206.111 (Frankfurt) - Where cloudflared runs
+- Worker1: 5.75.198.10 (Frankfurt)
+- Worker2: 91.107.250.5 (Frankfurt)
+- Worker3: 65.109.212.122 (Helsinki)
+
+**Services:**
+- nginx-ingress: LoadBalancer on 5.75.206.111:80
+- ArgoCD: argocd.goalixa.com
+- Harbor: harbor.goalixa.com
+- Grafana: monitoring.goalixa.com
+- PWA: app.goalixa.com
+- Landing: goalixa.com
+
+---
+
+## Phase 1: Cloudflare Tunnel Setup
+
+<Steps>
+
+### Step 1: Install cloudflared on Master Node
+
+SSH to the master node and install cloudflared:
+
+```bash
+ssh root@5.75.206.111
+
+# Install cloudflared
+apt-get update
+apt-get install cloudflared -y
+
+# Verify installation
+cloudflared --version
+```
+
+**My output:**
+```
+cloudflared version 2026.5.0 (built 2026-05-15-1423 UTC)
+```
+
+---
+
+### Step 2: Create Tunnel via Dashboard
+
+I chose the **dashboard method** (instead of CLI) because it's easier for token-based authentication.
+
+1. Go to https://one.dash.cloudflare.com
+2. Navigate to: **Networks** → **Tunnels**
+3. Click **Create a tunnel**
+4. Choose: **Cloudflared**
+5. Name it: `goalixa-cluster`
+6. Click **Save tunnel**
+
+**Result:** Tunnel created with ID `0cfcc894-5ea2-4a81-996f-72e09488edb4`
+
+---
+
+### Step 3: Install Tunnel on Server
+
+The dashboard shows installation command. Copy the token and run:
+
+```bash
+# This creates systemd service and starts tunnel
+cloudflared service install eyJhIjoiNzUwNDc0OTRmMzU3ZTY3YTkwZmM5ZTEwZTkyZDQ2YTAiLCJ0IjoiMGNmY2M4OTQtNWVhMi00YTgxLTk5NmYtNzJlMDk0ODhlZGI0IiwicyI6Ik56WmpNakl5TldJdE5XTmtNUzAwTVdRNUxXSTVNelV0WWpVNU9ESTFZMlV5T0RZMyJ9
+```
+
+**This command:**
+- Creates `/etc/systemd/system/cloudflared.service`
+- Creates `/root/.cloudflared/` directory with credentials
+- Starts cloudflared service
+- Enables it to start on boot
+
+---
+
+### Step 4: Create Configuration File
+
+Create `/etc/cloudflared/config.yml` with all domain mappings:
+
+```bash
+mkdir -p /etc/cloudflared
+nano /etc/cloudflared/config.yml
+```
+
+**My configuration:**
+```yaml
+tunnel: goalixa-cluster
+credentials-file: /root/.cloudflared/0cfcc894-5ea2-4a81-996f-72e09488edb4.json
+
+ingress:
+  # Public services
+  - hostname: goalixa.com
+    service: http://5.75.206.111:80
+    originRequest:
+      noTLSVerify: true
+      connectTimeout: 30s
+      httpHostHeader: goalixa.com
+
+  - hostname: app.goalixa.com
+    service: http://5.75.206.111:80
+    originRequest:
+      noTLSVerify: true
+      connectTimeout: 30s
+      httpHostHeader: app.goalixa.com
+
+  # Private services (will add Access later)
+  - hostname: argocd.goalixa.com
+    service: http://5.75.206.111:80
+    originRequest:
+      noTLSVerify: true
+      connectTimeout: 30s
+      httpHostHeader: argocd.goalixa.com
+
+  - hostname: harbor.goalixa.com
+    service: http://5.75.206.111:80
+    originRequest:
+      noTLSVerify: true
+      connectTimeout: 30s
+      httpHostHeader: harbor.goalixa.com
+
+  - hostname: monitoring.goalixa.com
+    service: http://5.75.206.111:80
+    originRequest:
+      noTLSVerify: true
+      connectTimeout: 30s
+      httpHostHeader: monitoring.goalixa.com
+
+  # Catch-all
+  - service: http_status:404
+
+loglevel: info
+logfile: /var/log/cloudflared.log
+metrics: 0.0.0.0:2000
+```
+
+<Callout type="warning">
+**Critical:** Use `http://5.75.206.111:80` NOT `http://localhost:80`
+
+I initially used localhost and got 500 errors because nginx-ingress LoadBalancer listens on the external IP, not localhost!
+</Callout>
+
+**Why these settings:**
+- `service: http://5.75.206.111:80` - nginx-ingress LoadBalancer external IP
+- `noTLSVerify: true` - nginx-ingress uses self-signed certs
+- `httpHostHeader` - nginx-ingress needs this to route to correct Ingress
+- `metrics: 0.0.0.0:2000` - Exposes Prometheus metrics for monitoring
+
+---
+
+### Step 5: Restart cloudflared
+
+Apply the configuration:
+
+```bash
+systemctl restart cloudflared
+systemctl status cloudflared
+```
+
+**Expected output:**
+```
+● cloudflared.service - Cloudflare Tunnel
+   Loaded: loaded (/etc/systemd/system/cloudflared.service; enabled)
+   Active: active (running) since Fri 2026-05-23 08:15:32 UTC; 1min ago
+```
+
+---
+
+### Step 6: Verify Tunnel Connections
+
+Check that tunnel has 4 HA connections:
+
+```bash
+curl http://localhost:2000/metrics | grep cloudflared_tunnel_ha_connections
+```
+
+**My output:**
+```
+cloudflared_tunnel_ha_connections 4
+```
+
+{/* TODO: Add screenshot - ![Tunnel Status in Dashboard](/assets/screenshots/cloudflare/Cloudflare-coneectors-goalixa-cluster-cnnector.png) */}
+
+✅ **4 connections active** to Frankfurt data centers
+
+</Steps>
+
+---
+
+## Phase 2: DNS Configuration
+
+<Steps>
+
+### Step 1: Update DNS Records
+
+For each domain, I needed to change from A records to CNAME records pointing to the tunnel.
+
+**In Cloudflare Dashboard:**
+
+1. Go to **DNS** → **Records**
+2. **Delete** existing A records for:
+   - goalixa.com
+   - app.goalixa.com
+   - argocd.goalixa.com
+   - harbor.goalixa.com
+   - monitoring.goalixa.com
+
+3. **Create** CNAME records:
+
+| Type | Name | Target | Proxy |
+|------|------|--------|-------|
+| CNAME | goalixa.com | 0cfcc894-5ea2-4a81-996f-72e09488edb4.cfargotunnel.com | ✅ Proxied |
+| CNAME | app | 0cfcc894-5ea2-4a81-996f-72e09488edb4.cfargotunnel.com | ✅ Proxied |
+| CNAME | argocd | 0cfcc894-5ea2-4a81-996f-72e09488edb4.cfargotunnel.com | ✅ Proxied |
+| CNAME | harbor | 0cfcc894-5ea2-4a81-996f-72e09488edb4.cfargotunnel.com | ✅ Proxied |
+| CNAME | monitoring | 0cfcc894-5ea2-4a81-996f-72e09488edb4.cfargotunnel.com | ✅ Proxied |
+
+<Callout type="error">
+**Common mistake:** I initially had A records pointing to 5.75.206.111, which bypassed Cloudflare! CNAMEs to the tunnel are required.
+</Callout>
+
+---
+
+### Step 2: Verify DNS Propagation
+
+```bash
+# Check DNS resolution
+dig +short goalixa.com @1.1.1.1
+dig +short argocd.goalixa.com @1.1.1.1
+```
+
+**Expected:** Cloudflare IPs (like 188.114.96.3, 188.114.97.3)
+**NOT:** Your server IP (5.75.206.111)
+
+---
+
+### Step 3: Test Public Services
+
+```bash
+curl -I https://goalixa.com
+curl -I https://app.goalixa.com
+```
+
+**Look for:**
+```
+HTTP/2 200
+server: cloudflare
+cf-ray: a00a00c5fce316f0-FRA
+```
+
+✅ Traffic is routing through Cloudflare!
+
+</Steps>
+
+---
+
+## Phase 3: Cloudflare Access for Private Services
+
+<Steps>
+
+### Step 1: Create Access Application (ArgoCD)
+
+1. Go to **Access** → **Applications**
+2. Click **Add an application**
+3. Choose **Self-hosted**
+
+**Configuration:**
+- Application name: `argocd`
+- Session Duration: `24 hours`
+- Application domain: `argocd.goalixa.com`
+
+---
+
+### Step 2: Create Access Policy
+
+**Policy name:** `Admin Access`
+
+**Include rule:**
+- Selector: `Emails`
+- Value: `your@email.com` (your email)
+
+**Authentication method:**
+- ☑ One-time PIN
+
+Click **Add application**
+
+---
+
+### Step 3: Repeat for Harbor and Grafana
+
+Create applications for:
+- `harbor` → harbor.goalixa.com
+- `monitoring` → monitoring.goalixa.com
+
+Same policy: Email OTP for admin email.
+
+---
+
+### Step 4: Test Access Authentication
+
+Open https://argocd.goalixa.com in a browser:
+
+{/* TODO: Add screenshot - ![Cloudflare Access Login](/assets/screenshots/cloudflare/Cloudflare-access-picture-argocd.png) */}
+
+1. You should see Cloudflare Access login page
+2. Enter your email
+3. Receive OTP code
+4. Enter code
+5. Access granted for 24 hours
+
+✅ Private services now require authentication!
+
+---
+
+### Step 5: Verify Access Logs
+
+Go to **Access** → **Logs** → **Access requests**
+
+{/* TODO: Add screenshot - ![Access Audit Logs](/assets/screenshots/cloudflare/Application-Access-Report-logs.png) */}
+
+You should see:
+- Access events logged
+- Email addresses
+- Timestamps
+- Allow/Deny decisions
+
+</Steps>
+
+---
+
+## Phase 4: WARP for Infrastructure Access
+
+<Steps>
+
+### Step 1: Install WARP Client
+
+**On your laptop/desktop:**
+
+- **macOS:** Download from https://1.1.1.1/ or `brew install --cask cloudflare-warp`
+- **Windows:** Download from https://1.1.1.1/
+- **Linux:** `curl https://pkg.cloudflareclient.com/install | sudo bash`
+
+---
+
+### Step 2: Enroll WARP with Your Organization
+
+1. Open WARP client
+2. Click **Settings** → **Preferences** → **Account**
+3. Click **Login to Cloudflare Zero Trust**
+4. Enter your organization name: `goalixa-zero-trust` (or your org name)
+5. Authenticate with your email
+
+WARP is now enrolled with your Zero Trust organization.
+
+{/* TODO: Add screenshot - ![WARP Client Connected](/assets/screenshots/cloudflare/warp-mac-client.png) */}
+
+---
+
+### Step 3: Configure Split Tunnel
+
+In the Cloudflare Dashboard:
+
+1. Go to **Settings** → **WARP Client**
+2. Click **Device settings** → **Default**
+3. Scroll to **Split Tunnels**
+4. Change mode to: **Include IPs and domains**
+5. Add your cluster IPs:
+
+```
+5.75.206.111/32    # Master node
+5.75.198.10/32     # Worker1
+91.107.250.5/32    # Worker2
+65.109.212.122/32  # Worker3
+```
+
+**What this does:**
+- Only cluster IPs route through WARP
+- All other traffic (google.com, etc.) goes direct
+- Minimizes WARP overhead for non-cluster traffic
+
+---
+
+### Step 4: Enable Gateway
+
+1. Go to **Gateway** → **Firewall Policies** → **Network**
+2. Ensure Gateway is enabled
+3. Go to **Settings** → **Network** → **Proxy**
+4. Enable: ☑ Proxy
+5. Enable: ☑ Protocol Detection
+6. Protocols: ☑ TCP ☑ UDP ☑ ICMP
+
+---
+
+### Step 5: Create Gateway Firewall Policies
+
+Create two policies for cluster access:
+
+**Policy 1: Allow kubectl**
+
+{/* TODO: Add screenshot - ![Gateway Firewall Policies](/assets/screenshots/cloudflare/Firewall-policies-network-policies-list.png) */}
+
+- Name: `Allow kubectl to Kubernetes Cluster`
+- Traffic:
+  - Destination IP: `5.75.206.111`
+  - Destination Port: `6443`
+  - Protocol: `TCP`
+- Action: **Allow**
+- Logging: **Enabled**
+
+---
+
+**Policy 2: Allow SSH**
+
+- Name: `Allow SSH to Kubernetes Cluster`
+- Traffic:
+  - Destination IPs: `5.75.206.111, 5.75.198.10, 91.107.250.5, 65.109.212.122`
+  - Destination Port: `22`
+  - Protocol: `TCP`
+- Action: **Allow**
+- Logging: **Enabled**
+
+---
+
+### Step 6: Test kubectl Access
+
+On your laptop with WARP connected:
+
+```bash
+# Connect WARP
+warp-cli connect
+
+# Wait for connection
+warp-cli status
+
+# Test kubectl
+kubectl get pods -n default
+```
+
+**It should work!**
+
+Disconnect WARP and try again:
+
+```bash
+warp-cli disconnect
+kubectl get pods -n default
+```
+
+For kubectl (port 6443), **it should still work because we haven't closed the port yet**.
+
+---
+
+### Step 7: Verify Gateway Logs
+
+Go to **Logs** → **Gateway** → **Network**
+
+{/* TODO: Add screenshot - ![Gateway Network Logs](/assets/screenshots/cloudflare/Network-logs.png) */}
+
+You should see:
+- Traffic to 5.75.206.111:6443 (kubectl)
+- Traffic to cluster IPs:22 (SSH)
+- Action: Allow
+- Your device identity
+
+✅ WARP is routing cluster traffic through Gateway!
+
+</Steps>
+
+---
+
+## Phase 5: Device Information
+
+Check your enrolled device:
+
+Go to **My Team** → **Devices**
+
+{/* TODO: Add screenshot - ![Device Information](/assets/screenshots/cloudflare/Devices-Device-info-for-sample.png) */}
+
+You can see:
+- **Device name**
+- **OS and version**
+- **WARP client version**
+- **Network information** (IP, location)
+- **Last seen** timestamp
+- **Posture status**
+
+---
+
+## Verification Checklist
+
+After completing all phases, verify everything works:
+
+### ✅ Tunnel
+
+```bash
+# On master node
+curl http://localhost:2000/metrics | grep cloudflared_tunnel_ha_connections
+
+# Should show: cloudflared_tunnel_ha_connections 4
+```
+
+---
+
+### ✅ Public Services
+
+```bash
+curl -I https://goalixa.com
+curl -I https://app.goalixa.com
+
+# Should see:
+# HTTP/2 200
+# server: cloudflare
+```
+
+---
+
+### ✅ Private Services (Access)
+
+Open in browser:
+- https://argocd.goalixa.com
+- https://harbor.goalixa.com
+- https://monitoring.goalixa.com
+
+**Expected:** Cloudflare Access login page, not direct service login.
+
+---
+
+### ✅ kubectl (WARP)
+
+```bash
+# Connect WARP
+warp-cli connect
+
+# Test kubectl
+kubectl get nodes
+
+# Should work! Verify in Gateway logs.
+```
+
+---
+
+### ✅ SSH (WARP)
+
+```bash
+# With WARP connected
+ssh root@5.75.206.111
+
+# Should work! Check Gateway network logs.
+```
+
+---
+
+## Configuration Files Reference
+
+### `/etc/cloudflared/config.yml`
+
+```yaml
+tunnel: goalixa-cluster
+credentials-file: /root/.cloudflared/0cfcc894-5ea2-4a81-996f-72e09488edb4.json
+
+ingress:
+  - hostname: goalixa.com
+    service: http://5.75.206.111:80
+    originRequest:
+      noTLSVerify: true
+      connectTimeout: 30s
+      httpHostHeader: goalixa.com
+
+  - hostname: app.goalixa.com
+    service: http://5.75.206.111:80
+    originRequest:
+      noTLSVerify: true
+      connectTimeout: 30s
+      httpHostHeader: app.goalixa.com
+
+  - hostname: argocd.goalixa.com
+    service: http://5.75.206.111:80
+    originRequest:
+      noTLSVerify: true
+      connectTimeout: 30s
+      httpHostHeader: argocd.goalixa.com
+
+  - hostname: harbor.goalixa.com
+    service: http://5.75.206.111:80
+    originRequest:
+      noTLSVerify: true
+      connectTimeout: 30s
+      httpHostHeader: harbor.goalixa.com
+
+  - hostname: monitoring.goalixa.com
+    service: http://5.75.206.111:80
+    originRequest:
+      noTLSVerify: true
+      connectTimeout: 30s
+      httpHostHeader: monitoring.goalixa.com
+
+  - service: http_status:404
+
+loglevel: info
+logfile: /var/log/cloudflared.log
+metrics: 0.0.0.0:2000
+```
+
+---
+
+### `/etc/systemd/system/cloudflared.service`
+
+```ini
+[Unit]
+Description=Cloudflare Tunnel
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/bin/cloudflared tunnel --config /etc/cloudflared/config.yml run --token eyJhIjoiNzUwNDc0OTRmMzU3ZTY3YTkwZmM5ZTEwZTkyZDQ2YTAiLCJ0IjoiMGNmY2M4OTQtNWVhMi00YTgxLTk5NmYtNzJlMDk0ODhlZGI0IiwicyI6Ik56WmpNakl5TldJdE5XTmtNUzAwTVdRNUxXSTVNelV0WWpVNU9ESTFZMlV5T0RZMyJ9
+Restart=on-failure
+RestartSec=5s
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+```
+
+---
+
+### WARP Split Tunnel Configuration
+
+**Mode:** Include IPs and domains
+
+**Included IPs:**
+```
+5.75.206.111/32
+5.75.198.10/32
+91.107.250.5/32
+65.109.212.122/32
+```
+
+---
+
+### Gateway Firewall Policies
+
+**Policy: Allow kubectl**
+- Destination IP: `5.75.206.111`
+- Port: `6443`
+- Protocol: TCP
+- Action: Allow
+
+**Policy: Allow SSH**
+- Destination IPs: All 4 cluster nodes
+- Port: `22`
+- Protocol: TCP
+- Action: Allow
+
+---
+
+## Troubleshooting Common Issues
+
+### 500 Internal Server Error
+
+**Problem:** ArgoCD/Harbor show 500 errors after tunnel setup.
+
+**Cause:** Config uses `localhost:80` but nginx-ingress listens on external IP.
+
+**Fix:** Change all `service:` lines in config.yml from `http://localhost:80` to `http://5.75.206.111:80`
+
+---
+
+### DNS Not Resolving to Cloudflare
+
+**Problem:** `dig argocd.goalixa.com` returns 5.75.206.111 instead of Cloudflare IP.
+
+**Cause:** Still using A records instead of CNAME to tunnel.
+
+**Fix:** Delete A records, create CNAME records pointing to `TUNNEL_ID.cfargotunnel.com`
+
+---
+
+### WARP Not Connecting
+
+**Problem:** WARP shows "Unable to connect"
+
+**Cause:** Not enrolled with Zero Trust organization.
+
+**Fix:** Settings → Account → Login to Cloudflare Zero Trust → Enter org name
+
+---
+
+### kubectl Not Working via WARP
+
+**Problem:** kubectl fails when WARP connected.
+
+**Cause:** Split tunnel not including cluster IP.
+
+**Fix:** Add `5.75.206.111/32` to Split Tunnel include list
+
+---
+
+## Next Steps
+
+Implementation complete! Now check performance and metrics:
+
+**[Continue to Performance & Metrics →](/infrastructure/security/cloudflare-zero-trust/performance)**

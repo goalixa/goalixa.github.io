@@ -1,0 +1,78 @@
+---
+title: 'Infrastructure & Operations'
+description: 'Kubernetes cluster management, security, observability, and CI/CD practices for production infrastructure.'
+---
+
+import PostMeta from '../../components/PostMeta'
+
+# Infrastructure & Operations
+
+<PostMeta
+  date="May 23, 2026"
+  category="Infrastructure"
+  readTime="3 min"
+/>
+
+Production-grade infrastructure and operations practices for running Kubernetes clusters, implementing zero-trust security, comprehensive observability, and robust CI/CD pipelines.
+
+---
+
+## 🎯 Kubernetes
+
+Cluster setup, migration strategies, and production best practices.
+
+**Articles:**
+- [K3s to Kubeadm Migration](/infrastructure/kubernetes/migrating-from-k3s-to-kubeadm) - Production cluster migration with zero downtime
+- [Cluster Migration Strategy](/infrastructure/kubernetes/migrate-to-new-cluster) - Moving workloads to a new cluster safely
+
+[Explore Kubernetes →](/infrastructure/kubernetes)
+
+---
+
+## 🔐 Security
+
+Zero-trust architecture, access control, and infrastructure security.
+
+**Featured Implementation:**
+- [Cloudflare Zero Trust](/infrastructure/security/cloudflare-zero-trust) - Complete 7-part guide covering tunnel setup, CDN, Access, WARP, troubleshooting, and performance analysis
+
+**Results:** 90% faster global load times, 82% bandwidth reduction, $8,046/year savings
+
+[Explore Security →](/infrastructure/security)
+
+---
+
+## 📊 Observability
+
+Monitoring, metrics, logging, and alerting with Prometheus & Grafana.
+
+**Stack:**
+- [Prometheus](/infrastructure/observability/prometheus) - Metrics collection and storage
+- [Grafana](/infrastructure/observability/grafana) - Visualization and dashboards
+- [Alertmanager](/infrastructure/observability/alertmanager) - Alert routing and management
+- [Application Metrics](/infrastructure/observability/application-metrics) - Custom metrics integration
+
+[Explore Observability →](/infrastructure/observability)
+
+---
+
+## 🚀 CI/CD
+
+Continuous integration, deployment pipelines, and GitOps workflows.
+
+**Practices:**
+- [Monitoring Stack Setup](/infrastructure/cicd/monitoring-stack-prometheus-grafana-alertmanager) - Complete stack deployment
+- [Staging with Kustomize](/infrastructure/cicd/why-staging-with-kustomize) - Environment-specific configurations
+
+[Explore CI/CD →](/infrastructure/cicd)
+
+---
+
+## Philosophy
+
+Infrastructure should be:
+- **Automated**: GitOps-driven, reproducible, version-controlled
+- **Observable**: Comprehensive metrics, logs, and alerts
+- **Secure**: Zero-trust architecture, minimal attack surface
+- **Resilient**: High availability, disaster recovery, tested failure modes
+- **Cost-effective**: Right-sized resources, efficient use of cloud services

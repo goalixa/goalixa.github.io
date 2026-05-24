@@ -1,0 +1,471 @@
+---
+title: 'How Cloudflare Zero Trust Works'
+description: 'Deep dive into Cloudflare Zero Trust architecture, traffic flows, and how each component works together to secure infrastructure.'
+---
+
+import PostMeta from '../../../../components/PostMeta'
+import { Callout } from 'nextra/components'
+import { Steps } from 'nextra/components'
+
+# How Cloudflare Zero Trust Works
+
+<PostMeta
+  date="May 23, 2026"
+  category="Infrastructure Security"
+  readTime="12 min"
+/>
+
+Understanding how Cloudflare Zero Trust works is essential before implementing it. This page explains the architecture, traffic flows, and how each component integrates with your infrastructure.
+
+---
+
+## Architecture Overview
+
+Cloudflare Zero Trust consists of four main components working together:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    Internet Users                        │
+└──────────────────────┬──────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────┐
+│              Cloudflare Global Network                   │
+│         (200+ data centers worldwide)                    │
+│                                                          │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │
+│  │   Cloudflare │  │  Cloudflare  │  │  Cloudflare  │  │
+│  │   Tunnel     │  │   Access     │  │   Gateway    │  │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  │
+│         │                 │                  │           │
+└─────────┼─────────────────┼──────────────────┼──────────┘
+          │                 │                  │
+          │                 │                  │
+          ▼                 ▼                  ▼
+┌─────────────────────────────────────────────────────────┐
+│              Your Infrastructure                         │
+│                                                          │
+│  ┌────────────────┐   ┌──────────────┐   ┌──────────┐  │
+│  │  Public Apps   │   │ Private Apps │   │   SSH    │  │
+│  │  goalixa.com   │   │   ArgoCD     │   │  kubectl │  │
+│  │  app.goalixa   │   │   Harbor     │   │  (WARP)  │  │
+│  └────────────────┘   │   Grafana    │   └──────────┘  │
+│                       └──────────────┘                  │
+│                                                          │
+│           Kubernetes Cluster (4 nodes)                   │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Component 1: Cloudflare Tunnel
+
+### What It Does
+
+Cloudflare Tunnel creates an **outbound-only** connection from your infrastructure to Cloudflare's edge network. This means:
+
+- **No inbound firewall rules needed** - your server initiates the connection
+- **No open ports** - all traffic comes through the tunnel
+- **High availability** - multiple concurrent connections for redundancy
+
+### How It Works
+
+```
+Step 1: cloudflared starts on your server
+   ├── Reads /etc/cloudflared/config.yml
+   ├── Loads tunnel credentials
+   └── Establishes outbound connections to Cloudflare
+
+Step 2: Creates multiple HA connections
+   ├── Connection 1 → fra-a.cloudflare.com
+   ├── Connection 2 → fra-b.cloudflare.com
+   ├── Connection 3 → fra-c.cloudflare.com
+   └── Connection 4 → fra-d.cloudflare.com
+
+Step 3: Cloudflare Edge receives connections
+   ├── Registers tunnel ID
+   ├── Maps domains to tunnel
+   └── Ready to proxy traffic
+```
+
+### Traffic Flow (HTTP/HTTPS)
+
+```
+User requests argocd.goalixa.com
+         ↓
+DNS query: argocd.goalixa.com
+         ↓
+Returns: Cloudflare IP (188.114.96.3)
+         ↓
+User connects to Cloudflare Edge (nearest datacenter)
+         ↓
+Cloudflare looks up tunnel mapping
+         ↓
+Routes request through tunnel to your server
+         ↓
+cloudflared receives request
+         ↓
+Forwards to: http://5.75.206.111:80
+         ↓
+nginx-ingress routes to ArgoCD service
+         ↓
+Response flows back through tunnel
+         ↓
+Cloudflare Edge sends response to user
+```
+
+<Callout type="info">
+**Why Port 80?** Even though users connect via HTTPS, Cloudflare handles TLS termination at the edge. The tunnel itself carries HTTP traffic internally, which is secure because it's encrypted end-to-end by Cloudflare's protocol.
+</Callout>
+
+### My Configuration
+
+```yaml
+# /etc/cloudflared/config.yml on master node (5.75.206.111)
+tunnel: goalixa-cluster
+credentials-file: /root/.cloudflared/0cfcc894-5ea2-4a81-996f-72e09488edb4.json
+
+ingress:
+  # Public services
+  - hostname: goalixa.com
+    service: http://5.75.206.111:80
+    originRequest:
+      noTLSVerify: true
+      connectTimeout: 30s
+      httpHostHeader: goalixa.com
+
+  - hostname: app.goalixa.com
+    service: http://5.75.206.111:80
+    originRequest:
+      noTLSVerify: true
+      connectTimeout: 30s
+      httpHostHeader: app.goalixa.com
+
+  # Private services (protected by Access)
+  - hostname: argocd.goalixa.com
+    service: http://5.75.206.111:80
+    originRequest:
+      noTLSVerify: true
+      connectTimeout: 30s
+      httpHostHeader: argocd.goalixa.com
+
+  - hostname: harbor.goalixa.com
+    service: http://5.75.206.111:80
+    originRequest:
+      noTLSVerify: true
+      connectTimeout: 30s
+      httpHostHeader: harbor.goalixa.com
+
+  - hostname: monitoring.goalixa.com
+    service: http://5.75.206.111:80
+    originRequest:
+      noTLSVerify: true
+      connectTimeout: 30s
+      httpHostHeader: monitoring.goalixa.com
+
+  # Catch-all
+  - service: http_status:404
+
+loglevel: info
+logfile: /var/log/cloudflared.log
+metrics: 0.0.0.0:2000
+```
+
+**Key Points:**
+- `service: http://5.75.206.111:80` - Points to nginx-ingress LoadBalancer IP
+- `noTLSVerify: true` - Because nginx-ingress uses self-signed certs
+- `httpHostHeader` - Ensures nginx-ingress knows which Ingress to route to
+- `metrics: 0.0.0.0:2000` - Exposes Prometheus metrics for monitoring
+
+---
+
+## Component 2: Cloudflare Access
+
+### What It Does
+
+Cloudflare Access adds identity-based authentication **before** traffic reaches your services. It acts as a reverse proxy that checks authentication first.
+
+### Authentication Flow
+
+```
+User visits https://argocd.goalixa.com
+         ↓
+Request hits Cloudflare Edge
+         ↓
+Cloudflare checks: Is this domain protected by Access?
+         ↓
+YES → Check for valid session cookie
+         ↓
+No session or expired?
+         ↓
+Redirect to: goalixa.cloudflareaccess.com/auth
+         ↓
+Show Cloudflare Access login page
+         ↓
+User enters email → Send OTP code
+         ↓
+User enters OTP → Verify code
+         ↓
+Valid? Create session cookie (24h TTL)
+         ↓
+Redirect back to argocd.goalixa.com
+         ↓
+Forward request through tunnel to ArgoCD
+         ↓
+User sees ArgoCD dashboard
+```
+
+{/* TODO: Add screenshot - ![Cloudflare Access Login](/assets/screenshots/cloudflare/Cloudflare-access-picture-argocd.png) */}
+
+### Session Management
+
+- **Duration**: 24 hours
+- **Cookie**: `CF_Authorization` (HttpOnly, Secure, SameSite=Lax)
+- **Renewal**: Automatic on each request
+- **Revocation**: Instant (logout or admin action)
+
+### Access Policies
+
+Each private service has an Access Application with policies:
+
+**Example: ArgoCD Access Policy**
+```
+Application: argocd
+Domain: argocd.goalixa.com
+Session Duration: 24 hours
+
+Policy: Admin Access
+  Include:
+    - Email: your@email.com
+  Action: Allow
+
+Authentication Method: One-time PIN
+  - Send OTP to email
+  - Code expires in 5 minutes
+  - 3 attempts maximum
+```
+
+### Audit Logs
+
+Every access attempt is logged:
+
+{/* TODO: Add screenshot - ![Access Audit Logs](/assets/screenshots/cloudflare/Application-Access-Report-logs.png) */}
+
+**Logged Data:**
+- User email
+- Timestamp
+- IP address
+- User agent
+- Access decision (Allow/Deny)
+- Session duration
+
+---
+
+## Component 3: Cloudflare WARP
+
+### What It Does
+
+WARP is a device client that creates a **secure tunnel** from your laptop/desktop to Cloudflare's network. For network-level protocols (SSH, kubectl), WARP routes traffic through Cloudflare Gateway for inspection and policy enforcement.
+
+### How It Works
+
+```
+Your laptop (WARP installed)
+         ↓
+WARP client enrolls with your Zero Trust organization
+         ↓
+Creates WireGuard tunnel to nearest Cloudflare datacenter
+         ↓
+Split tunnel configured: Only cluster IPs route through WARP
+         ↓
+When you run: kubectl get pods
+         ↓
+Request to: 5.75.206.111:6443
+         ↓
+WARP intercepts (because 5.75.206.111 in split tunnel list)
+         ↓
+Routes through WARP tunnel → Cloudflare Gateway
+         ↓
+Gateway checks firewall policies
+         ↓
+Policy: Allow kubectl (port 6443) to 5.75.206.111
+         ↓
+Forward to master node
+         ↓
+kubectl API responds
+         ↓
+Response flows back through WARP
+         ↓
+kubectl displays pod list
+```
+
+{/* TODO: Add screenshot - ![WARP Client Connected](/assets/screenshots/cloudflare/warp-mac-client.png) */}
+
+### Split Tunnel Configuration
+
+My WARP is configured to **only** route cluster traffic through Cloudflare:
+
+**Include Mode:**
+```
+5.75.206.111/32   # Master node
+5.75.198.10/32    # Worker1
+91.107.250.5/32   # Worker2
+65.109.212.122/32 # Worker3
+```
+
+**What this means:**
+- ✅ SSH to 5.75.206.111 → Through WARP
+- ✅ kubectl (5.75.206.111:6443) → Through WARP
+- ❌ google.com → Direct (not through WARP)
+- ❌ Other websites → Direct (not through WARP)
+
+---
+
+## Component 4: Cloudflare Gateway
+
+### What It Does
+
+Gateway is the **firewall and policy engine** for WARP traffic. It inspects network traffic and enforces policies based on:
+- Destination IP and port
+- Protocol (TCP/UDP/ICMP)
+- User identity
+- Device posture
+
+### Gateway Policies
+
+{/* TODO: Add screenshot - ![Gateway Firewall Policies](/assets/screenshots/cloudflare/Firewall-policies-network-policies-list.png) */}
+
+**My Policies:**
+
+- **Allow kubectl to Kubernetes API**
+   - Destination: 5.75.206.111
+   - Port: 6443
+   - Protocol: TCP
+   - Action: Allow
+   - Logging: Enabled
+
+- **Allow SSH to Kubernetes Cluster**
+   - Destination IPs: All 4 cluster nodes
+   - Port: 22
+   - Protocol: TCP
+   - Action: Allow
+   - Logging: Enabled
+
+- **Default Deny** (implicit)
+   - All other traffic: Block
+
+### Gateway Network Logs
+
+{/* TODO: Add screenshot - ![Gateway Network Logs](/assets/screenshots/cloudflare/Network-logs.png) */}
+
+Every network request is logged:
+- Source IP (your laptop)
+- Destination IP and port
+- Action (Allow/Block)
+- Timestamp
+- Protocol
+- User identity (if authenticated)
+
+---
+
+## How Components Work Together
+
+### Public Service Access (goalixa.com)
+
+```
+User → Cloudflare Edge → Tunnel → nginx-ingress → goalixa-landing
+```
+
+**No authentication required** - Cloudflare just acts as CDN and DDoS protection.
+
+---
+
+### Private Service Access (argocd.goalixa.com)
+
+```
+User → Cloudflare Edge
+     → Access (Email OTP required) ✓
+     → Tunnel
+     → nginx-ingress
+     → ArgoCD
+```
+
+**Authentication required** - Access checks session before forwarding.
+
+---
+
+### Infrastructure Access (kubectl)
+
+```
+Admin laptop (WARP connected)
+     → WARP client
+     → Cloudflare Gateway (Check policy) ✓
+     → Direct to 5.75.206.111:6443
+     → Kubernetes API
+```
+
+**Device verification required** - Must have WARP connected and enrolled.
+
+---
+
+### Infrastructure Access (SSH)
+
+```
+Admin laptop (WARP connected)
+     → WARP client
+     → Cloudflare Gateway (Check policy) ✓
+     → Direct to 5.75.206.111:22
+     → SSH daemon
+```
+
+**Device verification required** - Same as kubectl.
+
+<Callout type="info">
+**Note:** SSH and kubectl traffic goes through WARP but not through the Cloudflare Tunnel. They're different paths:
+- **Tunnel**: HTTP/HTTPS traffic (bidirectional)
+- **WARP**: Network traffic inspection (client to infrastructure)
+</Callout>
+
+---
+
+## Security Model
+
+### Before Cloudflare Zero Trust
+
+```
+Internet → Direct connection to 5.75.206.111
+  ├── Port 80/443 → Anyone can reach services
+  ├── Port 22 → SSH brute force attacks (15,000/day)
+  └── Port 6443 → Kubernetes API exposed globally
+```
+
+**Security:** Based on passwords and SSH keys only
+
+---
+
+### After Cloudflare Zero Trust
+
+```
+Internet
+  ├── Public services → Cloudflare → Tunnel → nginx-ingress
+  │   (No auth, just CDN and DDoS protection)
+  │
+  ├── Private services → Cloudflare Access (Email OTP) → Tunnel → nginx-ingress
+  │   (Identity verified BEFORE reaching service)
+  │
+  └── Infrastructure → WARP (Device enrolled) → Gateway (Policy check) → Direct
+      (Device and identity verified)
+```
+
+**Security:** Defense in depth
+- **Network layer:** WARP enrollment + Gateway policies
+- **Application layer:** Access authentication
+- **Service layer:** Original service auth (ArgoCD login, SSH keys)
+
+---
+
+## Next: Complete Setup Guide
+
+Now that you understand how it works, let's implement it:
+
+**[Continue to Complete Setup Guide →](/infrastructure/security/cloudflare-zero-trust/setup)**

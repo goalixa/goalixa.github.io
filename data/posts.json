@@ -1,0 +1,157 @@
+{
+  "posts": [
+    {
+      "title": "Cloudflare Zero Trust: Securing Infrastructure & Private Services",
+      "description": "Complete guide to implementing Cloudflare Zero Trust for securing infrastructure tools with identity-based access and WARP tunneling.",
+      "category": "Infrastructure",
+      "path": "/infrastructure/security/cloudflare-zero-trust",
+      "date": "2026-05-23",
+      "readTime": "8 min"
+    },
+    {
+      "title": "Cloudflare Zero Trust Architecture",
+      "description": "Deep dive into Cloudflare Zero Trust architecture, traffic flows, and how components work together.",
+      "category": "Infrastructure",
+      "path": "/infrastructure/security/cloudflare-zero-trust/architecture",
+      "date": "2026-05-23",
+      "readTime": "10 min"
+    },
+    {
+      "title": "Cloudflare Zero Trust Setup Guide",
+      "description": "Step-by-step guide to configuring Cloudflare Tunnel, Access, and WARP for infrastructure security.",
+      "category": "Infrastructure",
+      "path": "/infrastructure/security/cloudflare-zero-trust/setup",
+      "date": "2026-05-23",
+      "readTime": "15 min"
+    },
+    {
+      "title": "Migrating from K3s to Kubeadm",
+      "description": "Complete guide to migrating from K3s to kubeadm-based Kubernetes cluster with zero downtime.",
+      "category": "Infrastructure",
+      "path": "/infrastructure/kubernetes/migrating-from-k3s-to-kubeadm",
+      "date": "2026-04-26",
+      "readTime": "12 min"
+    },
+    {
+      "title": "Monitoring Stack: Prometheus, Grafana, Alertmanager",
+      "description": "Building a complete monitoring solution with Prometheus, Grafana, and Alertmanager on Kubernetes.",
+      "category": "Infrastructure",
+      "path": "/infrastructure/cicd/monitoring-stack-prometheus-grafana-alertmanager",
+      "date": "2026-04-15",
+      "readTime": "10 min"
+    },
+    {
+      "title": "ArgoCD: First Steps with GitOps",
+      "description": "Getting started with ArgoCD for GitOps-based continuous delivery.",
+      "category": "Infrastructure",
+      "path": "/infrastructure/cicd/gitops/argocd-first-step",
+      "date": "2026-04-10",
+      "readTime": "8 min"
+    },
+    {
+      "title": "Why Staging Environment with Kustomize",
+      "description": "Benefits and implementation of staging environments using Kustomize for Kubernetes deployments.",
+      "category": "Infrastructure",
+      "path": "/infrastructure/cicd/why-staging-with-kustomize",
+      "date": "2026-04-05",
+      "readTime": "7 min"
+    },
+    {
+      "title": "API Gateway & PWA: Real Microservices Architecture",
+      "description": "Building a unified API entry point with BFF pattern for clean frontend-backend separation.",
+      "category": "Platform",
+      "path": "/platform/api-gateway-pwa-microservices",
+      "date": "2026-03-20",
+      "readTime": "6 min"
+    },
+    {
+      "title": "Migrating Monolithic to Microservices",
+      "description": "Guide to breaking down a monolithic application into independent microservices with clear boundaries.",
+      "category": "Platform",
+      "path": "/platform/migrate-monolithic-to-microservice",
+      "date": "2026-03-15",
+      "readTime": "10 min"
+    },
+    {
+      "title": "Migrating to PWA Successfully",
+      "description": "Complete guide to transforming a traditional web app into a Progressive Web Application.",
+      "category": "Platform",
+      "path": "/platform/migrate-to-pwa-success-fully",
+      "date": "2026-03-10",
+      "readTime": "8 min"
+    },
+    {
+      "title": "Syntra: AI DevOps Agent Architecture",
+      "description": "Building an intelligent DevOps assistant using CrewAI and LangChain for infrastructure automation.",
+      "category": "Platform",
+      "path": "/platform/syntra-architecture",
+      "date": "2026-02-25",
+      "readTime": "15 min"
+    },
+    {
+      "title": "Event-Driven Architecture with NATS",
+      "description": "Implementing event-driven patterns using NATS messaging for asynchronous communication.",
+      "category": "Platform",
+      "path": "/platform/event-driven-architecture-nats",
+      "date": "2026-02-20",
+      "readTime": "9 min"
+    },
+    {
+      "title": "Latency Taught Me Better Software Engineering",
+      "description": "Lessons learned from debugging latency issues and how it shaped my approach to software engineering.",
+      "category": "Software Engineering",
+      "path": "/software-engineering/latency-taught-me-better-software-engineering",
+      "date": "2026-02-15",
+      "readTime": "7 min"
+    },
+    {
+      "title": "Using Claude for Goalixa Development",
+      "description": "How Claude AI helps accelerate development through pair programming and code generation.",
+      "category": "Software Engineering",
+      "path": "/software-engineering/using-claude-for-goalixa",
+      "date": "2026-02-10",
+      "readTime": "6 min"
+    }
+  ],
+  "categories": [
+    {
+      "name": "Infrastructure",
+      "description": "Kubernetes, monitoring, security, and infrastructure operations",
+      "count": 7
+    },
+    {
+      "name": "Platform",
+      "description": "Microservices architecture, API design, and platform engineering",
+      "count": 5
+    },
+    {
+      "name": "Software Engineering",
+      "description": "Software development practices, tools, and methodologies",
+      "count": 2
+    }
+  ],
+  "byCategory": {
+    "Infrastructure": [
+      "/infrastructure/security/cloudflare-zero-trust",
+      "/infrastructure/security/cloudflare-zero-trust/architecture",
+      "/infrastructure/security/cloudflare-zero-trust/setup",
+      "/infrastructure/kubernetes/migrating-from-k3s-to-kubeadm",
+      "/infrastructure/cicd/monitoring-stack-prometheus-grafana-alertmanager",
+      "/infrastructure/cicd/gitops/argocd-first-step",
+      "/infrastructure/cicd/why-staging-with-kustomize"
+    ],
+    "Platform": [
+      "/platform/api-gateway-pwa-microservices",
+      "/platform/migrate-monolithic-to-microservice",
+      "/platform/migrate-to-pwa-success-fully",
+      "/platform/syntra-architecture",
+      "/platform/event-driven-architecture-nats"
+    ],
+    "Software Engineering": [
+      "/software-engineering/latency-taught-me-better-software-engineering",
+      "/software-engineering/using-claude-for-goalixa"
+    ]
+  },
+  "total": 14,
+  "lastUpdated": "2026-05-24T12:00:00.000Z"
+}
