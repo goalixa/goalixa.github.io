@@ -12,7 +12,7 @@ const featuredPosts = [
   {
     title: 'Syntra Architecture: AI DevOps Orchestration',
     description: 'Deep dive into building an AI-powered DevOps assistant using CrewAI and Claude.',
-    href: '/posts/ai/syntra-architecture',
+    href: '/platform/syntra-architecture',
     date: 'April 2026',
     category: 'AI',
     readTime: '15 min'

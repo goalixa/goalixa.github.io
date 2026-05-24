@@ -151,7 +151,7 @@ function getCategoryUrl(categoryName) {
     'Software Engineering': '/software-engineering/',
     'Goalixa Story': '/posts/goalixa-story/',
     'GitOps': '/infrastructure/cicd/gitops/',
-    'AI & Automation': '/posts/ai/',
+    'AI & Automation': '/posts/ai-automation/',
     'Incident Reports': '/infrastructure/incident-reports/',
     'Monthly Recaps': '/posts/monthly-recaps/',
     'Services': '/services/'

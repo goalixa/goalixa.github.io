@@ -90,7 +90,7 @@ export default function WelcomePage() {
               <div className="welcome-category-count">5 articles →</div>
             </a>
 
-            <a href="/posts/ai/" className="welcome-category-card">
+            <a href="/posts/ai-automation/" className="welcome-category-card">
               <div className="welcome-category-icon">AI</div>
               <h3 className="welcome-category-title">AI & Automation</h3>
               <p className="welcome-category-desc">CrewAI, LangChain, intelligent DevOps assistants</p>
